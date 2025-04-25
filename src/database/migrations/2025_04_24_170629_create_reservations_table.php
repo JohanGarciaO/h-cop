@@ -17,8 +17,8 @@ return new class extends Migration
             $table->foreignId('room_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
             $table->decimal('dialy_price', 10, 2);
             $table->decimal('total_price', 10, 2);
-            $table->dateTime('check_in_at');
-            $table->dateTime('check_out_at');
+            $table->dateTime('check_in_at')->nullable();
+            $table->dateTime('check_out_at')->nullable();
             $table->timestamps();
         });
     }

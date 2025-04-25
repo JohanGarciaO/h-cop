@@ -27,4 +27,19 @@ class Reservation extends Model
     {
         return $this->belongsTo(Room::class);
     }
+
+    public function isActive()
+    {
+        return is_null($this->check_out_at);
+    }
+
+    public function scopeActive($query)
+    {
+        return $query->whereNull('check_out_at');
+    }
+
+    public function scopeInactive($query)
+    {
+        return $query->whereNotNull('check_out_at');
+    }
 }

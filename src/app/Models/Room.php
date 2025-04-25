@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Builder;
 
 class Room extends Model
 {
@@ -17,6 +18,18 @@ class Room extends Model
     public function reservations()
     {
         return $this->hasMany(Reservation::class);
+    }
+
+    public function activeReservations()
+    {
+        return $this->hasMany(Reservation::class)->whereNull('check_out_at');
+    }
+
+    public function scopeAvailable(Builder $query)
+    {
+        return $query
+            ->withCount('activeReservations')
+            ->havingRaw('capacity > active_reservations_count');
     }
 
     public function isAvailable()
