@@ -1,15 +1,8 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Home</title>
-</head>
-<body>
-    
-    Olá, {{ Auth()->user()->username }}!
-    <a href="{{ route('auth.logout') }}">Logout</a>
+@extends('layouts.home')
 
-</body>
-</html>
+@section('title', 'Início')
+
+@section('content')
+    <h1>Olá, {{ Auth()->user()->username }}! Bem-vindo ao sistema de hotelaria!</h1>
+    <p>Escolha uma opção no menu lateral.</p>
+@endsection

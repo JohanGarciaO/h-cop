@@ -24,3 +24,83 @@ body {
 .toast {
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
 }
+
+/* Sidebar */
+.sidebar {
+    width: 250px;
+    min-height: 100vh;
+    background-color: #1a2028;
+    padding: 20px;
+    box-shadow: 2px 0 5px rgba(0,0,0,0.5);
+    display: flex;
+    flex-direction: column;
+    transition: width 0.3s ease;
+}
+
+.sidebar.collapsed {
+    width: 80px; /* Tamanho da sidebar quando recolhida */
+    padding: 0;
+    align-items: center;
+}
+
+.sidebar.collapsed .nav-link {
+    width: 60px;
+    height: 60px;
+}
+
+.sidebar .nav-link {
+    color: #bbb;
+    margin-bottom: 10px;
+    padding: 10px 15px;
+    border-radius: 8px;
+    transition: 0.3s;
+}
+
+.sidebar .nav-link svg {
+    transition: 0.3s;
+}
+
+.sidebar .nav-link:hover {
+    background-color: #ff5900;
+    color: #fff;
+    transform: translateX(5px);
+}
+
+.sidebar.collapsed .sidebar-title {
+    margin-bottom: 20px;
+    margin-top: 20px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+.sidebar.collapsed svg {
+    width: 40px;
+    height: 40px;
+}
+
+.sidebar.collapsed .hide {
+    visibility: hidden;
+}
+
+/* Botão de Toggle */
+.toggle-btn {
+    top: 20px;
+    left: 100%;
+    border: none;
+    background: #33363c;
+    color: #fff;
+    font-size: 20px;
+    cursor: pointer;
+    transition: transform 0.3s;
+}
+
+.sidebar.collapsed .toggle-btn {
+    transform: rotate(180deg);
+}
+
+/* Navbar */
+.navbar {
+    background-color: #1a2028;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+}
