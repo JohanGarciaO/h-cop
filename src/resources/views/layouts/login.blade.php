@@ -16,5 +16,7 @@
 
     <!-- Link para o JS do Bootstrap -->
     <script src="{{ asset('assets/js/bootstrap.bundle.min.js') }}"></script>
+
+    @stack('scripts')
 </body>
 </html>

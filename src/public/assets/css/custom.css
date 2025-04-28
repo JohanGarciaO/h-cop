@@ -20,3 +20,7 @@ body {
     background-color: #e04e00; /* Cor ao passar o mouse */
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); /* Sombra mais intensa ao passar o mouse */
 }
+
+.toast {
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
