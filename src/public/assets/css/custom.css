@@ -1,0 +1,26 @@
+body {
+    background-color: #1a2028;
+    /* background-color: #33363c; */
+    /* background-color: #ff5900; */
+}
+
+.card-body {
+    background-color: #1a2028;
+}
+
+/* Cor de fundo e sombra do botão */
+#btn-login {
+    background-color: #ff5900; /* Altere para a cor desejada */
+    border: none;
+    color: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Sombra suave */
+}
+
+#btn-login:hover {
+    background-color: #e04e00; /* Cor ao passar o mouse */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); /* Sombra mais intensa ao passar o mouse */
+}
+
+.toast {
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
