@@ -4,7 +4,7 @@ body {
     /* background-color: #ff5900; */
 }
 
-.card-body {
+.bg-card-login {
     background-color: #1a2028;
 }
 
@@ -103,4 +103,8 @@ body {
 .navbar {
     background-color: #1a2028;
     box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+}
+
+.progress-bar {
+    transition: width 0.6s ease;
 }

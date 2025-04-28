@@ -9,23 +9,11 @@
         <img src="{{ asset('assets/images/logo.png') }}" alt="Logo" class="img-fluid" style="max-width: 150px;">
     </div>
 
-    @if($message = Session::get('message'))
-        <div class="toast-container bottom-0 end-0 p-3">
-            <x-toast type="{{Session::get('alert-type')}}" :message="$message"/>
-        </div>
-    @endif
-
-    {{-- Mostra Erros de validação do Backend --}}
-    @if ($errors->any())
-        <div class="toast-container bottom-0 end-0 p-3">
-            @foreach ($errors->all() as $error)
-                <x-toast type="danger" :message="$error" />            
-            @endforeach
-        </div>
-    @endif
+    {{-- Importa o Módulo de notificações para erros de sessão e de validação de formulários --}}
+    @include('partials.components.notifications')
 
     <div class="card border-0" style="width: 100%; max-width: 400px;">
-        <div class="card-body p-4 text-white">
+        <div class="card-body p-4 text-white bg-card-login">
             <form method="POST" action="{{ route('auth.login') }}">
                 @csrf
 
@@ -51,7 +39,3 @@
 </div>
 
 @endsection
-
-@push('scripts')
-    @include('partials.components.js.toast')
-@endpush

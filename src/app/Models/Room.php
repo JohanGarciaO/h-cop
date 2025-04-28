@@ -34,6 +34,6 @@ class Room extends Model
 
     public function isAvailable()
     {
-        return $this->capacity > 0;
+        return $this->capacity > $this->activeReservations()->count();
     }
 }
