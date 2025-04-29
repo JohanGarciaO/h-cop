@@ -16,6 +16,18 @@ body {
     background-color: #ff5900;
 }
 
+.bg-background-important {
+    background-color: #1a2028!important;
+}
+
+.bg-intermediate-important {
+    background-color: #33363c!important;
+}
+
+.bg-core-important {
+    background-color: #ff5900!important;
+}
+
 .btn-core {
     background-color: #ff5900;
     border: none;

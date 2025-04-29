@@ -11,7 +11,7 @@ class RoomController extends Controller
 
     public function index()
     {
-        $rooms = Room::with('activeReservations')->orderBy('number')->get();    
+        $rooms = Room::with('activeReservations')->orderBy('number')->paginate(12);    
         return view('site.rooms', compact('rooms'));
     }
     
