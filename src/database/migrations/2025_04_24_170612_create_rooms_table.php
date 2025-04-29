@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('rooms', function (Blueprint $table) {
             $table->id();
-            $table->string('number')->unique();
+            $table->integer('number')->unique();
             $table->unsignedInteger('capacity')->default(1);
             $table->timestamps();
         });

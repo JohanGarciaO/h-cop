@@ -1,24 +1,32 @@
 body {
-    background-color: #1a2028;
-    /* background-color: #33363c; */
-    /* background-color: #ff5900; */
+    background-color: #1a2028; /* Background */
+    /* background-color: #33363c; */ /* Cinza Claro */
+    /* background-color: #ff5900; */ /* Laranja */
 }
 
-.bg-card-login {
+.bg-background {
     background-color: #1a2028;
 }
 
-/* Cor de fundo e sombra do botão */
-#btn-login {
-    background-color: #ff5900; /* Altere para a cor desejada */
+.bg-intermediate {
+    background-color: #33363c;
+}
+
+.bg-core {
+    background-color: #ff5900;
+}
+
+.btn-core {
+    background-color: #ff5900;
     border: none;
     color: #fff;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Sombra suave */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
 }
 
-#btn-login:hover {
-    background-color: #e04e00; /* Cor ao passar o mouse */
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); /* Sombra mais intensa ao passar o mouse */
+.btn-core:hover {
+    background-color: #e04e00;
+    color: #fff;    
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); 
 }
 
 .toast {

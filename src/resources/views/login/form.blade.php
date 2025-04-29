@@ -9,11 +9,8 @@
         <img src="{{ asset('assets/images/logo.png') }}" alt="Logo" class="img-fluid" style="max-width: 150px;">
     </div>
 
-    {{-- Importa o Módulo de notificações para erros de sessão e de validação de formulários --}}
-    @include('partials.components.notifications')
-
     <div class="card border-0" style="width: 100%; max-width: 400px;">
-        <div class="card-body p-4 text-white bg-card-login">
+        <div class="card-body p-4 text-white bg-background">
             <form method="POST" action="{{ route('auth.login') }}">
                 @csrf
 
@@ -32,7 +29,7 @@
                     <label class="form-check-label" for="remember">Lembrar-me</label>
                 </div>
 
-                <button type="submit" id="btn-login" class="btn btn-info w-100">Entrar</button>
+                <button type="submit" id="btn-login" class="btn btn-core w-100">Entrar</button>
             </form>
         </div>
     </div>

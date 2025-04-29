@@ -4,45 +4,51 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Room;
+use Illuminate\Validation\Rule;
 
 class RoomController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+
     public function index()
     {
-        $rooms = Room::with('activeReservations')->get();    
+        $rooms = Room::with('activeReservations')->orderBy('number')->get();    
         return view('site.rooms', compact('rooms'));
     }
     
     public function store(Request $request)
     {
-        $request->valide([
-            'number' => 'required|integer|unique:rooms,number',
+        $request->validate([
+            'number' => 'required|integer|min:1|unique:rooms,number',
             'capacity' => 'integer|min:1',
         ],
         [
             'number.required' => 'O número não pode estar vazio.',
             'number.integer' => 'O número do quarto deve ser um número inteiro.',
+            'number.min' => 'O número do quarto deve ser maior ou igual a 1.',
             'number.unique' => 'Já existe um quarto com o número digitado.',
             'capacity.integer' => 'A capacidade do quarto deve ser um número inteiro.',
             'capacity.min' => 'A capacidade mínima do quarto é 1.',
         ]);
 
-        Room::create($request);
+        $room = $request->all();
 
-        return redirect()->route('site.rooms')->with([
+        Room::create($room);
+
+        return redirect()->route('rooms.index')->with([
             'status' => 'success',
             'alert-type' => 'success',
-            'message' => 'Quarto criado com sucesso.',
+            'message' => "Quarto <b>número $request->number</b> criado com sucesso.",
         ]);
     }
     
     public function update(Request $request, string $id)
     {
-        $request->valide([
-            'number' => 'required|integer|unique:rooms,number',
+        $request->validate([
+            'number' => [
+                'required',
+                'integer',
+                Rule::unique('rooms','number')->ignore($id)
+            ],
             'capacity' => 'integer|min:1',
         ],
         [
@@ -53,26 +59,23 @@ class RoomController extends Controller
             'capacity.min' => 'A capacidade mínima do quarto é 1.',
         ]);
 
-        Room::update($request->only(['number', 'capacity']));
+        Room::find($id)->update($request->only(['number', 'capacity']));
 
-        return redirect()->route('site.rooms')->with([
+        return redirect()->route('rooms.index')->with([
             'status' => 'success',
             'alert-type' => 'success',
-            'message' => 'Quarto alterado com sucesso.',
+            'message' => "Quarto <b>número $request->number</b> alterado com sucesso.",
         ]);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Room $room)
     {
         $room->delete();
 
-        return redirect()->route('site.rooms')->with([
+        return redirect()->route('rooms.index')->with([
             'status' => 'success',
             'alert-type' => 'success',
-            'message' => 'Quarto removido com sucesso.',
+            'message' => "O quarto <b>$room->number</b> foi removido com sucesso.",
         ]);
     }
 }

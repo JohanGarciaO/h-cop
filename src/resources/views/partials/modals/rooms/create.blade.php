@@ -11,17 +11,22 @@
                 
                 <div class="modal-body">
                     <div class="mb-3">
-                        <label for="number" class="form-label">Número do Quarto</label>
-                        <input type="number" class="form-control" id="number" name="number" required>
+                        <label for="number" class="form-label">Número do Quarto:</label>
+                        <input type="number" class="form-control" id="number" name="number" min="1" placeholder="Defina qual o número do quarto" required>
                     </div>
                     <div class="mb-3">
-                        <label for="capacity" class="form-label">Capacidade</label>
-                        <input type="number" class="form-control" id="capacity" name="capacity" required>
+                        <label for="capacity" class="form-label">Capacidade:</label>
+                        <input type="number" class="form-control" id="capacity" name="capacity" min="1" placeholder="Defina a capacidade do quarto" required>
                     </div>
                 </div>
 
                 <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary">Salvar</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-core">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-plus-circle-fill" viewBox="0 0 20 20">
+                            <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3z"/>
+                        </svg> 
+                        Adicionar</button>
                 </div>
             </div>
 
