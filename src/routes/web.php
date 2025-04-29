@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LoginController;
+use App\Http\Controllers\RoomController;
 
 
 Route::middleware(['guest'])->group(function () {
@@ -13,6 +14,14 @@ Route::middleware(['guest'])->group(function () {
 });
 
 Route::middleware(['auth'])->group(function () {
+
+    // Autenticação
     Route::get('/logout', [LoginController::class, 'logout'])->name('auth.logout');
+
+    // Home
     Route::view('/', 'site.home')->name('site.home');
+    
+    // Rooms
+    Route::resource('rooms', RoomController::class);
+
 });
