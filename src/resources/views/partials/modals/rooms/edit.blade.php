@@ -6,7 +6,8 @@
 
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="editRoomModalLabel{{ $room->id }}">Quarto <b>número {{ $room->number }}</b></h5>
+                    <h5 class="modal-title" id="editRoomModalLabel{{ $room->id }}">Quarto&nbsp;</b></h5>
+                    <h4 class="card-title"><span class="badge bg-background"> {{ $room->number }}</span></h4>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
 
