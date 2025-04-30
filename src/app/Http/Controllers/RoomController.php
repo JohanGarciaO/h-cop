@@ -9,10 +9,50 @@ use Illuminate\Validation\Rule;
 class RoomController extends Controller
 {
 
-    public function index()
+    public function index(Request $request)
     {
-        $rooms = Room::with('activeReservations')->orderBy('number')->paginate(12);    
-        return view('site.rooms', compact('rooms'));
+        $rooms = Room::withCount(['activeReservations']);
+
+        // Filtro por número de quarto
+        if ($request->filled('room_number')) {
+            $rooms->where('number', $request->input('room_number'));
+        }
+
+        // Filtro por capacidade mínima
+        if ($request->filled('min_capacity')) {
+            $rooms->where('capacity', '>=', $request->input('min_capacity'));
+        }
+
+        // Filtro por vagas livres mínimas
+        if ($request->filled('min_free')) {
+            $rooms->havingRaw('((capacity) - (active_reservations_count)) >= ?', [(int) $request->input('min_free')]);
+        }
+
+        // Filtro por status
+        if ($request->filled('status')) {
+            switch ($request->input('status')) {
+                case 'empty':
+                    $rooms->having('active_reservations_count', '=', 0);
+                    break;
+                case 'crowded':
+                    $rooms->havingRaw('capacity <= active_reservations_count');
+                    break;
+                case 'available':
+                    $rooms->havingRaw('capacity > active_reservations_count');
+                    break;
+                case 'occupied':
+                    $rooms->having('active_reservations_count', '>', 0);
+                    break;
+            }
+        }
+
+        // Ordena pelo número e pagina com 12 por página
+        $rooms = $rooms->orderBy('number')->paginate(12)->appends(request()->query());
+
+        return view('site.rooms', [
+            'rooms' => $rooms,
+            'result_count' => $rooms->total(),
+        ]);
     }
     
     public function store(Request $request)

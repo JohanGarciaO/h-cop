@@ -19,6 +19,8 @@
         @endslot
     @endcomponent
 
+    <x-filters action="{{ route('rooms.index') }}" results_count="{{ $result_count }}" />
+
     <div class="row">
         @foreach ($rooms as $room)
             @php
