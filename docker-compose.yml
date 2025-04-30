@@ -33,6 +33,7 @@ services:
     ports:
       - "3306:3306"
     environment:
+      TZ: ${APP_TIMEZONE:-America_Sao_Paulo}
       MYSQL_ROOT_PASSWORD: root
       MYSQL_DATABASE: hotelaria
       MYSQL_USER: user
