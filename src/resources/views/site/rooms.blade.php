@@ -134,7 +134,7 @@
                     count = current;
                     clearInterval(interval);
                 }
-                el.textContent = `${count}/${capacity}`;
+                el.textContent = `${count} de ${capacity} vagas`;
             }, 40);
         });
 

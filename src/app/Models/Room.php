@@ -25,13 +25,6 @@ class Room extends Model
         return $this->hasMany(Reservation::class)->whereNull('check_out_at');
     }
 
-    public function scopeAvailable(Builder $query)
-    {
-        return $query
-            ->withCount('activeReservations')
-            ->havingRaw('capacity > active_reservations_count');
-    }
-
     public function isAvailable()
     {
         return $this->capacity > $this->activeReservations()->count();
