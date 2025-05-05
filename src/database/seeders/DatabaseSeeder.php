@@ -15,6 +15,8 @@ class DatabaseSeeder extends Seeder
         $this->call([
             AdminSeeder::class,
             RoomSeeder::class,
+            StateSeeder::class,
+            CitySeeder::class,
             AddressSeeder::class,
             GuestSeeder::class,
             ReservationSeeder::class,
