@@ -89,7 +89,7 @@ Outros modelos de visualização (como Kanban board) podem ser encontrados no [P
 ## 📊 Diagramas
 
 ### Diagrama de Casos de Uso
-![Use Case Diagram](docs/use-case-diagram.png)
+![Use Case Diagram](docs/UC-Hotelaria.png)
 
 ## 📝 Licença
 
