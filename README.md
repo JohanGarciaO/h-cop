@@ -86,6 +86,11 @@ Abra no navegador: [http://localhost:8080](http://localhost:8080)
 As tarefas estão descritas por milestones nas issues do repositório
 Outros modelos de visualização (como Kanban board) podem ser encontrados no [Project board](https://github.com/JohanGarciaO/h-cop/projects).
 
+## 📊 Diagramas
+
+### Diagrama de Casos de Uso
+![Use Case Diagram](docs/use-case-diagram.png)
+
 ## 📝 Licença
 
 Este projeto está sob a licença MIT. Sinta-se à vontade para usar, modificar e distribuir.
