@@ -39,17 +39,8 @@
                     value="{{ request('document') }}">
             </div>
             
-            {{-- @include('core::components.state-city-select', ['selectedState' => old('state', request('state_id') ?? ''), 'selectedCity' => old('city', request('city_id') ?? '')]) --}}
             <x-brasil-filter selectedState="{{ request('state_id') ?? '' }}" selectedCity="{{ request('city_id') ?? '' }}"/>
 
-            {{-- <div class="col-auto">
-                <input type="text" name="state_id" class="form-control" placeholder="Estado do hóspede"
-                    value="{{ request('state_id') }}">
-            </div>
-            <div class="col-auto">
-                <input type="text" name="city_id" class="form-control" placeholder="Cidade do hóspede"
-                    value="{{ request('city_id') }}">
-            </div> --}}
         </x-slot>
     </x-filters>
 
@@ -94,7 +85,7 @@
                                     Editar
                                 </button>
                             </div>
-                            <button type="submit" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteRoomModal{{ $guest->id }}">
+                            <button type="submit" class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteGuestModal{{ $guest->id }}">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-trash-fill" viewBox="-2 0 20 20">
                                     <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5M8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5m3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0"/>
                                 </svg>
@@ -107,7 +98,7 @@
             <!-- Modal de Edição de Quarto -->
             {{-- @include('partials.modals.rooms.edit', ['room' => $room]) --}}
             <!-- Modal de Remoção de Quarto -->
-            {{-- @include('partials.modals.rooms.delete', ['room' => $room]) --}}
+            @include('partials.modals.guests.delete', ['guest' => $guest])
         @endforeach
     </div>
 
