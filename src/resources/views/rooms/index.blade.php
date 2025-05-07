@@ -19,7 +19,32 @@
         @endslot
     @endcomponent
 
-    <x-filters action="{{ route('rooms.index') }}" results_count="{{ $result_count }}" />
+    <x-filters action="{{ route('rooms.index') }}" results_count="{{ $result_count }}" >
+        <x-slot name="filters">
+            <div class="col-auto">
+                <select name="status" class="form-select">
+                    <option value="">Todos</option>
+                    <option value="empty" {{ request('status') == 'empty' ? 'selected' : '' }}>Vazios</option>
+                    <option value="occupied" {{ request('status') == 'occupied' ? 'selected' : '' }}>Não vazios</option>
+                    <option value="crowded" {{ request('status') == 'crowded' ? 'selected' : '' }}>Cheios</option>
+                    <option value="available" {{ request('status') == 'available' ? 'selected' : '' }}>Com vagas</option>
+                </select>
+            </div>
+            
+            <div class="col-auto">
+                <input type="number" name="min_capacity" class="form-control" placeholder="Capacidade mínima"
+                    value="{{ request('min_capacity') }}">
+            </div>
+            <div class="col-auto">
+                <input type="number" name="min_free" class="form-control" placeholder="Mínimo de vagas"
+                    value="{{ request('min_free') }}">
+            </div>
+            <div class="col-auto">
+                <input type="number" name="room_number" class="form-control" placeholder="Número do quarto"
+                    value="{{ request('room_number') }}">
+            </div>
+        </x-slot>
+    </x-filters>
 
     <div class="row">
         @foreach ($rooms as $room)

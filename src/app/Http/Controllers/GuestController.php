@@ -19,7 +19,7 @@ class GuestController extends Controller
             }
         ]);
 
-        // Filtro por número de quarto
+        // Filtro por nome do hóspede
         if ($request->filled('name')) {
             $guests->where('name', 'like', '%' . $request->name . '%');
         }
@@ -43,23 +43,19 @@ class GuestController extends Controller
             });
         }
 
-        // Filtro por reserva ativa
-        if ($request->filled('has_active_reservation')) {
-            if ($request->has_active_reservation == 'yes') {
-                $guests->having('active_reservations_count', '>', 0);
-            } elseif ($request->has_active_reservation == 'no') {
-                $guests->having('active_reservations_count', '=', 0);
-            }
-        }
-
         // Filtro por status
         if ($request->filled('status')) {
             switch ($request->input('status')) {
                 case 'unhosted':
                     $guests->having('active_reservations_count', '=', 0);
                     break;
-                case 'hosted':
-                    $guests->having('active_reservations_count', '>', 0);
+                case 'check-in-pending':
+                    $guests->havingRaw('active_reservations_count > 0');
+                    $guests->whereHas('reservations', function($query) { $query->whereNull('check_in_at'); });
+                    break;
+                case 'check-out-pending':
+                    $guests->havingRaw('active_reservations_count > 0');
+                    $guests->whereHas('reservations', function($query) { $query->whereNull('check_out_at')->whereNotNull('check_in_at'); });
                     break;
             }
         }
@@ -129,10 +125,10 @@ class GuestController extends Controller
         $activeReservation = $guest->reservations()->whereNull('check_out_at')->first();
 
         $status;
-        if($activeReservation) {
-            $status = $activeReservation->check_in_at ? 'check-out pendente' ? 'check-in pendente';
+        if(!$activeReservation) {
+            $status = 'Não hospedado';
         }else{
-            $status = 'Não possui reserva';
+            $status = $activeReservation->status();
         }
 
         return view('guests.show', compact('guest', 'activeReservation', 'status'));
@@ -150,7 +146,7 @@ class GuestController extends Controller
             'name' => 'required',
             'document' => [
                 'required',
-                'max:14'
+                'max:14',
                 Rule::unique('guests', 'document')->ignore($guest->id),
             ],
             'phone' => 'required|max:15'
@@ -189,7 +185,6 @@ class GuestController extends Controller
             'alert-type' => 'success', 
             'message' => 'Hóspede atualizado com sucesso.',
         ]);
-
     }
 
     public function destroy(Guest $guest)
@@ -200,7 +195,7 @@ class GuestController extends Controller
         return redirect()->route('guests.index')->with([
             'status' => 'success',
             'alert-type' => 'success',
-            'message' => "O hóspede <b>$name->number</b> foi removido com sucesso.",
+            'message' => "O hóspede <b>$name</b> foi removido com sucesso.",
         ]);
     }
 }

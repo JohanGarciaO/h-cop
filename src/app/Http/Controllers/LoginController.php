@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Auth;
 class LoginController extends Controller
 {
     protected function credentials(Request $request){
-        $login = $request->input('login'); // é o input que o seu formulário já manda
+        $login = $request->input('login'); // é o input que o formulário já manda
 
         // Verifica se é email ou username
         $field = filter_var($login, FILTER_VALIDATE_EMAIL) ? 'email' : 'username';
@@ -30,7 +30,7 @@ class LoginController extends Controller
 
         if(Auth::attempt($this->credentials($request), $request->remember)){
             $request->session()->regenerate();
-            return redirect()->intended(route('site.home'));
+            return redirect()->intended(route('home.index'));
         }else{
             return redirect()->back()->with([
                 'status' => 'error',

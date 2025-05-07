@@ -18,10 +18,12 @@ class AddressFactory extends Factory
      */
     public function definition(): array
     {
+        $state = State::inRandomOrder()->first()?->id;
+
         return [
             'postal_code' => $this->faker->postcode,
-            'state_id' => State::inRandomOrder()->first()?->id,
-            'city_id' => City::inRandomorder()->first()?->id,
+            'state_id' => $state,
+            'city_id' => City::where('state_id', $state)->inRandomOrder()->first()?->id,
             'street' => $this->faker->streetName,
             'number' => $this->faker->buildingNumber,
             'neighborhood' => $this->faker->citySuffix,

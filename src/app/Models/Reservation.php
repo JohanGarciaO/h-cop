@@ -33,6 +33,16 @@ class Reservation extends Model
         return is_null($this->check_out_at);
     }
 
+    public function status()
+    {
+        $status;
+        if($this->isActive()){
+            return $status = ($this->check_in_at) ? 'check-out pendente' : 'check-in pendente';
+        }else{
+            return $status = 'Hospedagem finalizada';
+        }
+    }
+
     public function scopeActive($query)
     {
         return $query->whereNull('check_out_at');
