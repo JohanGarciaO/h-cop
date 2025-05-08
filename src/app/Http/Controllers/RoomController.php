@@ -49,7 +49,7 @@ class RoomController extends Controller
         // Ordena pelo número e pagina com 12 por página
         $rooms = $rooms->orderBy('number')->paginate(12)->appends(request()->query());
 
-        return view('site.rooms', [
+        return view('rooms.index', [
             'rooms' => $rooms,
             'result_count' => $rooms->total(),
         ]);

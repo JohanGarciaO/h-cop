@@ -19,7 +19,32 @@
         @endslot
     @endcomponent
 
-    <x-filters action="{{ route('rooms.index') }}" results_count="{{ $result_count }}" />
+    <x-filters action="{{ route('rooms.index') }}" results_count="{{ $result_count }}" >
+        <x-slot name="filters">
+            <div class="col-auto">
+                <select name="status" class="form-select">
+                    <option value="">Todos</option>
+                    <option value="empty" {{ request('status') == 'empty' ? 'selected' : '' }}>Vazios</option>
+                    <option value="occupied" {{ request('status') == 'occupied' ? 'selected' : '' }}>Não vazios</option>
+                    <option value="crowded" {{ request('status') == 'crowded' ? 'selected' : '' }}>Cheios</option>
+                    <option value="available" {{ request('status') == 'available' ? 'selected' : '' }}>Com vagas</option>
+                </select>
+            </div>
+            
+            <div class="col-auto">
+                <input type="number" name="min_capacity" class="form-control" placeholder="Capacidade mínima"
+                    value="{{ request('min_capacity') }}">
+            </div>
+            <div class="col-auto">
+                <input type="number" name="min_free" class="form-control" placeholder="Mínimo de vagas"
+                    value="{{ request('min_free') }}">
+            </div>
+            <div class="col-auto">
+                <input type="number" name="room_number" class="form-control" placeholder="Número do quarto"
+                    value="{{ request('room_number') }}">
+            </div>
+        </x-slot>
+    </x-filters>
 
     <div class="row">
         @foreach ($rooms as $room)
@@ -30,7 +55,7 @@
                 $percentFormatted = number_format($percent, 0);
             @endphp
             
-            <div class="col-md-4 mb-4">
+            <div class="col-md-3 mb-4">
                 <div class="card shadow-sm h-100">
                     <div class="card-body">
                         <h5 class="card-title">Quarto:</h5>
@@ -60,7 +85,7 @@
                                 </svg>
                                 Editar
                             </button>
-                            <button type="submit" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteRoomModal{{ $room->id }}">
+                            <button type="submit" class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteRoomModal{{ $room->id }}">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-trash-fill" viewBox="-2 0 20 20">
                                     <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5M8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5m3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0"/>
                                 </svg>
@@ -134,7 +159,7 @@
                     count = current;
                     clearInterval(interval);
                 }
-                el.textContent = `${count}/${capacity}`;
+                el.textContent = `${count} de ${capacity} vagas`;
             }, 40);
         });
 

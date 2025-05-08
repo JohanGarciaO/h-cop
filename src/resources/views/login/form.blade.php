@@ -11,7 +11,7 @@
 
     <div class="card border-0" style="width: 100%; max-width: 400px;">
         <div class="card-body p-4 text-white bg-background">
-            <form method="POST" action="{{ route('auth.login') }}">
+            <form method="POST" action="{{ route('auth.auth') }}">
                 @csrf
 
                 <div class="mb-3">

@@ -1,29 +1,16 @@
 @props(['action', 'results_count' => 0])
 
 <form method="GET" action="{{ $action }}" class="row g-3 mb-3">
+
+    {{-- Slot para filtros customizados --}}
+    {{ $filters }}
+
     <div class="col-auto">
-        <select name="status" class="form-select">
-            <option value="">Todos</option>
-            <option value="empty" {{ request('status') == 'empty' ? 'selected' : '' }}>Vazios</option>
-            <option value="occupied" {{ request('status') == 'occupied' ? 'selected' : '' }}>Não vazios</option>
-            <option value="crowded" {{ request('status') == 'crowded' ? 'selected' : '' }}>Cheios</option>
-            <option value="available" {{ request('status') == 'available' ? 'selected' : '' }}>Com vagas</option>
-        </select>
-    </div>
-    <div class="col-auto">
-        <input type="number" name="min_capacity" class="form-control" placeholder="Capacidade mínima"
-            value="{{ request('min_capacity') }}">
-    </div>
-    <div class="col-auto">
-        <input type="number" name="min_free" class="form-control" placeholder="Mínimo de vagas"
-            value="{{ request('min_free') }}">
-    </div>
-    <div class="col-auto">
-        <input type="number" name="room_number" class="form-control" placeholder="Número do quarto"
-            value="{{ request('room_number') }}">
-    </div>
-    <div class="col-auto">
-        <button type="submit" class="btn btn-core">Filtrar</button>
+        <button type="submit" class="btn btn-core">
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-search" viewBox="0 0 18 18">
+                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
+            </svg>
+            Filtrar</button>
     </div>
 </form>
 <div class="row mb-4">

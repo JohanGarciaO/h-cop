@@ -3,6 +3,8 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use App\Models\State;
+use App\Models\City;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Address>
@@ -16,10 +18,12 @@ class AddressFactory extends Factory
      */
     public function definition(): array
     {
+        $state = State::inRandomOrder()->first()?->id;
+
         return [
             'postal_code' => $this->faker->postcode,
-            'state' => $this->faker->stateAbbr,
-            'city' => $this->faker->city,
+            'state_id' => $state,
+            'city_id' => City::where('state_id', $state)->inRandomOrder()->first()?->id,
             'street' => $this->faker->streetName,
             'number' => $this->faker->buildingNumber,
             'neighborhood' => $this->faker->citySuffix,

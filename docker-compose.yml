@@ -40,6 +40,7 @@ services:
       MYSQL_PASSWORD: secret
     volumes:
       - dbdata:/var/lib/mysql
+      
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
     container_name: hotelaria_phpmyadmin

@@ -5,11 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>{{env('APP_NAME')}} - @yield('title')</title>
-
-    <!-- CSS do Bootstrap -->
-    <link rel="stylesheet" href="{{ asset('assets/css/bootstrap.min.css') }}">
-    <!-- CSS personalizado -->
-    <link rel="stylesheet" href="{{ asset('assets/css/custom.css') }}">
+    <meta name="description" content="Sistema de Hotelaria COP30 - Gerencie hóspedes, quartos, reservas e recibos de forma prática e eficiente em ambiente offline.">
+    <meta name="author" content="Johan Garcia">
+    <meta name="keywords" content="hotelaria, reservas, hóspedes, quartos, recibos, sistema offline, sistema local, H-Cop, COP30, gerenciamento de hotel, Laravel">
+    @include('partials.css.styles')
 </head>
 <body class="bg-dark text-light">
 
@@ -30,9 +29,7 @@
 
     </div>
 
-    <!-- JS do Bootstrap -->
-    <script src="{{ asset('assets/js/bootstrap.bundle.min.js') }}"></script>
-
+    @include('partials.js.scripts')
     @stack('scripts')
 </body>
 </html>
