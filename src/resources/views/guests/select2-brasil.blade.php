@@ -6,13 +6,17 @@
 
 const state_filter = $('#state_filter_id')
 const city_filter = $('#city_filter_id')
-let city_filter_cache = []
 
-const state = $('#state_id')
-const city = $('#city_id')
-let city_cache = []
+const state_create = $('#state_create_id')
+const city_create = $('#city_create_id')
+
+const state_edit = $('#state_edit_id')
+const city_edit = $('#city_edit_id')
 
 function normalizeText(str) {
+    if (typeof(str) !== 'string') {
+        return str
+    }
     return str
         .toUpperCase()
         .normalize("NFD")                // separa acento de letra
@@ -20,46 +24,21 @@ function normalizeText(str) {
         .trim();
 }
 
-function loadCities(uf, selectedCity, city_select) {
+function loadCities(uf, selected_city, city_select) {
     city_select.empty().append(new Option('Filtre por Cidade', '', true, true))
 
     $.getJSON(`{{ route('brasil.states') }}/${uf}/cities`, function (data) {
-        if (city_select == city_filter){
-            city_filter_cache = data
-        }else{
-            city_cache = data
-        }
 
         data.forEach(function (city_data) {
-            city_select.append(new Option(city_data.name, city_data.id, false, city_data.id === selectedCity))
+            city_select.append(new Option(city_data.name, city_data.id, false, city_data.id === selected_city))
         })
-
-        if (selectedCity) {
-
-            let cidadeObj;
-            if (city_select == city_filter){
-                cidadeObj = city_filter_cache.find(city_data =>
-                    normalizeText(city_data.name) === normalizeText(selectedCity)
-                )
-            }else{
-                cidadeObj = city_cache.find(city_data =>
-                    normalizeText(city_data.name) === normalizeText(selectedCity)
-                )
-            }
-
-            if (cidadeObj) {
-                city_select.val(cidadeObj.id).trigger('change')
-            } else {
-                console.warn('Cidade não encontrada:', selectedCity)
-            }
-        }
 
     })
 }
 
 $(document).ready(() => {
 
-    Array(state_filter, city_filter).forEach(element => {
+    Array(state_filter, city_filter, state_edit, city_edit).forEach(element => {
         $(element).select2({
             theme: 'bootstrap-5',
             allowClear: true,
@@ -73,7 +52,7 @@ $(document).ready(() => {
         })
     });
 
-    Array(state, city).forEach(element => {
+    Array(state_create, city_create).forEach(element => {
         $(element).select2({
             theme: 'bootstrap-5',
             allowClear: true,
@@ -88,28 +67,42 @@ $(document).ready(() => {
         })
     });
 
-    const selectedFilterState = $('#state_filter_id').data('selected')
-    const selectedFilterCity = $('#city_filter_id').data('selected')
+    const selected_state_filter = state_filter.data('selected')
+    const selected_city_filter = city_filter.data('selected')
     
-    const selectedState = $('#state_id').data('selected')
-    const selectedCity = $('#city_id').data('selected')
+    const selected_state_create = state_create.data('selected')
+    const selected_city_create = city_create.data('selected')
+
+    const selected_state_edit = state_edit.data('selected')
+    const selected_city_edit = city_edit.data('selected')
 
     $.getJSON("{{ route('brasil.states') }}", function (data) {
 
         data.forEach(function (state_data) {
-            state_filter.append(new Option(state_data.name, state_data.id, false, state_data.id === selectedFilterState))
-            state.append(new Option(state_data.name, state_data.id, false, state_data.id === selectedState))
+            state_filter.append(new Option(state_data.name, state_data.id, false, state_data.id === selected_state_filter))
+            state_create.append(new Option(state_data.name, state_data.id, false, state_data.id === selected_state_create))
+            state_edit.append(new Option(state_data.name, state_data.id, false, state_data.id === selected_state_edit))
 
-            if (state_data.id === selectedFilterState) {
-                loadCities(state_data.id, selectedFilterCity, city_filter)
-            }else if(state_data.id === selectedState){
-                loadCities(state_data.id, selectedCity, city)
+            if (state_data.id === selected_state_filter) {
+                loadCities(state_data.id, selected_city_filter, city_filter)
+            }else if(state_data.id === selected_state_create){
+                loadCities(state_data.id, selected_city_create, city_create)
+            }else if(state_data.id === selected_state_edit){
+                loadCities(state_data.id, selected_city_edit, city_edit)
             }
         })
     })
     
-    Array(state_filter, state).forEach((select) => {
-        let city_select = (select == state_filter) ? city_filter : city
+    Array(state_filter, state_create, state_edit).forEach((select) => {
+
+        let city_select;
+        if (select == state_filter) {
+            city_select = city_filter
+        }else if (select == state_create) {
+            city_select = city_create
+        }else if (select == state_edit) {
+            city_select = city_edit
+        }
 
         select.on('change', () => {
             city_select.empty().append(new Option('Filtre por Cidade', '', true, true))

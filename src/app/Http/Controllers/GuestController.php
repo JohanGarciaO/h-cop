@@ -20,26 +20,26 @@ class GuestController extends Controller
         ]);
 
         // Filtro por nome do hóspede
-        if ($request->filled('name')) {
-            $guests->where('name', 'like', '%' . $request->name . '%');
+        if ($request->filled('name_filter')) {
+            $guests->where('name', 'like', '%' . $request->name_filter . '%');
         }
 
         // Filtro por documento
-        if ($request->filled('document')) {
-            $guests->where('document', $request->document);
+        if ($request->filled('cpf_filter')) {
+            $guests->where('document', $request->cpf_filter);
         }
 
         // Filtro por estado
-        if ($request->filled('state_id')) {
+        if ($request->filled('state_filter_id')) {
             $guests->whereHas('address', function ($query) use ($request) {
-                $query->where('state_id', $request->state_id);
+                $query->where('state_id', $request->state_filter_id);
             });
         }
 
         // Filtro por cidade
-        if ($request->filled('city_id')) {
+        if ($request->filled('city_filter_id')) {
             $guests->whereHas('address', function ($query) use ($request) {
-                $query->where('city_id', $request->city_id);
+                $query->where('city_id', $request->city_filter_id);
             });
         }
 
@@ -69,22 +69,17 @@ class GuestController extends Controller
         ]);
     }
 
-    public function create()
-    {
-        return view('guests.create');
-    }
-
     public function store(Request $request)
     {
         $validatedGuest = $request->validate([
             'name' => 'required',
-            'document' => 'required|min:14|unique:guests,document',
+            'document' => 'required|size:14|unique:guests,document',
             'phone' => 'required|max:15',
             'email' => 'nullable|email',
         ],[
             'name.required' => 'o nome não pode estar vazio.',
             'document.required' => 'o CPF não pode estar vazio.',
-            'document.max' => 'o CPF precisa ter ao menos 14 caracteres.',
+            'document.size' => 'o CPF precisa ter 14 caracteres.',
             'document.unique' => 'Este documento já está vinculado a outro hóspede.',
             'phone.required' => 'o telefone não pode estar vazio.',
             'phone.max' => 'o telefone deve ter no máximo 15 caracteres.',
@@ -96,7 +91,9 @@ class GuestController extends Controller
             'state_id' => 'required|exists:states,id',
             'city_id' => 'required|exists:cities,id',
             'street' => 'required',
+            'number' => 'nullable',
             'neighborhood' => 'required',
+            'complement' => 'nullable',
         ],[
             'postal_code.required' => 'O CEP não pode estar vazio.',
             'postal_code.max' => 'O CEP deve ter no máximo 9 caracteres.',
@@ -109,12 +106,12 @@ class GuestController extends Controller
         ]);
 
         $address = Address::create($validatedAddress);
-        $guest = $address->guest()->create($validatedGuest);
+        $guest = $address->guests()->create($validatedGuest);
 
         return redirect()->route('guests.index')->with([
             'status' => 'success',
             'alert-type' => 'success',
-            'message' => "O hóspede <b>$request->name</b> cadastrado com sucesso.",
+            'message' => "O hóspede <b>$request->name</b> foi cadastrado com sucesso.",
         ]);
     }
 
@@ -146,14 +143,15 @@ class GuestController extends Controller
             'name' => 'required',
             'document' => [
                 'required',
-                'max:14',
+                'size:14',
                 Rule::unique('guests', 'document')->ignore($guest->id),
             ],
-            'phone' => 'required|max:15'
+            'phone' => 'required|max:15',
+            'email' => 'nullable|email',
         ],[
             'name.required' => 'o nome não pode estar vazio.',
             'document.required' => 'o CPF não pode estar vazio.',
-            'document.max' => 'o CPF precisa ter ao menos 14 caracteres.',
+            'document.size' => 'o CPF precisa ter 14 caracteres.',
             'document.unique' => 'Este documento já está vinculado a outro hóspede.',
             'phone.required' => 'o telefone não pode estar vazio.',
             'phone.max' => 'o telefone deve ter no máximo 15 caracteres.',
@@ -165,7 +163,9 @@ class GuestController extends Controller
             'state_id' => 'required|exists:states,id',
             'city_id' => 'required|exists:cities,id',
             'street' => 'required',
+            'number' => 'nullable',
             'neighborhood' => 'required',
+            'complement' => 'nullable',
         ],[
             'postal_code.required' => 'O CEP não pode estar vazio.',
             'postal_code.max' => 'O CEP deve ter no máximo 9 caracteres.',
@@ -180,7 +180,7 @@ class GuestController extends Controller
         $guest->update($validatedGuest);
         $guest->address->update($validatedAddress);
 
-        return redirect()->route('guests.index')->with([
+        return redirect()->route('guests.edit', $guest)->with([
             'status' => 'success',
             'alert-type' => 'success', 
             'message' => 'Hóspede atualizado com sucesso.',

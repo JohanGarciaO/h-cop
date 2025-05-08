@@ -1,5 +1,4 @@
 @extends('layouts.home')
-
 @section('title', 'Hóspedes')
 
 @section('content')
@@ -7,15 +6,15 @@
     @component('partials.components.body-header', ['title' => 'Gerenciamento de Hóspedes'])
         @slot('buttons')
             <div>
-                <button class="btn btn-core" data-bs-toggle="modal" data-bs-target="#createRoomModal">
+                <button class="btn btn-core" data-bs-toggle="modal" data-bs-target="#createGuestModal">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-plus-circle-fill" viewBox="0 0 20 20">
                         <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3z"/>
                     </svg> 
                     Novo Hóspede
                 </button>
             </div>
-            <!-- Modal de Criação de Novo Quarto -->
-            @include('partials.modals.rooms.create')
+            <!-- Modal de Criação de Novo Hóspede -->
+            @include('partials.modals.guests.create')
         @endslot
     @endcomponent
 
@@ -31,15 +30,24 @@
             </div>
             
             <div class="col-auto">
-                <input type="text" name="name" class="form-control" placeholder="Nome do hóspede"
-                    value="{{ request('name') }}">
+                <input type="text" name="name_filter" class="form-control" placeholder="Nome do hóspede"
+                    value="{{ request('name_filter') }}">
             </div>
             <div class="col-auto">
-                <input type="text" id="cpf" name="document" class="form-control" maxlength="14" placeholder="CPF do hóspede"
-                    value="{{ request('document') }}">
+                <input type="text" id="cpf_filter" name="cpf_filter" class="form-control" maxlength="14" placeholder="CPF do hóspede"
+                    value="{{ request('cpf_filter') }}">
             </div>
-            
-            <x-brasil-filter selectedState="{{ request('state_id') ?? '' }}" selectedCity="{{ request('city_id') ?? '' }}"/>
+
+            <div class="col-auto">
+                <select class="form-select" name="state_filter_id" id="state_filter_id" data-selected="{{ request('state_filter_id') ?? '' }}" data-placeholder="Filtre por estado">
+                    <option></option>
+                </select>
+            </div>
+            <div class="col-auto">
+                <select class="form-select" name="city_filter_id" id="city_filter_id" data-selected="{{ request('city_filter_id') ?? '' }}" data-placeholder="Filtre por cidade">
+                    <option></option>
+                </select>
+            </div>
 
         </x-slot>
     </x-filters>
@@ -77,13 +85,13 @@
                                     </svg>
                                     Ver
                                 </button>
-                                <button class="btn btn-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#editRoomModal{{ $guest->id }}">
+                                <a class="btn btn-secondary btn-sm" href="{{ route('guests.edit', $guest->id) }}">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 18 18">
                                         <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
                                         <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
                                     </svg>
                                     Editar
-                                </button>
+                                </a>
                             </div>
                             <button type="submit" class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteGuestModal{{ $guest->id }}">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-trash-fill" viewBox="-2 0 20 20">
@@ -96,7 +104,7 @@
             </div>
 
             <!-- Modal de Edição de Quarto -->
-            {{-- @include('partials.modals.rooms.edit', ['room' => $room]) --}}
+            @include('partials.modals.guests.edit', ['guest' => $guest])
             <!-- Modal de Remoção de Quarto -->
             @include('partials.modals.guests.delete', ['guest' => $guest])
         @endforeach
@@ -111,22 +119,20 @@
 
 @push('scripts')
 <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        
-        document.getElementById('cpf').addEventListener('input', function (e) {
-            let value = e.target.value.replace(/\D/g, ''); // Remove tudo que não for número
 
-            if (value.length > 11) value = value.slice(0, 11); // Limita a 11 dígitos
+    $(document).ready(function () {
+        $('#cpf_filter').mask('000.000.000-00')
+        $('#cpf').mask('000.000.000-00')
+        $('#postal_code').mask('00000-000')
 
-            // Aplica a máscara
-            value = value.replace(/(\d{3})(\d)/, '$1.$2');
-            value = value.replace(/(\d{3})(\d)/, '$1.$2');
-            value = value.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+        $('#phone').on('input', function () {
+            let value = this.value.replace(/\D/g,'')            
+            value = value.replace(/(\d{2})(\d)/,"($1) $2")
+            value = value.replace(/(\d)(\d{4})$/,"$1-$2")            
+            this.value = value
+        })
+    })
 
-            e.target.value = value;
-        });
-
-    });
 </script>
-@include('partials.filters.select2-brasil')
+@include('guests.select2-brasil')
 @endpush

@@ -1,23 +1,69 @@
-<div class="modal fade" id="createRoomModal" tabindex="-1" aria-labelledby="createRoomModalLabel" aria-hidden="true">
+<div class="modal fade" id="createGuestModal" tabindex="-1" aria-labelledby="createGuestModalLabel" aria-hidden="true">
     <div class="modal-dialog">
-        <form action="{{ route('rooms.store') }}" method="POST">
+        <form action="{{ route('guests.store') }}" method="POST">
         @csrf
 
             <div class="modal-content">
+
                 <div class="modal-header">
-                    <h5 class="modal-title" id="createRoomModalLabel">Novo Quarto</h5>
+                    <h5 class="modal-title" id="createGuestModalLabel">Novo Hóspede</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label for="number" class="form-label">Número do Quarto:</label>
-                        <input type="number" class="form-control" id="number" name="number" min="1" placeholder="Defina qual o número do quarto" required>
+                <div class="modal-body d-flex flex-column">
+                    
+                    <div class="col-12 mb-3">
+                        <input type="text" class="form-control" id="name" name="name" minlength="14" placeholder="Digite o nome completo" required>
                     </div>
-                    <div class="mb-3">
-                        <label for="capacity" class="form-label">Capacidade:</label>
-                        <input type="number" class="form-control" id="capacity" name="capacity" min="1" placeholder="Defina a capacidade do quarto" required>
+
+                    <div class="row mb-3">
+                        <div class="col-6">
+                            <input type="text" class="form-control" id="document" name="document" minlength="14" placeholder="Digite o CPF" required>
+                        </div>
+                        <div class="col-6">
+                            <input type="text" class="form-control" id="phone" name="phone" maxlength="15" placeholder="Digite o telefone" required>
+                        </div>
                     </div>
+            
+                    <div class="col-12 mb-3">
+                        <input type="email" class="form-control" id="email" name="email" placeholder="Digite o e-mail">
+                    </div>
+            
+                    <div class="col-12 mb-3">
+                        <input type="text" class="form-control" id="postal_code" name="postal_code" maxlength="9" placeholder="Digite o CEP" required>
+                    </div>
+            
+                    <div class="row mb-3">
+                        <div class="col-6">
+                            <select class="form-select" id="state_create_id" name="state_id" data-selected="" data-placeholder="Digite o estado" required>
+                                <option></option>
+                            </select>
+                        </div>            
+                        <div class="col-6">
+                            <select class="form-select" id="city_create_id" name="city_id" data-selected="" data-placeholder="Digite a cidade" required>
+                                <option></option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-9">
+                            <input type="text" class="form-control" id="street" name="street" placeholder="Digite o nome da rua" required>
+                        </div>
+                        <div class="col-3">
+                            <input type="text" class="form-control" id="number" name="number" placeholder="Número">
+                        </div>
+                    </div>
+            
+                    <div class="row mb-3">
+                        <div class="col-6">
+                            <input type="text" class="form-control" id="neighborhood" name="neighborhood" placeholder="Digite o bairro" required>
+                        </div>
+                        <div class="col-6">
+                            <input type="text" class="form-control" id="complement" name="complement" placeholder="Complemento">
+                        </div>
+                    </div>
+
                 </div>
 
                 <div class="modal-footer">
@@ -28,9 +74,9 @@
                         </svg> 
                         Adicionar</button>
                 </div>
+
             </div>
 
         </form>
     </div>
 </div>
-  
