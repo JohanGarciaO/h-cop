@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\RoomController;
 use App\Http\Controllers\GuestController;
+use App\Http\Controllers\ReservationController;
 use App\Models\State;
 use App\Models\City;
 
@@ -22,9 +23,10 @@ Route::middleware(['auth'])->group(function () {
     
     // Rooms
     Route::resource('rooms', RoomController::class);
-
     // Guests
     Route::resource('guests', GuestController::class);
+    // Reservations
+    Route::resource('reservations', ReservationController::class);
 
     Route::get('/states', function () {
         return State::orderBy('name')->get(['id', 'name', 'acronym']);
