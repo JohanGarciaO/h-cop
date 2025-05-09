@@ -15,8 +15,9 @@ return new class extends Migration
             $table->id();
             $table->foreignId('guest_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
             $table->foreignId('room_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
-            $table->decimal('dialy_price', 10, 2);
-            $table->decimal('total_price', 10, 2);
+            $table->decimal('daily_price', 10, 2);
+            $table->date('scheduled_check_in');
+            $table->date('scheduled_check_out');
             $table->dateTime('check_in_at')->nullable();
             $table->dateTime('check_out_at')->nullable();
             $table->timestamps();

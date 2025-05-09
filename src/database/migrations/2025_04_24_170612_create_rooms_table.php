@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->integer('number')->unique();
             $table->integer('capacity')->default(1);
+            $table->decimal('daily_price', 7, 2);
             $table->timestamps();
         });
     }

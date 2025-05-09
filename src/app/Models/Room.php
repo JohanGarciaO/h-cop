@@ -12,7 +12,8 @@ class Room extends Model
 
     protected $fillable = [
         'number', 
-        'capacity'
+        'capacity',
+        'daily_capacity'
     ];
 
     public function reservations()
