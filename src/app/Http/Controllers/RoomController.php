@@ -65,6 +65,7 @@ class RoomController extends Controller
         $request->validate([
             'number' => 'required|integer|min:1|unique:rooms,number',
             'capacity' => 'integer|min:1',
+            'daily_price' => 'required|numeric|min:1',
         ],
         [
             'number.required' => 'O número não pode estar vazio.',
@@ -73,6 +74,9 @@ class RoomController extends Controller
             'number.unique' => 'Já existe um quarto com o número digitado.',
             'capacity.integer' => 'A capacidade do quarto deve ser um número inteiro.',
             'capacity.min' => 'A capacidade mínima do quarto é 1.',
+            'daily_price.required' => 'O valor da diária não pode estar vazio.',
+            'daily_price.numeric' => 'O valor da diária deve ser um número.',
+            'daily_price.min' => 'O valor da diária deve ser no mínimo 1.',
         ]);
 
         $room = $request->all();
@@ -95,6 +99,7 @@ class RoomController extends Controller
                 Rule::unique('rooms','number')->ignore($id)
             ],
             'capacity' => 'integer|min:1',
+            'daily_price' => 'required|numeric|min:1',
         ],
         [
             'number.required' => 'O número não pode estar vazio.',
@@ -102,9 +107,12 @@ class RoomController extends Controller
             'number.unique' => 'Já existe um quarto com o número digitado.',
             'capacity.integer' => 'A capacidade do quarto deve ser um número inteiro.',
             'capacity.min' => 'A capacidade mínima do quarto é 1.',
+            'daily_price.required' => 'O valor da diária não pode estar vazio.',
+            'daily_price.numeric' => 'O valor da diária deve ser um número.',
+            'daily_price.min' => 'O valor da diária deve ser no mínimo 1.',
         ]);
 
-        Room::find($id)->update($request->only(['number', 'capacity']));
+        Room::find($id)->update($request->only(['number', 'capacity', 'daily_price']));
 
         return redirect()->route('rooms.index')->with([
             'status' => 'success',
