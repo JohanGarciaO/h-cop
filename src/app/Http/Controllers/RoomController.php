@@ -23,6 +23,11 @@ class RoomController extends Controller
             $rooms->where('capacity', '>=', $request->input('min_capacity'));
         }
 
+        // Filtro por capacidade máxima
+        if ($request->filled('max_capacity')) {
+            $rooms->where('capacity', '<=', $request->input('max_capacity'));
+        }
+
         // Filtro por vagas livres mínimas
         if ($request->filled('min_free')) {
             $rooms->havingRaw('((capacity) - (active_reservations_count)) >= ?', [(int) $request->input('min_free')]);
