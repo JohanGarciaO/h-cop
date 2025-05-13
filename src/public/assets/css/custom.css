@@ -41,6 +41,19 @@ body {
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); 
 }
 
+.btn-outline-core {
+    background-color: transparent;
+    border: 1px solid #ff5900;
+    color: #e04e00;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+.btn-outline-core:hover {
+    background-color: #e04e00;
+    color: #fff;    
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); 
+}
+
 .toast {
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
 }
