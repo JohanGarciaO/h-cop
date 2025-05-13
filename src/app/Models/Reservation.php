@@ -21,6 +21,15 @@ class Reservation extends Model
         'check_out_at'
     ];
 
+    protected $casts = [
+        'scheduled_check_in' => 'date',
+        'scheduled_check_out' => 'date',
+        'check_in_at' => 'datetime',
+        'check_out_at' => 'datetime',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+    ];
+
     public function guest()
     {
         return $this->belongsTo(Guest::class);

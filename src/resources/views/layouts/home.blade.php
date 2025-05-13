@@ -9,6 +9,7 @@
     <meta name="author" content="Johan Garcia">
     <meta name="keywords" content="hotelaria, reservas, hóspedes, quartos, recibos, sistema offline, sistema local, H-Cop, COP30, gerenciamento de hotel, Laravel">
     @include('partials.css.styles')
+    @stack('styles')
 </head>
 <body class="bg-dark text-light">
 

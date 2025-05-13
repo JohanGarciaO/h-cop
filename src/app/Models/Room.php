@@ -30,4 +30,24 @@ class Room extends Model
     {
         return $this->capacity > $this->activeReservations()->count();
     }
+
+    public function isAvailableBetween($checkIn, $checkOut)
+    {
+        return !$this->activeReservations()
+            ->where(function ($query) use ($checkIn, $checkOut) {
+                $query->where('scheduled_check_in', '<', $checkOut)
+                    ->where('scheduled_check_out', '>', $checkIn);
+            })
+            ->exists();
+    }
+
+    public function scopeAvailableBetween($query, $checkIn, $checkOut)
+    {
+        return $query->whereDoesntHave('reservations', function ($q) use ($checkIn, $checkOut) {
+            $q->whereNull('check_out_at')
+            ->where('scheduled_check_in', '<', $checkOut)
+            ->where('scheduled_check_out', '>', $checkIn);
+        });
+    }
+
 }

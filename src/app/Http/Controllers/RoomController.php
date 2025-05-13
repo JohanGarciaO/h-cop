@@ -51,6 +51,11 @@ class RoomController extends Controller
             }
         }
 
+        // Filtro por disponibilidade entre datas
+        if ($request->filled('check_in') && $request->filled('check_out')) {
+            $rooms->availableBetween($request->input('check_in'), $request->input('check_out'));
+        }
+
         // Ordena pelo número e pagina com 12 por página
         $rooms = $rooms->orderBy('number')->paginate(12)->appends(request()->query());
 

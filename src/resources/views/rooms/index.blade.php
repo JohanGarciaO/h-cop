@@ -21,6 +21,7 @@
 
     <x-filters action="{{ route('rooms.index') }}" results_count="{{ $result_count }}" >
         <x-slot name="filters">
+
             <div class="col-auto">
                 <select name="status" class="form-select">
                     <option value="">Todos</option>
@@ -39,13 +40,26 @@
                 <input type="number" name="max_capacity" class="form-control" placeholder="Capacidade máxima"
                     value="{{ request('max_capacity') }}">
             </div>
-            <div class="col-auto">
+            <div class="col-auto">                
                 <input type="number" name="min_free" class="form-control" placeholder="Mínimo de vagas"
                     value="{{ request('min_free') }}">
             </div>
             <div class="col-auto">
                 <input type="number" name="room_number" class="form-control" placeholder="Número do quarto"
                     value="{{ request('room_number') }}">
+            </div>
+        </x-slot>
+
+        <x-slot name="extra_filters">
+            <div class="col-auto">
+                Do dia:
+                <input type="date" name="check_in" class="form-control" placeholder="Disponível do dia"
+                    value="{{ request('check_in') }}">
+            </div>
+            <div class="col-auto">
+                Ao dia:
+                <input type="date" name="check_out" class="form-control" placeholder="ao dia"
+                    value="{{ request('check_out') }}">
             </div>
         </x-slot>
     </x-filters>

@@ -6,7 +6,7 @@
     @component('partials.components.body-header', ['title' => 'Gerenciamento de Reservas'])
         @slot('buttons')
             <div>
-                <button class="btn btn-core" data-bs-toggle="modal" data-bs-target="#createGuestModal">
+                <button class="btn btn-core" data-bs-toggle="modal" data-bs-target="#createReservationModal">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-plus-circle-fill" viewBox="0 0 20 20">
                         <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3z"/>
                     </svg> 
@@ -14,7 +14,7 @@
                 </button>
             </div>
             <!-- Modal de Criação de Novo Hóspede -->
-            @include('partials.modals.guests.create')
+            @include('partials.modals.reservations.create')
         @endslot
     @endcomponent
 
@@ -52,63 +52,75 @@
         </x-slot>
     </x-filters>
 
-    <div class="row">
-        @foreach ($reservations as $reservation)
-            @php
-                $status = $reservation->status();
-            @endphp
-            
-            <div class="col-md-3 mb-3">
-                <div class="card shadow-sm h-100">
+    <div class="table-responsive">
+        <table class="table table-dark table-hover table-striped align-middle shadow-sm">
+            <thead>
+                <tr>
+                    <th>Quarto</th>
+                    <th>Status</th>
+                    <th>Diária</th>
+                    <th>Entrada</th>
+                    <th>Saída</th>
+                    <th>Check-in</th>
+                    <th>Checkout</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach ($reservations as $reservation)
+                    @php $status = $reservation->status(); @endphp
+                    <tr>
 
-                    <div class="card-header">
-                        <span class="fw-bold">{{ $reservation->name }}</span>
-                    </div>
+                        <td class="fw-bold">{{ $reservation->room->number }}</td>
 
-                    <div class="card-body">
-
-                        <p class="card-text mb-1">
+                        <td>
                             @if ($status == 'check-in pendente')
-                                <span class="fw-bold">Status: <span class="badge bg-danger">{{$status}}</span></span>                                
-                            @elseif($status == 'check-out pendente')
-                                <span class="fw-bold">Status: <span class="badge bg-success">{{$status}}</span></span>     
-                            @else                           
-                                <span class="fw-bold">Status: <span class="badge bg-secondary">{{$status}}</span></span>                            
+                                <span class="badge bg-danger">{{ $status }}</span>
+                            @elseif ($status == 'check-out pendente')
+                                <span class="badge bg-success">{{ $status }}</span>
+                            @else
+                                <span class="badge bg-secondary">{{ $status }}</span>
                             @endif
-                        </p>
+                        </td>
 
-                        <div class="d-flex justify-content-between mt-4">
-                            <div>
-                                <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#editRoomModal{{ $reservation->id }}">
+                        <td>R$ {{ number_format($reservation->room->daily_price, 2, ',', '.') ?? '-' }}</td>
+                        <td>{{ $reservation->scheduled_check_in?->format('d/m/Y') ?? '-' }}</td>
+                        <td>{{ $reservation->scheduled_check_out?->format('d/m/Y') ?? '-' }}</td>
+                        <td>{{ $reservation->check_in_at?->format('d/m/Y H:i') ?? '-' }}</td>
+                        <td>{{ $reservation->check_out_at?->format('d/m/Y H:i') ?? '-' }}</td>
+
+                        <td>
+                            <div class="btn-group" role="group">
+                                <button class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#editRoomModal{{ $reservation->id }}">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-person-vcard-fill" viewBox="0 0 18 18">
                                         <path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2zm9 1.5a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 0-1h-4a.5.5 0 0 0-.5.5M9 8a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 0-1h-4A.5.5 0 0 0 9 8m1 2.5a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 0-1h-3a.5.5 0 0 0-.5.5m-1 2C9 10.567 7.21 9 5 9c-2.086 0-3.8 1.398-3.984 3.181A1 1 0 0 0 2 13h6.96q.04-.245.04-.5M7 6a2 2 0 1 0-4 0 2 2 0 0 0 4 0"/>
-                                    </svg>
-                                    Ver
+                                    </svg> Ver
                                 </button>
-                                <a class="btn btn-secondary btn-sm" href="{{ route('reservations.edit', $reservation->id) }}">
+
+                                <a href="{{ route('reservations.edit', $reservation->id) }}" class="btn btn-outline-success btn-sm">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 18 18">
                                         <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
                                         <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
-                                    </svg>
-                                    Editar
+                                    </svg> Editar
                                 </a>
-                            </div>
-                            <button type="submit" class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteGuestModal{{ $reservation->id }}">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-trash-fill" viewBox="-2 0 20 20">
-                                    <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5M8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5m3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0"/>
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
 
-            <!-- Modal de Edição de Quarto -->
-            {{-- @include('partials.modals.guests.edit', ['guest' => $reservation]) --}}
-            <!-- Modal de Remoção de Quarto -->
-            {{-- @include('partials.modals.guests.delete', ['guest' => $reservation]) --}}
-        @endforeach
+                                <button type="button" class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteReservationModal{{ $reservation->id }}">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-trash-fill" viewBox="-2 -2 20 20">
+                                        <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5M8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5m3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </td>
+
+                    </tr>
+
+                    {{-- @include('partials.modals.guests.edit', ['guest' => $reservation]) --}}
+                    @include('partials.modals.reservations.delete', ['reservation' => $reservation])
+                @endforeach
+            </tbody>
+        </table>
     </div>
+
 
     <!-- Paginação -->
     <div class="d-flex justify-content-center mt-4">
