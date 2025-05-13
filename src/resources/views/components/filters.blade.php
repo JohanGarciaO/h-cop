@@ -1,18 +1,86 @@
 @props(['action', 'results_count' => 0])
 
-<form method="GET" action="{{ $action }}" class="row g-3 mb-3">
+@push('styles')
+<style>
 
-    {{-- Slot para filtros customizados --}}
-    {{ $filters }}
+    /* Transição suave para blocos */
+    .filters-wrapper,
+    .filter-block {
+        overflow: hidden;
+        transition: all 0.4s ease;
+    }
 
-    <div class="col-auto">
-        <button type="submit" class="btn btn-core">
-            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-search" viewBox="0 0 18 18">
-                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0"/>
-            </svg>
-            Filtrar</button>
+    .filters-wrapper.collapsed,
+    .filter-block.collapsed {
+        max-height: 0;
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    .filters-wrapper:not(.collapsed),
+    .filter-block:not(.collapsed) {
+        max-height: 500px; /* Ajuste conforme o necessário */
+        opacity: 1;
+        pointer-events: auto;
+    }
+
+</style>
+@endpush
+
+<form method="GET" action="{{ $action }}" class="mb-4">
+
+    {{-- BOTÃO GLOBAL QUE MOSTRA TODOS OS GRUPOS --}}
+    <div class="mb-3">
+        <button type="button" class="btn btn-outline-core d-flex align-items-center gap-2" id="toggle-all-filters">
+            <i class="bi bi-eye" id="icon-all-filters"></i>
+            <span class="label">Filtros</span>
+        </button>
     </div>
+
+    <div id="filters-wrapper" class="filters-wrapper collapsed">
+        {{-- BOTÃO E GRUPO 1: $filters --}}
+        @if (isset($filters))
+            <div class="mb-3">
+                <button type="button" class="btn btn-outline-secondary d-flex align-items-center gap-2 toggle-group" data-target="#filters-block">
+                    <i class="bi bi-unlock" id="icon-filters-block"></i>
+                    <span class="label">Filtros simples</span>
+                </button>
+
+                <div class="filter-block mt-2 collapsed" id="filters-block">
+                    <div class="d-flex flex-wrap gap-3">
+                        {{ $filters }}
+                    </div>
+                </div>
+            </div>
+        @endif
+
+        {{-- BOTÃO E GRUPO 2: $extra_filters --}}
+        @if (isset($extra_filters))
+            <div class="mb-3">
+                <button type="button" class="btn btn-outline-secondary d-flex align-items-center gap-2 toggle-group" data-target="#extra-filters-block">
+                    <i class="bi bi-unlock" id="icon-extra-filters-block"></i>
+                    <span class="label">Filtrar por disponibilidade</span>
+                </button>
+
+                <div class="filter-block mt-2 collapsed" id="extra-filters-block">
+                    <div class="d-flex flex-wrap gap-3">
+                        {{ $extra_filters }}
+                    </div>
+                </div>
+            </div>
+        @endif
+
+        {{-- BOTÃO DE FILTRAR --}}
+        <div class="mb-3">
+            <button type="submit" class="btn btn-outline-primary">
+                <i class="bi bi-search"></i>
+                Filtrar
+            </button>
+        </div>
+    </div>
+
 </form>
+
 <div class="row mb-4">
     @if ($results_count > 0)
         <small>
@@ -22,3 +90,34 @@
         <small><strong>Nenhum resultado encontrado.</strong></small>
     @endif
 </div>
+
+@push('scripts')
+<script>
+
+    $(document).ready(function () {
+
+        // Botão geral
+        $('#toggle-all-filters').on('click', function () {
+            const wrapper = $('#filters-wrapper');
+            const icon = $('#icon-all-filters');
+
+            $(this).toggleClass('btn-outline-core btn-core')
+            wrapper.toggleClass('collapsed');
+            icon.toggleClass('bi-eye bi-eye-slash');
+        });
+
+        // Botões de grupo individual
+        $('.toggle-group').on('click', function () {
+            const targetId = $(this).data('target');
+            const block = $(targetId);
+            const icon = $(this).find('i');
+
+            $(this).toggleClass('btn-outline-secondary btn-secondary')
+            block.toggleClass('collapsed');
+            icon.toggleClass('bi-unlock bi-lock');
+        });
+
+    });
+
+</script>
+@endpush
