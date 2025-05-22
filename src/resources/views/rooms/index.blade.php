@@ -51,15 +51,16 @@
         </x-slot>
 
         <x-slot name="extra_filters">
+            @php 
+                $today = Carbon\Carbon::now();
+            @endphp
             <div class="col-auto">
                 Do dia:
-                <input type="date" name="check_in" class="form-control" placeholder="Disponível do dia"
-                    value="{{ request('check_in') }}">
+                <input type="date" id="scheduled_check_in" name="check_in" class="form-control" value="{{ request('check_in') }}" min="{{ $today->format('Y-m-d') }}">
             </div>
             <div class="col-auto">
                 Ao dia:
-                <input type="date" name="check_out" class="form-control" placeholder="ao dia"
-                    value="{{ request('check_out') }}">
+                <input type="date" id="scheduled_check_out" name="check_out" class="form-control" value="{{ request('check_out') }}" min="{{ $today->addDays(1)->format('Y-m-d') }}">
             </div>
         </x-slot>
     </x-filters>
@@ -187,6 +188,36 @@
                 el.textContent = `${count} de ${capacity} vagas`;
             }, 40);
         });
+
+        // Script para range de datas (validação)
+        const checkIn = $('#scheduled_check_in')
+        const checkOut = $('#scheduled_check_out')
+
+        checkOut.prop('disabled', true)
+
+        checkIn.on('change', function () {
+            const checkInValue = checkIn.val()
+
+            if (!checkInValue) {
+                checkOut.val('');
+                checkOut.prop('disabled', true);
+                return;
+            }
+
+            checkOut.prop('disabled', false)
+
+            // Converte a data de entrada para objeto Date e adiciona 1 dia
+            const nextDay = new Date(checkInValue);
+            nextDay.setDate(nextDay.getDate() + 1); // Adiciona 1 dia
+            const minCheckOut = nextDay.toISOString().split('T')[0];
+
+            checkOut.attr('min', minCheckOut)
+
+            // Limpa valor inválido
+            if (checkOut.val() && checkOut.val() < minCheckOut) {
+                checkOut.val('');
+            }
+        })
 
     });
 </script>

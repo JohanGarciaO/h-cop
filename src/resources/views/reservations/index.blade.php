@@ -57,6 +57,7 @@
             <thead>
                 <tr>
                     <th>Quarto</th>
+                    <th>Hóspede</th>
                     <th>Status</th>
                     <th>Diária</th>
                     <th>Entrada</th>
@@ -72,6 +73,7 @@
                     <tr>
 
                         <td class="fw-bold">{{ $reservation->room->number }}</td>
+                        <td>{{ $reservation->guest->name }}</td>
 
                         <td>
                             @if ($status == 'check-in pendente')
@@ -83,7 +85,7 @@
                             @endif
                         </td>
 
-                        <td>R$ {{ number_format($reservation->room->daily_price, 2, ',', '.') ?? '-' }}</td>
+                        <td>R$ {{ number_format($reservation->daily_price, 2, ',', '.') ?? '-' }}</td>
                         <td>{{ $reservation->scheduled_check_in?->format('d/m/Y') ?? '-' }}</td>
                         <td>{{ $reservation->scheduled_check_out?->format('d/m/Y') ?? '-' }}</td>
                         <td>{{ $reservation->check_in_at?->format('d/m/Y H:i') ?? '-' }}</td>
@@ -137,5 +139,5 @@
     })
 
 </script>
-{{-- @include('guests.select2-brasil') --}}
+@include('reservations.select2')
 @endpush

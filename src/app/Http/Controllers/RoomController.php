@@ -63,7 +63,7 @@ class RoomController extends Controller
             'rooms' => $rooms,
             'result_count' => $rooms->total(),
         ]);
-    }
+    }    
     
     public function store(Request $request)
     {

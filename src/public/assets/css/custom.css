@@ -41,6 +41,13 @@ body {
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); 
 }
 
+.btn-core:disabled {
+    background-color: #ff5900 !important;
+    color: white;
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
 .btn-outline-core {
     background-color: transparent;
     border: 1px solid #ff5900;

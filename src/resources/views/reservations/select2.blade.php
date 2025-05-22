@@ -2,16 +2,28 @@
 <link rel="stylesheet" href="{{ asset('assets/libs/select2/select2.min.css') }}">
 <script src="{{ asset('assets/libs/select2/select2.min.js') }}"></script>
 
+<style>
+
+    .select2-container--default .select2-selection--single {
+        height: calc(3.5rem + 2px);
+        padding: 1rem 0.75rem;
+        border: 1px solid #ced4da;
+        border-radius: 0.375rem;
+    }
+    .select2-container--default .select2-selection--single .select2-selection__rendered {
+        line-height: 1.5rem;
+    }
+    .select2-container--default .select2-selection--single .select2-selection__arrow {
+        top: 16px;
+        right: 0.75rem;
+    }
+
+</style>
+
 <script>
 
-const state_filter = $('#state_filter_id')
-const city_filter = $('#city_filter_id')
-
-const state_create = $('#state_create_id')
-const city_create = $('#city_create_id')
-
-const state_edit = $('#state_edit_id')
-const city_edit = $('#city_edit_id')
+const room_create = $('#room_create_id')
+const guest_create = $('#guest_create_id')
 
 function normalizeText(str) {
     if (typeof(str) !== 'string') {
@@ -24,90 +36,162 @@ function normalizeText(str) {
         .trim();
 }
 
-function loadCities(uf, selected_city, city_select) {
-    city_select.empty().append(new Option('Filtre por Cidade', '', true, true))
+function fetchAvailableRooms() {
+    const checkIn = $('#scheduled_check_in').val();
+    const checkOut = $('#scheduled_check_out').val();
 
-    $.getJSON(`{{ route('brasil.states') }}/${uf}/cities`, function (data) {
+    if (!checkIn || !checkOut || checkIn >= checkOut) {
+        room_create.prop('disabled', true);
+        updateSelect2Placeholder(room_create, 'Selecione as datas primeiro');
+        return;
+    }
 
-        data.forEach(function (city_data) {
-            city_select.append(new Option(city_data.name, city_data.id, false, city_data.id === selected_city))
-        })
+    room_create.prop('disabled', true);
+    updateSelect2Placeholder(room_create, 'Procurando quartos...');
+    toggleInputGroupSpinner(room_create, true); // Ativa spinner
 
-    })
+    $.ajax({
+        url: '/api/available-between/room',
+        method: 'GET',
+        data: { check_in: checkIn, check_out: checkOut },
+        success: function (response) {
+            const rooms = response.data || [];
+            room_create.empty().append('<option></option>');
+
+            if (rooms.length > 0) {
+                updateSelect2Placeholder(room_create, 'Selecione o quarto');
+                rooms.forEach(function (room) {
+                    room_create.append(
+                        $('<option>', {
+                            value: room.id,
+                            text: `Quarto ${room.number}`,
+                            'data-daily-price': room.daily_price
+                        })
+                    );
+                });
+                room_create.prop('disabled', false);
+            } else {
+                updateSelect2Placeholder(room_create, 'Nenhum quarto disponível');
+                room_create.prop('disabled', true);
+            }
+
+            room_create.trigger('change');
+        },
+        error: function () {
+            updateSelect2Placeholder(room_create, 'Erro ao buscar quartos');
+            room_create.prop('disabled', true).trigger('change');
+        },
+        complete: function () {
+            toggleInputGroupSpinner(room_create, false); // Desativa spinner
+        }
+    });
 }
+
+function fetchAvailableGuests() {
+    const checkIn = $('#scheduled_check_in').val();
+    const checkOut = $('#scheduled_check_out').val();
+
+    if (!checkIn || !checkOut || checkIn >= checkOut) {
+        guest_create.prop('disabled', true);
+        updateSelect2Placeholder(guest_create, 'Selecione as datas primeiro');
+        return;
+    }
+
+    guest_create.prop('disabled', true);
+    updateSelect2Placeholder(guest_create, 'Procurando hóspedes...');
+    toggleInputGroupSpinner(guest_create, true); // Ativa spinner
+
+    $.ajax({
+        url: '/api/available-between/guest',
+        method: 'GET',
+        data: { check_in: checkIn, check_out: checkOut },
+        success: function (response) {
+            const rooms = response.data || [];
+            guest_create.empty().append('<option></option>');
+
+            if (rooms.length > 0) {
+                updateSelect2Placeholder(guest_create, 'Selecione o hóspede');
+                rooms.forEach(function (guest) {
+                    guest_create.append(
+                        new Option(`${guest.name}`, guest.id, false, false)
+                    );
+                });
+                guest_create.prop('disabled', false);
+            }else {
+                updateSelect2Placeholder(guest_create, 'Nenhum hóspede disponível');
+                guest_create.prop('disabled', true);
+            }
+
+            guest_create.trigger('change');
+        },
+        error: function () {
+            updateSelect2Placeholder(guest_create, 'Erro ao buscar hóspedes');
+            guest_create.prop('disabled', true).trigger('change');
+        },
+        complete: function () {
+            toggleInputGroupSpinner(guest_create, false); // Desativa spinner
+        }
+    });
+}
+
+function initializeSelect2($element) {
+    $element.select2({
+        theme: 'bootstrap-5',
+        allowClear: true,
+        width: '100%',
+        dropdownParent: $('#createReservationModal'),
+        placeholder: $element.attr('data-placeholder'),
+        language: {
+            noResults: function () {
+                return "Nenhum resultado encontrado";
+            },
+        },
+    });
+}
+
+function updateSelect2Placeholder($element, newPlaceholder) {
+    $element.off('select2:select'); // Remove eventos antigos se necessário
+
+    $element.data('placeholder', newPlaceholder);
+    $element.attr('data-placeholder', newPlaceholder); // necessário para reuso
+
+    $element.select2('destroy');
+    $element.empty().append('<option></option>'); // mantém o campo vazio
+    initializeSelect2($element);
+}
+
 
 $(document).ready(() => {
 
-    Array(state_filter, city_filter, state_edit, city_edit).forEach(element => {
-        $(element).select2({
-            theme: 'bootstrap-5',
-            allowClear: true,
-            width:'100%',            
-            placeholder: $(this).data('placeholder'),
-            language: {
-                noResults: function () {
-                    return "Nenhum resultado encontrado"
-                },
-            },
-        })
-    });
-
-    Array(state_create, city_create).forEach(element => {
-        $(element).select2({
-            theme: 'bootstrap-5',
-            allowClear: true,
-            width: '100%',
-            dropdownParent: $('#createGuestModal'),
-            placeholder: $(this).data('placeholder'),
-            language: {
-                noResults: function () {
-                    return "Nenhum resultado encontrado"
-                },
-            },
-        })
-    });
-
-    const selected_state_filter = state_filter.data('selected')
-    const selected_city_filter = city_filter.data('selected')
+    initializeSelect2(room_create);
+    initializeSelect2(guest_create);
     
-    const selected_state_create = state_create.data('selected')
-    const selected_city_create = city_create.data('selected')
+    const selected_room_create = room_create.data('selected')
+    const selected_guest_create = guest_create.data('selected')
 
-    const selected_state_edit = state_edit.data('selected')
-    const selected_city_edit = city_edit.data('selected')
+    const scheduled_check_in = $('#scheduled_check_in').val()
+    const scheduled_check_out = $('#scheduled_check_out').val()
 
-    $.getJSON("{{ route('brasil.states') }}", function (data) {
+    $('#scheduled_check_in, #scheduled_check_out').on('change', function () {
+        const checkIn = $('#scheduled_check_in').val();
+        const checkOut = $('#scheduled_check_out').val();
 
-        data.forEach(function (state_data) {
-            state_filter.append(new Option(state_data.name, state_data.id, false, state_data.id === selected_state_filter))
-            state_create.append(new Option(state_data.name, state_data.id, false, state_data.id === selected_state_create))
-            state_edit.append(new Option(state_data.name, state_data.id, false, state_data.id === selected_state_edit))
-
-            if (state_data.id === selected_state_filter) {
-                loadCities(state_data.id, selected_city_filter, city_filter)
-            }else if(state_data.id === selected_state_create){
-                loadCities(state_data.id, selected_city_create, city_create)
-            }else if(state_data.id === selected_state_edit){
-                loadCities(state_data.id, selected_city_edit, city_edit)
-            }
-        })
-    })
-    
-    Array(state_filter, state_create, state_edit).forEach((select) => {
-
-        let city_select;
-        if (select == state_filter) {
-            city_select = city_filter
-        }else if (select == state_create) {
-            city_select = city_create
-        }else if (select == state_edit) {
-            city_select = city_edit
+        if (checkIn && checkOut && checkIn < checkOut) {
+            fetchAvailableRooms();
+            fetchAvailableGuests();
+        } else {
+            room_create.prop('disabled', true);
+            guest_create.prop('disabled', true);
+            updateSelect2Placeholder(room_create, 'Quarto');
+            updateSelect2Placeholder(guest_create, 'Hóspede');
         }
+    });
 
-        select.on('change', () => {
-            city_select.empty().append(new Option('Filtre por Cidade', '', true, true))
-            if (select.val()) loadCities(select.val(), null, city_select)
-        })
+    room_create.on('change', function () {
+        const selectedOption = $(this).find(':selected')
+        const dailyPrice = selectedOption.data('daily-price')
+        $('#daily_price').val(dailyPrice || '')
+        $('#daily_price').trigger('change')
     })
 
 })

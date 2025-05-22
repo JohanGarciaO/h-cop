@@ -26,4 +26,18 @@ class Guest extends Model
     {
         return $this->hasMany(Reservation::class);
     }
+
+    public function activeReservations()
+    {
+        return $this->hasMany(Reservation::class)->whereNull('check_out_at');
+    }
+
+    public function scopeAvailableBetween($query, $checkIn, $checkOut)
+    {
+        return $query->whereDoesntHave('reservations', function ($q) use ($checkIn, $checkOut) {
+            $q->whereNull('check_out_at')
+            ->where('scheduled_check_in', '<', $checkOut)
+            ->where('scheduled_check_out', '>', $checkIn);
+        });
+    }
 }

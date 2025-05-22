@@ -41,8 +41,8 @@ class ReservationController extends Controller
         $request->validate([
             'scheduled_check_in' => 'required|date|after_or_equal:today',
             'scheduled_check_out' => 'required|date|after:scheduled_check_in',
-            'room_id' => 'required|integer|exists:rooms,room_id',
-            'guest_id' => 'required|integer|exists:guests,guest_id',
+            'room_id' => 'required|integer|exists:rooms,id',
+            'guest_id' => 'required|integer|exists:guests,id',
             'daily_price' => 'required|numeric|min:1',
         ],
         [
