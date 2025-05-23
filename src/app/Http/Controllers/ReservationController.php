@@ -17,8 +17,59 @@ class ReservationController extends Controller
     {
         $reservations = Reservation::with(['guest.address', 'room']);
 
-        $reservations = $reservations->orderByDesc('updated_at')->paginate(12)->appends($request->query());
+        // Filtros simples 
+        if ($request->filled('status')){
+            switch ($request->input('status')) {
+                case 'completed':
+                    $reservations->whereNotNull('check_out_at');
+                    break;                
+                case 'check-in-pending':
+                    $reservations->whereNull('check_in_at');
+                    break;
+                case 'check-out-pending':
+                    $reservations->whereNotNull('check_in_at')->whereNull('check_out_at');
+                    break;
+            }
+        }
+        if ($request->filled('number_room_filter')){
+            $reservations->whereHas('room', function ($query) use ($request) {
+                $query->where('number', $request->input('number_room_filter'));
+            });
+        }
 
+        if($request->filled('name_guest_filter')){
+            $reservations->whereHas('guest', function ($query) use ($request) {
+                $query->where('name', 'like', '%'.$request->input('name_guest_filter').'%');
+            });
+        }
+
+        if($request->filled('cpf_guest_filter')){
+            $reservations->whereHas('guest', function ($query) use ($request) {
+                $query->where('document', $request->input('cpf_guest_filter'));
+            });
+        }
+
+        // Filtros por localidade
+        if ($request->filled('state_filter_id')) {
+            $reservations->whereHas('guest.address', function ($query) use ($request) {
+                $query->where('state_id', $request->input('state_filter_id'));
+            });
+        }
+        if ($request->filled('city_filter_id')) {
+            $reservations->whereHas('guest.address', function ($query) use ($request) {
+                $query->where('city_id', $request->input('city_filter_id'));
+            });
+        }
+
+        // Filtros por data de entrada e saída
+        if($request->filled('check_in')){
+            $reservations->whereDate('scheduled_check_in', $request->input('check_in'));
+        }
+        if($request->filled('check_out')){
+            $reservations->whereDate('scheduled_check_out', $request->input('check_out'));
+        }
+
+        $reservations = $reservations->orderByDesc('updated_at')->paginate(12)->appends($request->query());
         return view('reservations.index', [
             'reservations' => $reservations,
             'result_count' => $reservations->total(),

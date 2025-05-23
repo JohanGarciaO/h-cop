@@ -54,17 +54,49 @@
             </div>
         @endif
 
-        {{-- BOTÃO E GRUPO 2: $extra_filters --}}
-        @if (isset($extra_filters))
+        {{-- BOTÃO E GRUPO 2: $availability_filters --}}
+        @if (isset($availability_filters))
             <div class="mb-3">
-                <button type="button" class="btn btn-outline-secondary d-flex align-items-center gap-2 toggle-group" data-target="#extra-filters-block">
-                    <i class="bi bi-unlock" id="icon-extra-filters-block"></i>
+                <button type="button" class="btn btn-outline-secondary d-flex align-items-center gap-2 toggle-group" data-target="#availability-filters-block">
+                    <i class="bi bi-unlock" id="icon-availability-filters-block"></i>
                     <span class="label">Filtrar por disponibilidade</span>
                 </button>
 
-                <div class="filter-block mt-2 collapsed" id="extra-filters-block">
+                <div class="filter-block mt-2 collapsed" id="availability-filters-block">
                     <div class="d-flex flex-wrap gap-3">
-                        {{ $extra_filters }}
+                        {{ $availability_filters }}
+                    </div>
+                </div>
+            </div>
+        @endif
+
+        {{-- BOTÃO E GRUPO 3: $locality_filters --}}
+        @if (isset($locality_filters))
+            <div class="mb-3">
+                <button type="button" class="btn btn-outline-secondary d-flex align-items-center gap-2 toggle-group" data-target="#locality-filters-block">
+                    <i class="bi bi-unlock" id="icon-locality-filters-block"></i>
+                    <span class="label">Filtrar por localidade</span>
+                </button>
+
+                <div class="filter-block mt-2 collapsed" id="locality-filters-block">
+                    <div class="d-flex flex-wrap gap-3">
+                        {{ $locality_filters }}
+                    </div>
+                </div>
+            </div>
+        @endif
+
+        {{-- BOTÃO E GRUPO 4: $date_filters --}}
+        @if (isset($date_filters))
+            <div class="mb-3">
+                <button type="button" class="btn btn-outline-secondary d-flex align-items-center gap-2 toggle-group" data-target="#date-filters-block">
+                    <i class="bi bi-unlock" id="icon-date-filters-block"></i>
+                    <span class="label">Filtrar por agendamento</span>
+                </button>
+
+                <div class="filter-block mt-2 collapsed" id="date-filters-block">
+                    <div class="d-flex flex-wrap gap-3">
+                        {{ $date_filters }}
                     </div>
                 </div>
             </div>

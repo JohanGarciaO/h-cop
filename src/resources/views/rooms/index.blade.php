@@ -50,7 +50,7 @@
             </div>
         </x-slot>
 
-        <x-slot name="extra_filters">
+        <x-slot name="availability_filters">
             @php 
                 $today = Carbon\Carbon::now();
             @endphp

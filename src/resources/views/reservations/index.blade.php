@@ -19,25 +19,35 @@
     @endcomponent
 
     <x-filters action="{{ route('reservations.index') }}" results_count="{{ $result_count }}" >
+
         <x-slot name="filters">
             <div class="col-auto">
                 <select name="status" class="form-select">
                     <option value="">Todos</option>
-                    <option value="unhosted" {{ request('status') == 'unhosted' ? 'selected' : '' }}>Não hospedados</option>
+                    <option value="completed" {{ request('status') == 'completed' ? 'selected' : '' }}>Reservas finalizadas</option>
                     <option value="check-in-pending" {{ request('status') == 'check-in-pending' ? 'selected' : '' }}>Check-in pendente</option>
                     <option value="check-out-pending" {{ request('status') == 'check-out-pending' ? 'selected' : '' }}>Check-out pendente</option>
                 </select>
             </div>
+
+            <div class="col-auto">
+                <input type="text" name="number_room_filter" class="form-control" placeholder="Número do quarto"
+                    value="{{ request('number_room_filter') }}">
+            </div>
             
             <div class="col-auto">
-                <input type="text" name="name_filter" class="form-control" placeholder="Nome do hóspede"
-                    value="{{ request('name_filter') }}">
-            </div>
-            <div class="col-auto">
-                <input type="text" id="cpf_filter" name="cpf_filter" class="form-control" maxlength="14" placeholder="CPF do hóspede"
-                    value="{{ request('cpf_filter') }}">
+                <input type="text" name="name_guest_filter" class="form-control" placeholder="Nome do hóspede"
+                    value="{{ request('name_guest_filter') }}">
             </div>
 
+            <div class="col-auto">
+                <input type="text" id="cpf_guest_filter" name="cpf_guest_filter" class="form-control" maxlength="14" placeholder="CPF do hóspede"
+                    value="{{ request('cpf_guest_filter') }}">
+            </div>            
+
+        </x-slot>
+
+        <x-slot name="locality_filters">
             <div class="col-auto">
                 <select class="form-select" name="state_filter_id" id="state_filter_id" data-selected="{{ request('state_filter_id') ?? '' }}" data-placeholder="Filtre por estado">
                     <option></option>
@@ -48,8 +58,19 @@
                     <option></option>
                 </select>
             </div>
-
         </x-slot>
+
+        <x-slot name="date_filters">
+            <div class="col-auto">
+                Dia da entrada:
+                <input type="date" id="scheduled_check_in" name="check_in" class="form-control" value="{{ request('check_in') }}">
+            </div>
+            <div class="col-auto">
+                Dia da saída:
+                <input type="date" id="scheduled_check_out" name="check_out" class="form-control" value="{{ request('check_out') }}">
+            </div>
+        </x-slot>
+
     </x-filters>
 
     <div class="table-responsive">
@@ -135,9 +156,10 @@
 <script>
 
     $(document).ready(function () {
-        //
+        $('#cpf_filter').mask('000.000.000-00')
     })
 
 </script>
 @include('reservations.select2')
+@include('reservations.select2-brasil')
 @endpush
