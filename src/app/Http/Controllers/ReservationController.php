@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Carbon;
+
 use App\Models\Reservation;
 use App\Models\Guest;
 use App\Models\Room;
@@ -141,7 +144,9 @@ class ReservationController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $reservation = Reservation::with(['guest','room'])->findOrFail($id);
+
+        return view('reservations.show', compact('reservation'));
     }
 
     /**
@@ -171,6 +176,58 @@ class ReservationController extends Controller
             'status' => 'success',
             'alert-type' => 'success',
             'message' => "A reseva de <b>".$reservation->guest->name."</b> no quarto <b>".$reservation->room->number."</b> foi apagada com sucesso.",
+        ]);
+    }
+
+    public function checkIn(Reservation $reservation)
+    {
+        if ($reservation->check_in_at) {
+            return redirect()->back()->with([
+                'status' => 'error',
+                'alert-type' => 'danger',
+                'message' => "O check-in desta reserva já foi feito.",
+            ]);
+        }
+
+        DB::transaction(function () use ($reservation) {
+            $reservation->check_in_at = Carbon::now();
+            $reservation->save();
+        });
+
+        return redirect()->route('reservations.show', $reservation->id)->with([
+            'status' => 'success',
+            'alert-type' => 'success',
+            'message' => "Check-in realizado com sucesso.",
+        ]);
+    }
+
+    public function checkOut(Reservation $reservation)
+    {
+        if (!$reservation->check_in_at) {
+            return redirect()->back()->with([
+                'status' => 'error',
+                'alert-type' => 'danger',
+                'message' => "É necessário fazer o check-in antes do check-out.",
+            ]);
+        }
+
+        if ($reservation->check_out_at) {
+            return redirect()->back()->with([
+                'status' => 'error',
+                'alert-type' => 'danger',
+                'message' => "O check-out desta reserva já foi feito.",
+            ]);
+        }
+
+        DB::transaction(function () use ($reservation) {
+            $reservation->check_out_at = Carbon::now();
+            $reservation->save();
+        });
+
+        return redirect()->route('reservations.show', $reservation->id)->with([
+            'status' => 'success',
+            'alert-type' => 'success',
+            'message' => "Check-out realizado com sucesso.",
         ]);
     }
 }
