@@ -41,12 +41,16 @@ class Room extends Model
             ->exists();
     }
 
-    public function scopeAvailableBetween($query, $checkIn, $checkOut)
+    public function scopeAvailableBetween($query, $checkIn, $checkOut, $exceptReservationId = null)
     {
-        return $query->whereDoesntHave('reservations', function ($q) use ($checkIn, $checkOut) {
+        return $query->whereDoesntHave('reservations', function ($q) use ($checkIn, $checkOut, $exceptReservationId) {
             $q->whereNull('check_out_at')
             ->where('scheduled_check_in', '<', $checkOut)
             ->where('scheduled_check_out', '>', $checkIn);
+
+            if ($exceptReservationId) {
+                $q->where('id', '!=', $exceptReservationId);
+            }
         });
     }
 

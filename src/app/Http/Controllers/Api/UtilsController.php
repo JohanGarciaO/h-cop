@@ -36,12 +36,14 @@ class UtilsController extends Controller
             $results = Guest::withCount(['activeReservations']);
         }
 
+        $exceptReservationId = request('except_reservation_id') ?? '';
+
         // Filtro por disponibilidade entre datas e ordenação
         if ($entity === 'room' && $request->check_in && $request->check_out) {
-            $results->availableBetween($request->check_in, $request->check_out);
+            $results->availableBetween($request->check_in, $request->check_out, $exceptReservationId);
             $results = $results->orderBy('number')->get();
         } else if ($entity === 'guest' && $request->check_in && $request->check_out) {
-            $results->availableBetween($request->check_in, $request->check_out);
+            $results->availableBetween($request->check_in, $request->check_out, $exceptReservationId);
             $results = $results->orderBy('name')->get();
         }        
 

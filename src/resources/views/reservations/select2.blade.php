@@ -50,10 +50,13 @@ function fetchAvailableRooms() {
     updateSelect2Placeholder(room_create, 'Procurando quartos...');
     toggleInputGroupSpinner(room_create, true); // Ativa spinner
 
+    const reservationId = $('#reservationForm').data('reservation-id') ?? '';
+    const roomId = room_create.data('selected') ?? '';
+
     $.ajax({
         url: '/api/available-between/room',
         method: 'GET',
-        data: { check_in: checkIn, check_out: checkOut },
+        data: { check_in: checkIn, check_out: checkOut, except_reservation_id: reservationId},
         success: function (response) {
             const rooms = response.data || [];
             room_create.empty().append('<option></option>');
@@ -65,10 +68,17 @@ function fetchAvailableRooms() {
                         $('<option>', {
                             value: room.id,
                             text: `Quarto ${room.number}`,
-                            'data-daily-price': room.daily_price
+                            'data-daily-price': room.daily_price,
+                            selected: room.id == roomId
                         })
                     );
                 });
+
+                // Aplica valor predefinido, se houver                
+                if (roomId) {
+                    room_create.val(roomId).trigger('change');
+                }
+
                 room_create.prop('disabled', false);
             } else {
                 updateSelect2Placeholder(room_create, 'Nenhum quarto disponível');
@@ -101,25 +111,33 @@ function fetchAvailableGuests() {
     updateSelect2Placeholder(guest_create, 'Procurando hóspedes...');
     toggleInputGroupSpinner(guest_create, true); // Ativa spinner
 
+    const reservationId = $('#reservationForm').data('reservation-id') ?? '';
+    const guestId = guest_create.data('selected') ?? '';
+
     $.ajax({
         url: '/api/available-between/guest',
         method: 'GET',
-        data: { check_in: checkIn, check_out: checkOut },
+        data: { check_in: checkIn, check_out: checkOut, except_reservation_id: reservationId },
         success: function (response) {
-            const rooms = response.data || [];
+            const guests = response.data || [];
             guest_create.empty().append('<option></option>');
 
-            if (rooms.length > 0) {
+            if (guests.length > 0) {
                 updateSelect2Placeholder(guest_create, 'Selecione o hóspede');
-                rooms.forEach(function (guest) {
+                guests.forEach(function (guest) {
                     guest_create.append(
-                        new Option(`${guest.name}`, guest.id, false, false)
+                        new Option(`${guest.name}`, guest.id, false, guest.id == guestId)
                     );
                 });
                 guest_create.prop('disabled', false);
             }else {
                 updateSelect2Placeholder(guest_create, 'Nenhum hóspede disponível');
                 guest_create.prop('disabled', true);
+            }
+
+            // Aplica valor predefinido, se houver                
+            if (guestId) {
+                guest_create.val(guestId).trigger('change');
             }
 
             guest_create.trigger('change');
@@ -139,7 +157,7 @@ function initializeSelect2($element) {
         theme: 'bootstrap-5',
         allowClear: true,
         width: '100%',
-        dropdownParent: $('#createReservationModal'),
+        dropdownParent: $('#{{ $modalId ?? ''}}'),
         placeholder: $element.attr('data-placeholder'),
         language: {
             noResults: function () {
@@ -162,6 +180,7 @@ function updateSelect2Placeholder($element, newPlaceholder) {
 
 
 $(document).ready(() => {
+    let loadPriceCount = 0;
 
     initializeSelect2(room_create);
     initializeSelect2(guest_create);
@@ -171,6 +190,11 @@ $(document).ready(() => {
 
     const scheduled_check_in = $('#scheduled_check_in').val()
     const scheduled_check_out = $('#scheduled_check_out').val()
+
+    if (scheduled_check_in && scheduled_check_out && scheduled_check_in < scheduled_check_out) {
+        fetchAvailableRooms();
+        fetchAvailableGuests();
+    }
 
     $('#scheduled_check_in, #scheduled_check_out').on('change', function () {
         const checkIn = $('#scheduled_check_in').val();
@@ -189,9 +213,16 @@ $(document).ready(() => {
 
     room_create.on('change', function () {
         const selectedOption = $(this).find(':selected')
-        const dailyPrice = selectedOption.data('daily-price')
+        let dailyPrice = selectedOption.data('daily-price')
+
+        if (loadPriceCount < 2){
+            loadPriceCount++
+            return
+        }
+
         $('#daily_price').val(dailyPrice || '')
         $('#daily_price').trigger('change')
+        loadPriceCount++
     })
 
 })

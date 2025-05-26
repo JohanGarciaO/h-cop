@@ -160,6 +160,6 @@
     })
 
 </script>
-@include('reservations.select2')
+@include('reservations.select2', ['modalId' => 'createReservationModal'])
 @include('reservations.select2-brasil')
 @endpush

@@ -12,15 +12,18 @@
                     </svg>
                     Voltar
                 </a>
-                {{-- Criar GATE para permitir editar apenas se ainda não foi finalizada --}}
-                <button id="btn_submit_form" class="btn btn-outline-core">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 18 18">
-                        <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
-                        <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
-                    </svg>
-                    Editar
-                </button>
+                @if (!$reservation->check_out_at)
+                    <button id="btn_submit_form" class="btn btn-outline-core" data-bs-toggle="modal" data-bs-target="#editReservationModal">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 18 18">
+                            <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+                            <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
+                        </svg>
+                        Editar
+                    </button>
+                @endif
             </div>
+            <!-- Modal de Edição da Reserva -->
+            @include('partials.modals.reservations.edit', ['reservation' => $reservation])
         @endslot
     @endcomponent
 
@@ -32,6 +35,17 @@
                 <h5 class="mb-5 fw-bold">Detalhes da Reserva</h5>
 
                 <dl class="row">
+                    <dt class="col-sm-6">Status:</dt>
+                    <dd class="col-sm-6">
+                        @if ($reservation->check_out_at)
+                            Finalizada
+                        @elseif ($reservation->check_in_at)
+                            Check-in realizado
+                        @else
+                            Aguardando check-in
+                        @endif
+                    </dd>
+
                     <dt class="col-sm-6">Quarto:</dt>
                     <dd class="col-sm-6">{{ $reservation->room->number }}</dd>
 
@@ -46,25 +60,15 @@
                     <dt class="col-sm-6">Telefone:</dt>
                     <dd class="col-sm-6">{{ $reservation->guest->phone }}</dd>
 
-                    <dt class="col-sm-6">Status:</dt>
-                    <dd class="col-sm-6">
-                        @if ($reservation->check_out_at)
-                            Finalizada
-                        @elseif ($reservation->check_in_at)
-                            Check-in realizado
-                        @else
-                            Aguardando check-in
-                        @endif
-                    </dd>
 
                     <dt class="col-sm-6">Valor da Diária:</dt>
                     <dd class="col-sm-6">R$ {{ number_format($reservation->daily_price, 2, ',', '.') }}</dd>
 
                     <dt class="col-sm-6">Entrada agendada:</dt>
-                    <dd class="col-sm-6">{{ \Carbon\Carbon::parse($reservation->check_in)->format('d/m/Y') }}</dd>
+                    <dd class="col-sm-6">{{ \Carbon\Carbon::parse($reservation->scheduled_check_in)->format('d/m/Y') }}</dd>
 
                     <dt class="col-sm-6">Saída agendada:</dt>
-                    <dd class="col-sm-6">{{ \Carbon\Carbon::parse($reservation->check_out)->format('d/m/Y') }}</dd>
+                    <dd class="col-sm-6">{{ \Carbon\Carbon::parse($reservation->scheduled_check_out)->format('d/m/Y') }}</dd>
 
                     <dt class="col-sm-6">Check-in:</dt>
                     <dd class="col-sm-6">
@@ -116,5 +120,5 @@
     })
 
 </script>
-{{-- @include('guests.select2-brasil') --}}
+@include('reservations.select2', ['modalId' => 'editReservationModal'])
 @endpush

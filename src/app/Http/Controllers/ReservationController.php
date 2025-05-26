@@ -162,7 +162,37 @@ class ReservationController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $request->validate([
+            'scheduled_check_in' => 'required|date',
+            'scheduled_check_out' => 'required|date|after:scheduled_check_in',
+            'room_id' => 'required|integer|exists:rooms,id',
+            'guest_id' => 'required|integer|exists:guests,id',
+            'daily_price' => 'required|numeric|min:1',
+        ],
+        [
+            'scheduled_check_in.required' => 'A data de entrada é obrigatória.',
+            'scheduled_check_in.date' => 'A data de entrada deve ser um valor do tipo date.',
+            'scheduled_check_out.required' => 'A data de saída é obrigatória.',
+            'scheduled_check_out.date' => 'A data de saída deve ser um valor do tipo date.',
+            'scheduled_check_out.after' => 'A data de saída deve ser posterior à de entrada.',
+            'room_id.required' => 'O quarto não pode estar vazio.',
+            'room_id.integer' => 'O id do quarto deve ser um número inteiro.',
+            'room_id.exists' => 'O quarto selecionado é inválido.',
+            'guest_id.required' => 'O hóspede não pode estar vazio.',
+            'guest_id.integer' => 'O id do hóspede deve ser um número inteiro.',
+            'guest_id.exists' => 'O hóspede selecionado é inválido.',
+            'daily_price.required' => 'O valor da diária não pode estar vazio.',
+            'daily_price.numeric' => 'O valor da diária deve ser um número.',
+            'daily_price.min' => 'O valor da diária deve ser no mínimo 1.',
+        ]);
+
+        $reservation = Reservation::find($id)->update($request->only(['room_id', 'guest_id', 'daily_price', 'scheduled_check_in', 'scheduled_check_out']));
+
+        return redirect()->route('reservations.update', $id)->with([
+            'status' => 'success',
+            'alert-type' => 'success',
+            'message' => "Reserva atualizada com sucesso.",
+        ]);
     }
 
     /**
