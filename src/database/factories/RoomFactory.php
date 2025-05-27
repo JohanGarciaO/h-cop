@@ -19,6 +19,7 @@ class RoomFactory extends Factory
         return [
             'number' => $this->faker->unique()->numberBetween(100, 999),
             'capacity' => $this->faker->numberBetween(1, 4),
+            'daily_price' => $this->faker->randomFloat(2, 100, 500),
         ];
     }
 }

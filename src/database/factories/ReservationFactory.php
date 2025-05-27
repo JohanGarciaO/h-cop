@@ -18,20 +18,24 @@ class ReservationFactory extends Factory
      */
     public function definition(): array
     {
-        $checkIn = $this->faker->dateTimeBetween('-10 days', 'now');
+        $scheduleCheckIn = $this->faker->dateTimeBetween('-10 days', 'now');
+        $scheduleCheckOut = (clone $scheduleCheckIn)->modify('+'.rand(1,3).'days');
+
+
+        $checkIn = (clone $scheduleCheckIn)->setTime(rand(12, 18), rand(0, 59));
         $daily = $this->faker->randomFloat(2, 100, 500);
 
         // Decide aleatoriamente se a reserva está ativa (sem check-out) ou finalizada
         $isActive = $this->faker->boolean(70);
 
         $checkOut = $isActive ? null : (clone $checkIn)->modify('+'.rand(1, 5).' days');
-        $days = $checkOut ? $checkIn->diff($checkOut)->days : 1;
 
         return [
             'guest_id' => Guest::inRandomOrder()->first()?->id ?? Guest::factory(),
             'room_id' => Room::inRandomOrder()->first()?->id ?? Room::factory(),
-            'dialy_price' => $daily,
-            'total_price' => $daily * $days,
+            'daily_price' => $daily,
+            'scheduled_check_in' => $scheduleCheckIn,
+            'scheduled_check_out' => $scheduleCheckOut,
             'check_in_at' => $checkIn,
             'check_out_at' => $checkOut,
         ];

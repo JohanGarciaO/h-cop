@@ -12,7 +12,8 @@ class Room extends Model
 
     protected $fillable = [
         'number', 
-        'capacity'
+        'capacity',
+        'daily_price'
     ];
 
     public function reservations()
@@ -29,4 +30,28 @@ class Room extends Model
     {
         return $this->capacity > $this->activeReservations()->count();
     }
+
+    public function isAvailableBetween($checkIn, $checkOut)
+    {
+        return !$this->activeReservations()
+            ->where(function ($query) use ($checkIn, $checkOut) {
+                $query->where('scheduled_check_in', '<', $checkOut)
+                    ->where('scheduled_check_out', '>', $checkIn);
+            })
+            ->exists();
+    }
+
+    public function scopeAvailableBetween($query, $checkIn, $checkOut, $exceptReservationId = null)
+    {
+        return $query->whereDoesntHave('reservations', function ($q) use ($checkIn, $checkOut, $exceptReservationId) {
+            $q->whereNull('check_out_at')
+            ->where('scheduled_check_in', '<', $checkOut)
+            ->where('scheduled_check_out', '>', $checkIn);
+
+            if ($exceptReservationId) {
+                $q->where('id', '!=', $exceptReservationId);
+            }
+        });
+    }
+
 }

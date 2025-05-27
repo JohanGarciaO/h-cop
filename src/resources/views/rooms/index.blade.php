@@ -21,6 +21,7 @@
 
     <x-filters action="{{ route('rooms.index') }}" results_count="{{ $result_count }}" >
         <x-slot name="filters">
+
             <div class="col-auto">
                 <select name="status" class="form-select">
                     <option value="">Todos</option>
@@ -36,12 +37,30 @@
                     value="{{ request('min_capacity') }}">
             </div>
             <div class="col-auto">
+                <input type="number" name="max_capacity" class="form-control" placeholder="Capacidade máxima"
+                    value="{{ request('max_capacity') }}">
+            </div>
+            <div class="col-auto">                
                 <input type="number" name="min_free" class="form-control" placeholder="Mínimo de vagas"
                     value="{{ request('min_free') }}">
             </div>
             <div class="col-auto">
                 <input type="number" name="room_number" class="form-control" placeholder="Número do quarto"
                     value="{{ request('room_number') }}">
+            </div>
+        </x-slot>
+
+        <x-slot name="availability_filters">
+            @php 
+                $today = Carbon\Carbon::now();
+            @endphp
+            <div class="col-auto">
+                Do dia:
+                <input type="date" id="scheduled_check_in" name="check_in" class="form-control" value="{{ request('check_in') }}" min="{{ $today->format('Y-m-d') }}">
+            </div>
+            <div class="col-auto">
+                Ao dia:
+                <input type="date" id="scheduled_check_out" name="check_out" class="form-control" value="{{ request('check_out') }}" min="{{ $today->addDays(1)->format('Y-m-d') }}">
             </div>
         </x-slot>
     </x-filters>
@@ -58,14 +77,17 @@
             <div class="col-md-3 mb-4">
                 <div class="card shadow-sm h-100">
                     <div class="card-body">
-                        <h5 class="card-title">Quarto:</h5>
-                        <h4 class="card-title"><span class="badge bg-background">{{ $room->number }}</span></h4>
+
+                        <h5 class="card-title"><span class="badge bg-background"> Quarto {{ $room->number }}</span></h5>
 
                         <p class="card-text mb-1">
-                            <span class="fw-bold">Ocupação:</span>
-                            <span class="occupancy-ratio" data-current="{{ $occupied }}" data-capacity="{{ $capacity }}">0/0</span>
+                            <span class="fw-bold">Diária:</span>
+                            <h5 class="mb-0 fs-14 fw-bold text-success">
+                                R$ {{ number_format($room->daily_price, 2, ',', '.') }}
+                            </h5>
                         </p>
-                        <div class="progress mb-3" style="height: 18px;">
+
+                        <div class="progress" style="height: 18px;">
                             <div 
                                 class="progress-bar percent-label bg-background fw-bold" 
                                 role="progressbar" 
@@ -76,8 +98,12 @@
                                 aria-valuemax="100"
                             >0%</div>
                         </div>
+                        <small class="card-text mb-3">
+                            <span class="fw-bold">Ocupação:</span>
+                            <span class="occupancy-ratio" data-current="{{ $occupied }}" data-capacity="{{ $capacity }}">0/0</span>
+                        </small>
 
-                        <div class="d-flex justify-content-between">
+                        <div class="d-flex justify-content-between mt-3">
                             <button class="btn btn-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#editRoomModal{{ $room->id }}">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 18 18">
                                     <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
@@ -162,6 +188,36 @@
                 el.textContent = `${count} de ${capacity} vagas`;
             }, 40);
         });
+
+        // Script para range de datas (validação)
+        const checkIn = $('#scheduled_check_in')
+        const checkOut = $('#scheduled_check_out')
+
+        checkOut.prop('disabled', true)
+
+        checkIn.on('change', function () {
+            const checkInValue = checkIn.val()
+
+            if (!checkInValue) {
+                checkOut.val('');
+                checkOut.prop('disabled', true);
+                return;
+            }
+
+            checkOut.prop('disabled', false)
+
+            // Converte a data de entrada para objeto Date e adiciona 1 dia
+            const nextDay = new Date(checkInValue);
+            nextDay.setDate(nextDay.getDate() + 1); // Adiciona 1 dia
+            const minCheckOut = nextDay.toISOString().split('T')[0];
+
+            checkOut.attr('min', minCheckOut)
+
+            // Limpa valor inválido
+            if (checkOut.val() && checkOut.val() < minCheckOut) {
+                checkOut.val('');
+            }
+        })
 
     });
 </script>

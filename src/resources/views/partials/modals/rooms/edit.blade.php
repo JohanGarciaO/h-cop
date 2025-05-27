@@ -20,6 +20,10 @@
                         <label for="capacity" class="form-label">Capacidade:</label>
                         <input type="number" class="form-control" id="capacity" name="capacity" value="{{ $room->capacity }}" placeholder="Defina a capacidade do quarto" required>
                     </div>
+                    <div class="mb-3">
+                        <label for="daily_price" class="form-label">Diária:</label>
+                        <input type="number" class="form-control" id="daily_price" name="daily_price" min="1" step="0.01" value="{{ $room->daily_price }}" placeholder="Defina a diária do quarto" required>
+                    </div>
                 </div>
 
                 <div class="modal-footer">
