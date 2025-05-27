@@ -116,7 +116,15 @@
 <script>
 
     $(document).ready(function () {
-        //
+        
+        const urlParams = new URLSearchParams(window.location.search);
+        const openEdit = urlParams.get('edit');
+
+        if (openEdit === '1') {
+            const modal = new bootstrap.Modal(document.getElementById('editReservationModal'));
+            modal.show();
+        }
+
     })
 
 </script>

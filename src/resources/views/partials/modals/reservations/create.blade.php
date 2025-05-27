@@ -100,7 +100,7 @@
                                         id="daily_price" 
                                         name="daily_price" 
                                         min="1" 
-                                        step="0.01" 
+                                        step="1" 
                                         placeholder="Diária" 
                                         required
                                         >
@@ -237,20 +237,6 @@
                 $summaryDays.text('0 diárias');
                 $totalAmount.text('R$ 0,00');
             }
-        });
-
-        $('#daily_price').on('input', function () {
-            let input = $(this);
-            let value = input.val().replace(/[^\d]/g, '');
-
-            if (value.length === 0) {
-                input.val('');
-                return;
-            }
-
-            // Divide por 100 e fixa em 2 casas decimais
-            let formatted = (parseInt(value, 10) / 100).toFixed(2);
-            input.val(formatted);
         });
 
         // Loading button
