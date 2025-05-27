@@ -2,7 +2,7 @@
 <link rel="stylesheet" href="{{ asset('assets/libs/select2/select2.min.css') }}">
 <script src="{{ asset('assets/libs/select2/select2.min.js') }}"></script>
 
-<style>
+{{-- <style>
 
     .select2-container--default .select2-selection--single {
         height: calc(3.5rem + 2px);
@@ -18,7 +18,7 @@
         right: 0.75rem;
     }
 
-</style>
+</style> --}}
 
 <script>
 

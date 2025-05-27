@@ -1,6 +1,85 @@
 @extends('layouts.home')
 @section('title', 'Editar hóspede')
 
+@push('styles')
+<style>
+    
+    
+    #form_edit input, select {
+        background-color: #1a2028;
+        color: #fff;
+        border: none;
+        border-radius: 0;
+        border-bottom: 1px solid #cccccc79;
+        outline: none;
+        box-shadow: none;
+    }
+
+    #form_edit input:focus {
+        border-color: #fff;
+    }
+
+    /* Sobrescreve CSS do select2 */
+
+    .select2-container .select2-selection--single {
+        background-color: #1a2028!important;
+        color: #fff!important;
+        border: none!important;
+        border-radius: 0!important;
+        border-bottom: 1px solid #cccccc79!important;
+        outline: none!important;
+        box-shadow: none!important;
+    }
+    .select2-container .select2-selection--single .select2-selection__rendered {
+        color: #fff!important;
+        padding-left: 0rem!important;
+    }
+
+    /* Corpo da busca */
+
+    .select2-container--bootstrap-5 .select2-dropdown .select2-search .select2-search__field {
+        background-color: #1a2028!important;
+        color: #fff!important;
+        border: none!important;
+        border-radius: 0!important;
+        border-bottom: 1px solid #cccccc79!important;
+        box-shadow: none!important;
+    }
+
+    .select2-container--bootstrap-5 .select2-dropdown .select2-search .select2-search__field:focus {
+        border-color: #fff!important;
+        box-shadow: none!important;
+    }
+
+    /* Corpo do Dropdown */
+
+    .select2-results {
+        background: #1a2028!important;
+    }
+
+    .select2-search--dropdown {
+        background-color: #1a2028!important;
+    }
+
+    .select2-container--bootstrap-5 .select2-dropdown {
+        color: #fff!important;
+    }
+
+    .select2-container--bootstrap-5 .select2-dropdown .select2-results__options .select2-results__option.select2-results__option--highlighted {
+        color: #fff!important;
+        background-color: #33363c!important;
+    }
+
+    .select2-container--bootstrap-5 .select2-dropdown .select2-results__options .select2-results__option.select2-results__option--selected, .select2-container--bootstrap-5 .select2-dropdown .select2-results__options .select2-results__option[aria-selected=true]:not(.select2-results__option--highlighted) {
+        color: #000!important;
+        background-color: #fff!important;
+    }
+
+    /* Fim da personalização do select2 */
+
+</style>
+@endpush
+
 @section('content')
 
     @component('partials.components.body-header', ['title' => 'Gerenciamento de Hóspedes'])
@@ -25,11 +104,11 @@
 
     <div class="container my-5">
         <div class="row justify-content-md-center">
-            <form id="form_edit" class="col-12 col-lg-4 p-4 bg-light shadow rounded" action="{{ route('guests.update', $guest) }}" method="POST">
+            <form id="form_edit" class="col-12 col-lg-4 p-4 bg-background shadow rounded" action="{{ route('guests.update', $guest) }}" method="POST">
                 @csrf
                 @method('PUT')
                 
-                <h5 class="mb-4 text-dark">Formulário de edição</h5>
+                <h5 class="mb-5 text-light fw-bold">Formulário de edição</h5>
 
                 <div class="col-12 mb-3">
                     <input type="text" class="form-control" id="name" name="name" minlength="14" placeholder="Digite o nome completo" value="{{ old('name', $guest->name) }}" required>
