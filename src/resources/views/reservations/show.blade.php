@@ -83,21 +83,15 @@
 
                 <div class="d-flex gap-2">
                     @if (!$reservation->check_in_at)
-                        <form method="POST" action="{{ route('reservations.check-in', $reservation->id) }}">
-                            @csrf
-                            <button type="submit" class="btn btn-success">
-                                <i class="bi bi-door-open"></i> Fazer Check-in
-                            </button>
-                        </form>
+                        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#checkInModal">
+                            <i class="bi bi-door-open"></i> Fazer Check-in
+                        </button>
                     @endif
 
                     @if ($reservation->check_in_at && !$reservation->check_out_at)
-                        <form method="POST" action="{{ route('reservations.check-out', $reservation->id) }}">
-                            @csrf
-                            <button type="submit" class="btn btn-danger">
-                                <i class="bi bi-door-closed"></i> Fazer Check-out
-                            </button>
-                        </form>
+                        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#checkOutModal">
+                            <i class="bi bi-door-closed"></i> Fazer Check-out
+                        </button>
                     @endif
                 </div>
 
@@ -110,6 +104,8 @@
         </div>
     </div>
 
+@include('partials.modals.reservations.check-in', ['reservation' => $reservation])
+@include('partials.modals.reservations.check-out', ['reservation' => $reservation])
 @endsection
 
 @push('scripts')

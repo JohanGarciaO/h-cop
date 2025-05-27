@@ -137,7 +137,6 @@
 
                     </tr>
 
-                    {{-- @include('partials.modals.guests.edit', ['guest' => $reservation]) --}}
                     @include('partials.modals.reservations.delete', ['reservation' => $reservation])
                 @endforeach
             </tbody>
