@@ -143,7 +143,6 @@
         </table>
     </div>
 
-
     <!-- Paginação -->
     <div class="d-flex justify-content-center mt-4">
         {{ $reservations->links('partials.pagination') }}

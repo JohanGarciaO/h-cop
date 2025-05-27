@@ -74,7 +74,6 @@
         color: #000!important;
         background-color: #fff!important;
     }
-
     /* Fim da personalização do select2 */
 
 </style>

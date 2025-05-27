@@ -123,7 +123,7 @@ class GuestController extends Controller
 
         $status;
         if(!$activeReservation) {
-            $status = 'Não hospedado';
+            $status = 'não hospedado';
         }else{
             $status = $activeReservation->status();
         }
