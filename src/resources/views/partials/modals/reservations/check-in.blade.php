@@ -19,7 +19,7 @@
 
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="submit" class="btn btn-core">
+                    <button type="submit" class="btn btn-core" data-bs-dismiss="modal">
                         <i class="bi bi-door-open"></i>
                         Fazer check-in
                     </button>
@@ -30,3 +30,21 @@
         </form>
     </div>
 </div>
+
+@push('scripts')
+<script>
+
+    // Loading button
+    $('#checkInModal').on('submit', function () {
+        const $btn = $('#checkInButton');
+        
+        // Desativa botão
+        $btn.prop('disabled', true);
+        
+        // Alterna visibilidade dos elementos
+        $btn.find('.btn-content').addClass('d-none');
+        $btn.find('.spinner-content').removeClass('d-none');
+    });
+        
+</script>
+@endpush

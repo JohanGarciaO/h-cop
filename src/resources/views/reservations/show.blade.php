@@ -20,17 +20,17 @@
                         </svg>
                         Editar
                     </button>
+                    <!-- Modal de Edição da Reserva -->
+                    @include('partials.modals.reservations.edit', ['reservation' => $reservation])
                 @endif
             </div>
-            <!-- Modal de Edição da Reserva -->
-            @include('partials.modals.reservations.edit', ['reservation' => $reservation])
         @endslot
     @endcomponent
 
     <div class="container my-5">
         <div class="row justify-content-md-center">
             
-            <div class="col-12 col-lg-4 p-4 bg-background shadow rounded">
+            <div class="col-12 col-lg-5 p-4 bg-background shadow rounded">
                 
                 <h5 class="mb-5 fw-bold">Detalhes da Reserva</h5>
 
@@ -79,25 +79,91 @@
                     <dd class="col-sm-6">
                         {{ $reservation->check_out_at ? \Carbon\Carbon::parse($reservation->check_out_at)->format('d/m/Y à\s H:i') : 'Não realizado' }}
                     </dd>
+
+                    <div class="row g-3 mt-3">
+                        <div class="col-md-12">
+                            <h5 for="total_display" class="form-label">Resumo da reserva:</h5>
+                            <div 
+                                class="form-control bg-light d-flex align-items-center justify-content-between"
+                                style="transition: all 0.3s ease; font-weight: 500;"
+                            >
+                                <div>
+                                    <i class="bi bi-calendar-week me-2 text-primary"></i>
+                                    <span class="{{$reservation->check_out_at ? 'text-success' : ''}}">{{$reservation->numberOfDays . ' ' . Str::plural('diária', $reservation->numberOfDays)}}</span>
+                                </div>
+                                <div>
+                                    <i class="bi bi-currency-dollar me-1 text-success"></i>
+                                    <span class="{{$reservation->check_out_at ? 'text-success' : ''}}">R$ {{number_format($reservation->totalPrice, 2, ',', '.')}}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        @if($reservation->check_out_at)
+                            <div class="col-md-12">
+                                <div 
+                                    class="form-control bg-light d-flex align-items-center justify-content-between"
+                                    style="transition: all 0.3s ease; font-weight: 500;"
+                                >
+                                    <div>
+                                        <i class="bi bi-calendar-week me-2 text-primary"></i>
+                                        <span class="text-danger">{{($reservation->numberOfDaysLate ? $reservation->numberOfDaysLate  : "0") . ' ' . Str::plural('diária', ($reservation->numberOfDaysLate))}} a mais</span>
+                                    </div>
+                                    <div>
+                                        <i class="bi bi-currency-dollar me-1 text-danger"></i>
+                                        <span class="text-danger">R$ {{number_format($reservation->totalPriceLate, 2, ',', '.')}}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <h5 for="total_display" class="form-label">Total:</h5>
+                                <div 
+                                    class="form-control bg-light d-flex align-items-center justify-content-between"
+                                    style="transition: all 0.3s ease; font-weight: 500;"
+                                >
+                                    <div>
+                                        <i class="bi bi-calendar-week me-2 text-primary"></i>
+                                        <span>{{$reservation->numberOfDays + $reservation->numberOfDaysLate . ' ' . Str::plural('diária', $reservation->numberOfDays + $reservation->numberOfDaysLate)}}</span>
+                                    </div>
+                                    <div>
+                                        <i class="bi bi-currency-dollar me-1"></i>
+                                        <span>R$ {{number_format(($reservation->totalPrice + $reservation->totalPriceLate), 2, ',', '.')}}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
+                    </div>
+
                 </dl>
 
                 <div class="d-flex gap-2">
                     @if (!$reservation->check_in_at)
-                        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#checkInModal">
-                            <i class="bi bi-door-open"></i> Fazer Check-in
+                        <button id="checkInButton" type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#checkInModal">
+                            <span class="btn-content">
+                                <i class="bi bi-door-open"></i> Fazer Check-in
+                            </span>
+                            <span class="spinner-content d-none">
+                                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                <span> Fazendo Check-in...</span>
+                            </span>
                         </button>
                     @endif
 
                     @if ($reservation->check_in_at && !$reservation->check_out_at)
-                        <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#checkOutModal">
-                            <i class="bi bi-door-closed"></i> Fazer Check-out
+                        <button id="checkOutButton" type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#checkOutModal">
+                            <span class="btn-content">
+                                <i class="bi bi-door-closed"></i> Fazer Check-out
+                            </span>
+                            <span class="spinner-content d-none">
+                                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                <span> Fazendo Check-out...</span>
+                            </span>
                         </button>
                     @endif
                 </div>
 
             </div>
 
-            <div class="col-8 d-none d-lg-flex justify-content-center align-items-center">
+            <div class="col-8 col-lg-7 d-none d-lg-flex justify-content-center align-items-center">
                 <img src="{{asset('assets/images/edit.webp')}}" alt="Ilustração de edição" class="img-fluid" style="max-height: 800px;">
             </div>
 

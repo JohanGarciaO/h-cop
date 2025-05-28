@@ -20,17 +20,24 @@
                     </div>
                     <div class="mb-3">
                         <label for="daily_price" class="form-label">Diária:</label>
-                        <input type="number" class="form-control" id="daily_price" name="daily_price" min="1" step="1" placeholder="Defina a diária do quarto" required>
+                        <input type="number" class="form-control" id="daily_price" name="daily_price" min="1" step="0.01" placeholder="Defina a diária do quarto" required>
                     </div>
                 </div>
 
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="submit" class="btn btn-core">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-plus-circle-fill" viewBox="0 0 20 20">
-                            <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3z"/>
-                        </svg> 
-                        Adicionar</button>
+                    <button type="submit" class="btn btn-core" id="createRoomButton">
+                        <span class="btn-content">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-plus-circle-fill" viewBox="0 0 20 20">
+                                <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3z"/>
+                            </svg> 
+                            Criar
+                        </span>
+                        <span class="spinner-content d-none">
+                            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                            Criando...
+                        </span>
+                    </button>
                 </div>
             </div>
 
@@ -38,3 +45,20 @@
     </div>
 </div>
   
+@push('scripts')
+<script>
+
+    // Loading button
+    $('#createRoomModal').on('submit', function () {
+        const $btn = $('#createRoomButton');
+        
+        // Desativa botão
+        $btn.prop('disabled', true);
+        
+        // Alterna visibilidade dos elementos
+        $btn.find('.btn-content').addClass('d-none');
+        $btn.find('.spinner-content').removeClass('d-none');
+    });
+        
+</script>
+@endpush

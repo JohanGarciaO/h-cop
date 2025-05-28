@@ -100,7 +100,7 @@
                                         id="daily_price" 
                                         name="daily_price" 
                                         min="1" 
-                                        step="1" 
+                                        step="0.01" 
                                         placeholder="Diária" 
                                         required
                                         >

@@ -202,7 +202,7 @@ class ReservationController extends Controller
     {
         $reservation->delete();
 
-        return redirect()->route('reservations.index')->with([
+        return redirect()->back()->with([
             'status' => 'success',
             'alert-type' => 'success',
             'message' => "A reseva de <b>".$reservation->guest->name."</b> no quarto <b>".$reservation->room->number."</b> foi apagada com sucesso.",

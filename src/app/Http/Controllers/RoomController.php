@@ -119,7 +119,7 @@ class RoomController extends Controller
 
         Room::find($id)->update($request->only(['number', 'capacity', 'daily_price']));
 
-        return redirect()->route('rooms.index')->with([
+        return redirect()->back()->with([
             'status' => 'success',
             'alert-type' => 'success',
             'message' => "Quarto <b>número $request->number</b> alterado com sucesso.",

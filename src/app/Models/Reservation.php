@@ -80,8 +80,25 @@ class Reservation extends Model
     {
         return $this->daily_price * $this->number_of_days;
     }
+
+    public function getNumberOfDaysLateAttribute()
+    {
+        if ($this->check_out_at && $this->scheduled_check_out) {
+            $checkout = Carbon::parse($this->check_out_at);
+
+            // Checkout agendado + tolerância (pega o horário limite do config ou usa o padrão)
+            [$hour, $minute, $second] = explode(':', Config::get('hotel.checkout_limit_time', '23:59:00'));
+            $scheduled = Carbon::parse($this->scheduled_check_out)->setTime($hour, $minute, $second);
+
+            if ($checkout->greaterThan($scheduled)) {
+                $daysLate = ceil($scheduled->diffInDays($checkout));
+                return $daysLate;
+            }
+        }
+        return false;
+    }
     
-    public function hasLateCheckout()
+    public function getTotalPriceLateAttribute()
     {
         if ($this->check_out_at && $this->scheduled_check_out) {
             $checkout = Carbon::parse($this->check_out_at);

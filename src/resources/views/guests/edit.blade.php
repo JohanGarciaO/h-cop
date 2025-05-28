@@ -19,6 +19,10 @@
         border-color: #fff;
     }
 
+    #form_edit input::placeholder {
+        color: #cccccc79;
+    }
+
     /* Sobrescreve CSS do select2 */
 
     .select2-container .select2-selection--single {
@@ -91,11 +95,17 @@
                     Voltar
                 </a>
                 <button id="btn_submit_form" class="btn btn-core">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-floppy-fill" viewBox="0 0 18 18">
-                        <path d="M0 1.5A1.5 1.5 0 0 1 1.5 0H3v5.5A1.5 1.5 0 0 0 4.5 7h7A1.5 1.5 0 0 0 13 5.5V0h.086a1.5 1.5 0 0 1 1.06.44l1.415 1.414A1.5 1.5 0 0 1 16 2.914V14.5a1.5 1.5 0 0 1-1.5 1.5H14v-5.5A1.5 1.5 0 0 0 12.5 9h-9A1.5 1.5 0 0 0 2 10.5V16h-.5A1.5 1.5 0 0 1 0 14.5z"/>
-                        <path d="M3 16h10v-5.5a.5.5 0 0 0-.5-.5h-9a.5.5 0 0 0-.5.5zm9-16H4v5.5a.5.5 0 0 0 .5.5h7a.5.5 0 0 0 .5-.5zM9 1h2v4H9z"/>
-                    </svg>
-                    Salvar
+                    <span class="btn-content">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-floppy-fill" viewBox="0 0 18 18">
+                            <path d="M0 1.5A1.5 1.5 0 0 1 1.5 0H3v5.5A1.5 1.5 0 0 0 4.5 7h7A1.5 1.5 0 0 0 13 5.5V0h.086a1.5 1.5 0 0 1 1.06.44l1.415 1.414A1.5 1.5 0 0 1 16 2.914V14.5a1.5 1.5 0 0 1-1.5 1.5H14v-5.5A1.5 1.5 0 0 0 12.5 9h-9A1.5 1.5 0 0 0 2 10.5V16h-.5A1.5 1.5 0 0 1 0 14.5z"/>
+                            <path d="M3 16h10v-5.5a.5.5 0 0 0-.5-.5h-9a.5.5 0 0 0-.5.5zm9-16H4v5.5a.5.5 0 0 0 .5.5h7a.5.5 0 0 0 .5-.5zM9 1h2v4H9z"/>
+                        </svg>
+                        Salvar
+                    </span>
+                    <span class="spinner-content d-none">
+                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                        Salvando...
+                    </span>
                 </button>
             </div>
         @endslot
@@ -187,6 +197,15 @@
         $('#btn_submit_form').click((e) => {
             e.preventDefault()
             $('#hidden_submit').click()
+        })
+
+        $('#form_edit').on('submit', () => {
+            const btn = $('#btn_submit_form')
+
+            btn.prop('disabled', true)
+
+            btn.find('.btn-content').addClass('d-none')
+            btn.find('.spinner-content').removeClass('d-none')
         })
     })
 

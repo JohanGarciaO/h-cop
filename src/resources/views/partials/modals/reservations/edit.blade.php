@@ -99,7 +99,7 @@
                                         id="daily_price" 
                                         name="daily_price" 
                                         min="1" 
-                                        step="1" 
+                                        step="0.01" 
                                         placeholder="Diária" 
                                         data-value="{{$reservation->daily_price}}"
                                         value="{{$reservation->daily_price}}"
@@ -249,6 +249,8 @@
             $btn.find('.btn-content').addClass('d-none');
             $btn.find('.spinner-content').removeClass('d-none');
         });
+
+        $('#daily_price').trigger('change');
 
     })
 

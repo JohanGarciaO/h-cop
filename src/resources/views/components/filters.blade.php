@@ -27,7 +27,7 @@
 </style>
 @endpush
 
-<form method="GET" action="{{ $action }}" class="mb-4">
+<form method="GET" action="{{ $action }}" class="mb-4" id="filtersForm">
 
     {{-- BOTÃO GLOBAL QUE MOSTRA TODOS OS GRUPOS --}}
     <div class="mb-3">
@@ -104,9 +104,15 @@
 
         {{-- BOTÃO DE FILTRAR --}}
         <div class="mb-3">
-            <button type="submit" class="btn btn-outline-primary">
-                <i class="bi bi-search"></i>
-                Filtrar
+            <button type="submit" class="btn btn-outline-primary btn-content" id="submitFilters">
+                <span class="btn-content">
+                    <i class="bi bi-search"></i>
+                    Filtrar
+                </span>
+                <span class="spinner-content d-none">
+                    <i class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></i>
+                    Filtrando...
+                </span>
             </button>
         </div>
     </div>
@@ -147,6 +153,18 @@
             $(this).toggleClass('btn-outline-secondary btn-secondary')
             block.toggleClass('collapsed');
             icon.toggleClass('bi-unlock bi-lock');
+        });
+
+        // Loading button
+        $('#filtersForm').on('submit', function () {
+            const $btn = $('#submitFilters');
+    
+            // Desativa botão
+            $btn.prop('disabled', true);
+
+            // Alterna visibilidade dos elementos
+            $btn.find('.btn-content').addClass('d-none');
+            $btn.find('.spinner-content').removeClass('d-none');
         });
 
     });
