@@ -13,7 +13,7 @@
 
                 <div class="modal-body">
                     <div class="mb-3">
-                        <p class="">Cuidado, ao decidir apagar uma reserva não será mais possível recuperá-la no histórico.</p>
+                        <p class="">Cuidado, esta ação será irreversível e apagará todos os dados relacionados a esta reserva.</p>
                     </div>
                 </div>
 

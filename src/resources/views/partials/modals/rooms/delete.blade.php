@@ -7,14 +7,14 @@
             <div class="modal-content">
 
                 <div class="modal-header">
-                    <h5 class="modal-title" id="deleteRoomModalLabel{{ $room->id }}">Quarto&nbsp;</h5>
-                    <h4 class="card-title"><span class="badge bg-background"> {{ $room->number }}</span></h4>
+                    <h5 class="modal-title" id="deleteRoomModalLabel{{ $room->id }}">Remover Quarto</h5>
+                    {{-- <h4 class="card-title"><span class="badge bg-background"> {{ $room->number }}</span></h4> --}}
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
 
                 <div class="modal-body">
                     <div class="mb-3">
-                        <p class="">Tem certeza de que deseja excluir este quarto?</p>
+                        <p class="">Tem certeza de que deseja excluir o quarto <b>{{$room->number}}</b>?</p>
                     </div>
                 </div>
 

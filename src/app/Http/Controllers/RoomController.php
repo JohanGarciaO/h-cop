@@ -126,6 +126,23 @@ class RoomController extends Controller
         ]);
     }
 
+    public function show(string $id)
+    {   
+        $room = Room::find($id);
+
+        if(!$room) {
+            return redirect()->route('rooms.index')->with([
+                'status' => 'error',
+                'alert-type' => 'danger',
+                'message' => "Quarto não encontrado.",
+            ]);
+        }
+
+        $room->load('reservations.guest')->loadCount('activeReservations');
+
+        return view('rooms.show', compact('room'));
+    }
+
     public function destroy(Room $room)
     {
         $room->delete();

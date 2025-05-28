@@ -83,8 +83,8 @@
                     <th>Diária</th>
                     <th>Entrada</th>
                     <th>Saída</th>
-                    <th>Check-in</th>
-                    <th>Checkout</th>
+                    <th class="text-nowrap">Check-in</th>
+                    <th class="text-nowrap">Check-out</th>
                     <th>Ações</th>
                 </tr>
             </thead>

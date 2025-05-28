@@ -20,7 +20,7 @@
                     </div>
                     <div class="mb-3">
                         <label for="daily_price" class="form-label">Diária:</label>
-                        <input type="number" class="form-control" id="daily_price" name="daily_price" min="1" step="0.01" placeholder="Defina a diária do quarto" required>
+                        <input type="number" class="form-control" id="daily_price" name="daily_price" min="1" step="1" placeholder="Defina a diária do quarto" required>
                     </div>
                 </div>
 

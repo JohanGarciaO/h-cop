@@ -7,13 +7,13 @@
             <div class="modal-content">
 
                 <div class="modal-header">
-                    <span class="fw-bold">{{ $guest->name }}</span>
+                    <h5 class="modal-title">Remover Hóspede</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
 
                 <div class="modal-body">
                     <div class="mb-3">
-                        <p class="">Tem certeza de que deseja apagar este hóspede?</p>
+                        <p class="">Tem certeza de que deseja apagar o hóspede <b>{{$guest->name}}</b> do sistema?</p>
                     </div>
                 </div>
 

@@ -83,63 +83,6 @@
 
             </div>
 
-            {{-- <div class="col-12 col-lg-4 p-4 bg-background shadow rounded">
-                
-                <h5 class="mb-5 fw-bold">Detalhes do Hóspede</h5>
-
-                <dl class="row">
-                    <dt class="col-sm-6">Nome:</dt>
-                    <dd class="col-sm-6">{{ $guest->name }}</dd>
-
-                    <dt class="col-sm-6">Status:</dt>
-                    <dd class="col-sm-6">
-                        @if ($status == 'check-in pendente')
-                            <span class="badge bg-danger">{{ $status }}</span>
-                        @elseif ($status == 'check-out pendente')
-                            <span class="badge bg-success">{{ $status }}</span>
-                        @else
-                            <span class="badge bg-secondary">nenhuma hospedagem ativa</span>
-                        @endif
-                    </dd>
-
-                    <dt class="col-sm-6">Documento:</dt>
-                    <dd class="col-sm-6">{{ $guest->document }}</dd>
-
-                    <dt class="col-sm-6">Telefone:</dt>
-                    <dd class="col-sm-6">{{ $guest->phone }}</dd>
-
-                    @if ($guest->email)
-                        <dt class="col-sm-6">E-mail:</dt>
-                        <dd class="col-sm-6">{{ $guest->email }}</dd>
-                    @endif
-                </dl>
-
-                <h5 class="mb-4 fw-bold">Detalhes do Endereço</h5>
-
-                <dl class="row">
-                    <dt class="col-sm-6">CEP:</dt>
-                    <dd class="col-sm-6">{{ $guest->address->postal_code }}</dd>
-
-                    <dt class="col-sm-6">Estado:</dt>
-                    <dd class="col-sm-6">{{ $guest->address->state->name }}</dd>
-
-                    <dt class="col-sm-6">Cidade:</dt>
-                    <dd class="col-sm-6">{{ $guest->address->city->name }}</dd>
-
-                    <dt class="col-sm-6">Rua:</dt>
-                    <dd class="col-sm-6">{{ $guest->address->street }}</dd>
-
-                    <dt class="col-sm-6">Número:</dt>
-                    <dd class="col-sm-6">{{ $guest->address->number ?? 's/n' }}</dd>
-
-                    @if ($guest->address->complement)
-                        <dt class="col-sm-6">Complemento:</dt>
-                        <dd class="col-sm-6">{{ $guest->address->complement }}</dd>
-                    @endif
-                </dl>
-
-            </div> --}}
-
             <div class="col-12 col-lg-8 justify-content-start align-items-center">
                 {{-- <img src="{{asset('assets/images/edit.webp')}}" alt="Ilustração de edição" class="img-fluid" style="max-height: 800px;"> --}}
                 <h5 class="mb-5 fw-bold">Histórico de Reservas</h5>
@@ -152,8 +95,8 @@
                             <th>Diária</th>
                             <th>Entrada</th>
                             <th>Saída</th>
-                            <th>Check-in</th>
-                            <th>Checkout</th>
+                            <th class="text-nowrap">Check-in</th>
+                            <th class="text-nowrap">Check-out</th>
                             <th>Ações</th>
                         </tr>
                     </thead>

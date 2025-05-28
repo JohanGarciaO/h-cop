@@ -6,8 +6,8 @@
 
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="editRoomModalLabel{{ $room->id }}">Quarto&nbsp;</b></h5>
-                    <h4 class="card-title"><span class="badge bg-background"> {{ $room->number }}</span></h4>
+                    <h5 class="modal-title" id="editRoomModalLabel{{ $room->id }}">Atualizar Quarto</b></h5>
+                    {{-- <h4 class="card-title"><span class="badge bg-background"> {{ $room->number }}</span></h4> --}}
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
 
@@ -22,7 +22,7 @@
                     </div>
                     <div class="mb-3">
                         <label for="daily_price" class="form-label">Diária:</label>
-                        <input type="number" class="form-control" id="daily_price" name="daily_price" min="1" step="0.01" value="{{ $room->daily_price }}" placeholder="Defina a diária do quarto" required>
+                        <input type="number" class="form-control" id="daily_price" name="daily_price" min="1" step="1" value="{{ $room->daily_price }}" placeholder="Defina a diária do quarto" required>
                     </div>
                 </div>
 
