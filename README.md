@@ -9,12 +9,14 @@ Este é um sistema de hotelaria desenvolvido para ser utilizado localmente por e
 - MySQL
 - Docker + Docker Compose
 - Nginx
+- [Spatie/Browsershot](https://github.com/spatie/browsershot) (para geração de PDFs)
+- Puppeteer + Google Chrome headless
 
 ## 🧱 Estrutura do Projeto
 
 O sistema foi organizado em milestones e issues para facilitar o rastreamento das tarefas concluídas. A estrutura inclui:
 
-- Infraestrutura com Docker (app, db, nginx)
+- Infraestrutura com Docker (app, db, nginx, phpmyadmin)
 - Sistema de autenticação simples (apenas usuário admin)
 - Gerenciamento de quartos e reservas
 - Visualização de disponibilidade por capacidade e vagas
@@ -52,6 +54,7 @@ docker-compose up -d --build
 
 ```bash
 docker-compose exec app composer install
+docker-compose exec app npm install
 ```
 
 ### 6. Gerar a chave da aplicação
