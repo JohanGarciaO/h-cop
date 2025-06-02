@@ -9,20 +9,10 @@ class PdfController extends Controller
 {
     public function test(string $reservation)
     {
-        // Cria dados fictícios simulando uma reserva
-        $reservation = (object) [
-            'guest' => (object) ['name' => 'João da Silva'],
-            'room' => (object) ['number' => '204'],
-            'scheduled_check_in' => '2025-06-01 14:00',
-            'scheduled_check_out' => '2025-06-05 12:00',
-            'daily_price' => 150.00,
-            'check_in_at' => '2025-06-01 14:15',
-            'check_out_at' => null,
-            'total_days' => 4,
-            'total_price' => 600.00,
-        ];
+        $reservation = \App\Models\Reservation::find(8)->load(['room', 'guest']);
+        $logo = embedImageAsBase64(public_path('assets/images/brasao_brasil.jpg'));
 
-        $html = view('pdfs.receipt', compact('reservation'))->render();
+        $html = view('pdfs.receipt', compact('reservation', 'logo'))->render();
 
         return response(
             Browsershot::html($html)
@@ -35,18 +25,9 @@ class PdfController extends Controller
 
     public function view()
     {
-        $reservation = (object) [
-            'guest' => (object) ['name' => 'João da Silva'],
-            'room' => (object) ['number' => '204'],
-            'scheduled_check_in' => '2025-06-01 14:00',
-            'scheduled_check_out' => '2025-06-05 12:00',
-            'daily_price' => 150.00,
-            'check_in_at' => '2025-06-01 14:15',
-            'check_out_at' => null,
-            'total_days' => 4,
-            'total_price' => 600.00,
-        ];
+        $reservation = \App\Models\Reservation::find(8)->load(['room', 'guest']);
+        $logo = embedImageAsBase64(public_path('assets/images/brasao_brasil.jpg'));
 
-        return view('pdfs.receipt', compact('reservation'));
+        return view('pdfs.receipt', compact('reservation', 'logo'));
     }
 }
