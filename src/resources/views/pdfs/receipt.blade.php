@@ -59,7 +59,7 @@
     </div>
     
     <div style="text-align: center; margin: 20px 0;">
-        <img src="{{ $logo }}" width="80" alt="Brasão do Brasil"><br>
+        <img src="{{ $brasao }}" width="80" alt="Brasão do Brasil"><br>
         <strong>MINISTÉRIO DA DEFESA</strong><br>
         COMANDO DA AERONÁUTICA<br>
         {{-- <u>GRUPAMENTO DE APOIO DE BELÉM</u> --}}
@@ -107,7 +107,7 @@
         </p>
 
         <p>
-            Situação da reserva: <strong>{{ ucfirst($reservation->getStatus()) }}</strong>.
+            Situação da reserva: <strong>{{ ucfirst($reservation->status) }}</strong>.
         </p>
 
     </div>

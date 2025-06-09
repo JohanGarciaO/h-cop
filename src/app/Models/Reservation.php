@@ -49,7 +49,7 @@ class Reservation extends Model
         return is_null($this->check_out_at);
     }
 
-    public function getStatus()
+    public function getStatusAttribute()
     {
         $status;
         if($this->isActive()){
