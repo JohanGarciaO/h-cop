@@ -90,7 +90,7 @@
             </thead>
             <tbody>
                 @foreach ($reservations as $reservation)
-                    @php $status = $reservation->status(); @endphp
+                    @php $status = $reservation->status; @endphp
                     <tr>
 
                         <td class="fw-bold">{{ $reservation->room->number }}</td>

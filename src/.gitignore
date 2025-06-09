@@ -21,3 +21,9 @@ yarn-error.log
 /.nova
 /.vscode
 /.zed
+# Evitar lixo gerado por Puppeteer/Chrome
+/.cache/
+/.config/
+/.local/
+/.npm/
+/.pki/

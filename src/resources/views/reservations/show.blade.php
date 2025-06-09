@@ -22,6 +22,11 @@
                     </button>
                     <!-- Modal de Edição da Reserva -->
                     @include('partials.modals.reservations.edit', ['reservation' => $reservation])
+                @else
+                    <a href="{{route('reservations.receipt.download', $reservation->id)}}" id="btn_download" class="btn btn-outline-core">
+                        <i class="bi bi-download"></i>
+                        Baixar Recibo
+                    </a>
                 @endif
             </div>
         @endslot

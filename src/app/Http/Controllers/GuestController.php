@@ -125,7 +125,7 @@ class GuestController extends Controller
         if(!$activeReservation) {
             $status = 'não hospedado';
         }else{
-            $status = $activeReservation->status();
+            $status = $activeReservation->status;
         }
 
         return view('guests.show', compact('guest', 'activeReservation', 'status'));

@@ -5,6 +5,7 @@ use App\Http\Controllers\LoginController;
 use App\Http\Controllers\RoomController;
 use App\Http\Controllers\GuestController;
 use App\Http\Controllers\ReservationController;
+use App\Http\Controllers\PdfController;
 use App\Models\State;
 use App\Models\City;
 
@@ -30,4 +31,5 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/reservations/{reservation}/check-in', [ReservationController::class, 'checkIn'])->name('reservations.check-in');
     Route::post('/reservations/{reservation}/check-out', [ReservationController::class, 'checkOut'])->name('reservations.check-out');
 
+    Route::get('/reservations/{reservation}/receipt/download', [ReservationController::class, 'downloadReceipt'])->name('reservations.receipt.download');
 });

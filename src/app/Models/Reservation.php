@@ -30,6 +30,10 @@ class Reservation extends Model
         'updated_at' => 'datetime',
     ];
 
+    protected $appends = [
+        'status'
+    ];
+
     public function guest()
     {
         return $this->belongsTo(Guest::class);
@@ -45,7 +49,7 @@ class Reservation extends Model
         return is_null($this->check_out_at);
     }
 
-    public function status()
+    public function getStatusAttribute()
     {
         $status;
         if($this->isActive()){

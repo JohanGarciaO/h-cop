@@ -69,7 +69,7 @@
             <tbody>
                 @foreach ($guests as $guest)
                     @php 
-                    $status = $guest->reservations()->whereNull('check_out_at')?->first()?->status();
+                    $status = $guest->reservations()->whereNull('check_out_at')?->first()?->status;
                     @endphp
                     <tr>
 

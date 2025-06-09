@@ -6,10 +6,12 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Storage;
 
 use App\Models\Reservation;
 use App\Models\Guest;
 use App\Models\Room;
+use App\Services\ReservationReceiptService;
 
 class ReservationController extends Controller
 {
@@ -254,10 +256,30 @@ class ReservationController extends Controller
             $reservation->save();
         });
 
+        try {
+            $receipt = app(ReservationReceiptService::class);
+            $path = $receipt->generate($reservation->id);
+        } catch (\Throwable $th) {
+            \Log::error('Erro ao gerar recibo: ' . $th->getMessage());
+            return redirect()->back()->with([
+                'status' => 'error',
+                'alert-type' => 'danger',
+                'message' => 'Erro ao gerar o recibo. Verifique os logs.',
+            ]);
+        }
+
         return redirect()->route('reservations.show', $reservation->id)->with([
             'status' => 'success',
             'alert-type' => 'success',
             'message' => "Check-out realizado com sucesso.",
         ]);
+    }
+
+    public function downloadReceipt(Reservation $reservation)
+    {
+        abort_unless(auth()->check(), 403);
+        abort_unless($reservation->receipt_path && Storage::exists("{$reservation->receipt_path}"), 404);
+
+        return Storage::download("{$reservation->receipt_path}", "recibo_reserva_{$reservation->id}.pdf");
     }
 }
