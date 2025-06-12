@@ -6,7 +6,7 @@
     @component('partials.components.body-header', ['title' => 'Gerenciar Reserva'])
         @slot('buttons')
             <div>
-                <a class="btn btn-outline-secondary" href="{{ route('reservations.index') }}">
+                <a class="btn btn-outline-secondary" href="javascript:history.back()">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-arrow-left-circle-fill" viewBox="0 0 20 20">
                         <path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0m3.5 7.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5z"/>
                     </svg>
@@ -18,15 +18,20 @@
                             <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
                             <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
                         </svg>
-                        Editar
+                        Editar                       
                     </button>
                     <!-- Modal de Edição da Reserva -->
                     @include('partials.modals.reservations.edit', ['reservation' => $reservation])
                 @else
-                    <a href="{{route('reservations.receipt.download', $reservation->id)}}" id="btn_download" class="btn btn-outline-core">
-                        <i class="bi bi-download"></i>
-                        Baixar Recibo
-                    </a>
+                    <button id="btn_download" class="btn btn-outline-core" data-url="{{ route('reservations.receipt.download', $reservation->id) }}">
+                        <span class="btn-content">
+                            <i class="bi bi-download"></i> Baixar Recibo
+                        </span>
+                        <span class="spinner-content d-none">
+                            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                            <span> Baixando...</span>
+                        </span>
+                    </button>
                 @endif
             </div>
         @endslot
@@ -101,7 +106,16 @@
                                     <span class="{{$reservation->check_out_at ? 'text-success' : ''}}">R$ {{number_format($reservation->totalPrice, 2, ',', '.')}}</span>
                                 </div>
                             </div>
-                        </div>
+                        </div>    
+
+                        @if ($reservation->scheduled_check_in->isFuture())
+                            <div class="col-md-12 mt-3">
+                                <div class="alert alert-danger d-flex align-items-center gap-2" role="alert">
+                                    <i class="bi bi-exclamation-triangle-fill gap-2"></i>
+                                    <div>Ainda não chegou a data agendada para o Check-in</div>
+                                </div>
+                            </div>
+                        @endif
 
                         @if($reservation->check_out_at)
                             <div class="col-md-12">
@@ -141,16 +155,18 @@
                 </dl>
 
                 <div class="d-flex gap-2">
-                    @if (!$reservation->check_in_at)
-                        <button id="checkInButton" type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#checkInModal">
-                            <span class="btn-content">
-                                <i class="bi bi-door-open"></i> Fazer Check-in
-                            </span>
-                            <span class="spinner-content d-none">
-                                <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                                <span> Fazendo Check-in...</span>
-                            </span>
-                        </button>
+                    @if (!$reservation->scheduled_check_in->isFuture())
+                        @if (!$reservation->check_in_at)
+                            <button id="checkInButton" type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#checkInModal">
+                                <span class="btn-content">
+                                    <i class="bi bi-door-open"></i> Fazer Check-in
+                                </span>
+                                <span class="spinner-content d-none">
+                                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                    <span> Fazendo Check-in...</span>
+                                </span>
+                            </button>
+                        @endif
                     @endif
 
                     @if ($reservation->check_in_at && !$reservation->check_out_at)
@@ -191,6 +207,58 @@
             const modal = new bootstrap.Modal(document.getElementById('editReservationModal'));
             modal.show();
         }
+
+        $('#btn_download').on('click', function (e) {
+            e.preventDefault();
+
+            const button = $(this);
+            const url = button.data('url');
+
+            // Mostrar loading
+            button.find('.btn-content').addClass('d-none');
+            button.find('.spinner-content').removeClass('d-none');
+            button.prop('disabled', true);
+
+            $.ajax({
+                url: url,
+                method: 'GET',
+                xhrFields: {
+                    responseType: 'blob'
+                },
+                success: function (data, status, xhr) {
+                    const blob = new Blob([data], { type: xhr.getResponseHeader('Content-Type') });
+                    const downloadUrl = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+
+                    const contentDisposition = xhr.getResponseHeader('Content-Disposition');
+                    let filename = 'recibo.pdf';
+
+                    if (contentDisposition && contentDisposition.indexOf('filename=') !== -1) {
+                        filename = contentDisposition.split('filename=')[1].replaceAll('"', '').trim();
+                    }
+
+                    a.href = downloadUrl;
+                    a.download = filename;
+                    document.body.appendChild(a);
+                    a.click();
+                    a.remove();
+                    window.URL.revokeObjectURL(downloadUrl);
+                },
+                error: function (xhr) {
+                    let message = 'Erro ao baixar o recibo.';
+                    if (xhr.responseJSON && xhr.responseJSON.message) {
+                        message = xhr.responseJSON.message;
+                    }
+                    showToast(message, 'danger');
+                },
+                complete: function () {
+                    // Restaurar botão
+                    button.find('.btn-content').removeClass('d-none');
+                    button.find('.spinner-content').addClass('d-none');
+                    button.prop('disabled', false);
+                }
+            });
+        })
 
     })
 

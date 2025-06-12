@@ -6,7 +6,10 @@
             <span class="navbar-toggler-icon"></span>
         </button>
 
-        <a class="navbar-brand" href="{{ route('home.index') }}">{{env('APP_NAME')}}</a>
+        <a class="navbar-brand" href="{{ route('home.index') }}">
+            <img src="{{asset("assets/images/".config('app.logo_navbar').".png")}}" alt="Logo" width="30px">
+            <span style="font-size: 12px; letter-spacing: 8px;">{{config('app.logo_navbar_title')}}</span>
+        </a>
         
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
             <span class="navbar-toggler-icon"></span>

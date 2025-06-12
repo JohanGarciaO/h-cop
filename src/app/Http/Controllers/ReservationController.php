@@ -221,6 +221,14 @@ class ReservationController extends Controller
             ]);
         }
 
+        if ($reservation->scheduled_check_in->isFuture()){
+            return redirect()->back()->with([
+                'status' => 'error',
+                'alert-type' => 'danger',
+                'message' => "Ainda não chegou o dia de seu check-in.",
+            ]);
+        }
+
         DB::transaction(function () use ($reservation) {
             $reservation->check_in_at = Carbon::now();
             $reservation->save();
@@ -275,10 +283,30 @@ class ReservationController extends Controller
         ]);
     }
 
-    public function downloadReceipt(Reservation $reservation)
+    public function downloadReceipt(string $id)
     {
-        abort_unless(auth()->check(), 403);
-        abort_unless($reservation->receipt_path && Storage::exists("{$reservation->receipt_path}"), 404);
+        $reservation = Reservation::find($id);
+
+        if (!$reservation) {
+            return redirect()->route('reservations.index')->with([
+                'status' => 'error',
+                'alert-type' => 'danger',
+                'message' => 'Reserva não encontrada.',
+            ]);
+        }
+
+        if ($reservation->isActive()) {
+            return redirect()->route('reservations.index')->with([
+                'status' => 'error',
+                'alert-type' => 'danger',
+                'message' => 'A reserva deve estar finalizada antes de gerar o recibo.',
+            ]);
+        }
+
+        if (!$reservation->receipt_path || !Storage::exists($reservation->receipt_path)) {
+            $path = app(ReservationReceiptService::class)->generate($reservation->id);
+            return Storage::download("{$path}", "recibo_reserva_{$reservation->id}.pdf");
+        }
 
         return Storage::download("{$reservation->receipt_path}", "recibo_reserva_{$reservation->id}.pdf");
     }
