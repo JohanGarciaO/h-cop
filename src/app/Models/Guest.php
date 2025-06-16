@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Enums\Gender;
 
 class Guest extends Model
 {
@@ -12,10 +13,21 @@ class Guest extends Model
     protected $fillable = [
         'name', 
         'document', 
+        'gender',
+        'committee_id',
         'phone', 
         'email', 
         'address_id'
     ];
+
+    protected $casts = [
+        'gender' => Gender::class,
+    ];
+
+    public function committee()
+    {
+        return $this->belongsTo(Committee::class);
+    }
 
     public function address()
     {
