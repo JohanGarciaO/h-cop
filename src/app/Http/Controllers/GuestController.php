@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\Enum;
 use App\Models\Guest;
 use App\Models\Address;
+use App\Enums\Gender;
 
 class GuestController extends Controller
 {
@@ -27,7 +29,7 @@ class GuestController extends Controller
         // Filtro por documento
         if ($request->filled('cpf_filter')) {
             $guests->where('document', $request->cpf_filter);
-        }
+        }        
 
         // Filtro por estado
         if ($request->filled('state_filter_id')) {
@@ -41,6 +43,16 @@ class GuestController extends Controller
             $guests->whereHas('address', function ($query) use ($request) {
                 $query->where('city_id', $request->city_filter_id);
             });
+        }
+
+        // Filtro por gênero
+        if ($request->filled('gender_filter')) {
+            $guests->where('gender', $request->input('gender_filter'));
+        }
+
+        // Filtro por gênero
+        if ($request->filled('committee_filter')) {
+            $guests->where('committee_id', $request->input('committee_filter'));
         }
 
         // Filtro por status
@@ -76,6 +88,11 @@ class GuestController extends Controller
             'document' => 'required|size:14|unique:guests,document',
             'phone' => 'required|max:15',
             'email' => 'nullable|email',
+            'gender' => [
+                'required',
+                new Enum(Gender::class),
+            ],
+            'committee_id' => 'nullable|exists:committees,id',
         ],[
             'name.required' => 'o nome não pode estar vazio.',
             'document.required' => 'o CPF não pode estar vazio.',
@@ -84,6 +101,9 @@ class GuestController extends Controller
             'phone.required' => 'o telefone não pode estar vazio.',
             'phone.max' => 'o telefone deve ter no máximo 15 caracteres.',
             'email.email' => 'O e-mail digitado não é válido',
+            'gender.required' => 'O gênero é obrigatório.',
+            'gender.enum' => 'O gênero deve ser "Masculino" ou "Feminino".',
+            'committee_id.exists' => 'Deve ser passada uma comitiva válida.',
         ]);
 
         $validatedAddress = $request->validate([
@@ -146,6 +166,11 @@ class GuestController extends Controller
                 'size:14',
                 Rule::unique('guests', 'document')->ignore($guest->id),
             ],
+            'gender' => [
+                'required',
+                new Enum(Gender::class),
+            ],
+            'committee_id' => 'nullable|exists:committees,id',
             'phone' => 'required|max:15',
             'email' => 'nullable|email',
         ],[
@@ -156,6 +181,9 @@ class GuestController extends Controller
             'phone.required' => 'o telefone não pode estar vazio.',
             'phone.max' => 'o telefone deve ter no máximo 15 caracteres.',
             'email.email' => 'O e-mail digitado não é válido',
+            'gender.required' => 'O gênero é obrigatório.',
+            'gender.enum' => 'O gênero deve ser "Masculino" ou "Feminino".',
+            'committee_id.exists' => 'Deve ser passada uma comitiva válida.',
         ]);
 
         $validatedAddress = $request->validate([

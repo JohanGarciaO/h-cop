@@ -62,6 +62,9 @@
                     <dt class="col-sm-6">Hóspede:</dt>
                     <dd class="col-sm-6">{{ $reservation->guest->name }}</dd>
 
+                    <dt class="col-sm-6">Gênero:</dt>
+                    <dd class="col-sm-6">{{ $reservation->guest->gender->label() }}</dd>
+
                     @if ($reservation->guest->email)
                         <dt class="col-sm-6">E-mail:</dt>
                         <dd class="col-sm-6">{{ $reservation->guest->email }}</dd>
@@ -70,6 +73,10 @@
                     <dt class="col-sm-6">Telefone:</dt>
                     <dd class="col-sm-6">{{ $reservation->guest->phone }}</dd>
 
+                    @if ($reservation->guest?->committee)
+                        <dt class="col-sm-6">Comitiva:</dt>
+                        <dd class="col-sm-6">{{ $reservation->guest->committee->name ?? '-' }}</dd>
+                    @endif
 
                     <dt class="col-sm-6">Valor da Diária:</dt>
                     <dd class="col-sm-6">R$ {{ number_format($reservation->daily_price, 2, ',', '.') }}</dd>

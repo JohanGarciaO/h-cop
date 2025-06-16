@@ -127,13 +127,39 @@
                     <input type="email" class="form-control" id="email" name="email" placeholder="Digite o e-mail" value="{{ old('email', $guest->email) }}">
                 </div>
 
-                    <div class="col-12 mb-3">
-                        <input type="text" class="form-control" id="document" name="document" minlength="14" placeholder="Digite o CPF" value="{{ old('document', $guest->document) }}" required>
-                    </div>
+                <div class="col-12 mb-3">
+                    <select class="form-select" name="committee_id" id="committee_edit" data-selected="{{ old('committee', $guest->committee_id) }}" data-placeholder="Selecione uma comitiva">
+                        <option></option>
+                        @foreach (App\Models\Committee::all() as $committee)
+                            @if ($committee->id === $guest->committee_id)
+                                <option value="{{$committee->id}}" selected>{{$committee->name}}</option> 
+                            @else
+                                <option value="{{$committee->id}}">{{$committee->name}}</option> 
+                            @endif
+                        @endforeach
+                    </select>
+                </div>
 
-                    <div class="col-12 mb-3">
-                        <input type="text" class="form-control" id="phone" name="phone" maxlength="15" placeholder="Digite o telefone" value="{{ old('phone', $guest->phone) }}" required>
-                    </div>
+                <div class="col-12 mb-3">
+                    <select class="form-select" name="gender" id="gender_edit" data-selected="{{ old('gender', $guest->gender) }}" data-placeholder="Selecione o gênero" required>
+                        <option></option>
+                        @foreach (App\Enums\Gender::cases() as $case)
+                            @if ($case === $guest->gender)
+                                <option value="{{$case->value}}" selected>{{$case->label()}}</option> 
+                            @else
+                                <option value="{{$case->value}}">{{$case->label()}}</option> 
+                            @endif
+                        @endforeach
+                    </select>
+                </div>
+
+                <div class="col-12 mb-3">
+                    <input type="text" class="form-control" id="document" name="document" minlength="14" placeholder="Digite o CPF" value="{{ old('document', $guest->document) }}" required>
+                </div>
+
+                <div class="col-12 mb-3">
+                    <input type="text" class="form-control" id="phone" name="phone" maxlength="15" placeholder="Digite o telefone" value="{{ old('phone', $guest->phone) }}" required>
+                </div>
                    
                 <div class="col-12 mb-3">
                     <select class="form-select" id="state_edit_id" name="state_id" data-selected="{{ old('state_id', $guest->address->state_id) }}" data-placeholder="Digite o estado" required>

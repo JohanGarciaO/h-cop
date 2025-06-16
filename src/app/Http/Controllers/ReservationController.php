@@ -54,6 +54,20 @@ class ReservationController extends Controller
             });
         }
 
+        // Filtro por gênero
+        if ($request->filled('gender_filter')) {
+            $reservations->whereHas('guest', function ($query) use ($request) {
+                $query->where('gender', $request->input('gender_filter'));
+            });
+        }
+
+        // Filtro por gênero
+        if ($request->filled('committee_filter')) {
+            $reservations->whereHas('guest', function ($query) use ($request) {
+                $query->where('committee_id', $request->input('committee_filter'));
+            });
+        }
+
         // Filtros por localidade
         if ($request->filled('state_filter_id')) {
             $reservations->whereHas('guest.address', function ($query) use ($request) {

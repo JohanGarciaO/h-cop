@@ -43,7 +43,25 @@
             <div class="col-auto">
                 <input type="text" id="cpf_guest_filter" name="cpf_guest_filter" class="form-control" maxlength="14" placeholder="CPF do hóspede"
                     value="{{ request('cpf_guest_filter') }}">
-            </div>            
+            </div>
+            
+            <div class="col-auto">
+                <select name="gender_filter" id="gender_filter" class="form-select" data-selected="{{ request('gender_filter') ?? '' }}" data-placeholder="Filtre por gênero">                
+                    <option></option>
+                    @foreach (App\Enums\Gender::cases() as $case)
+                        <option value="{{$case->value}}" {{ request('gender_filter') == $case->value ? 'selected' : '' }}>{{$case->label()}}</option> 
+                    @endforeach
+                </select>
+            </div>
+
+            <div class="col-auto">
+                <select class="form-select" name="committee_filter" id="committee_filter" data-selected="{{ request('committee_filter') ?? '' }}" data-placeholder="Filtre por comitiva">
+                    <option></option>
+                    @foreach (App\Models\Committee::all() as $committee)
+                        <option value="{{$committee->id}}" {{ request('committee_filter') == $committee->id ? 'selected' : '' }}>{{$committee->name}}</option> 
+                    @endforeach
+                </select>
+            </div>
 
         </x-slot>
 
@@ -79,7 +97,13 @@
                 <tr>
                     <th>Quarto</th>
                     <th>Hóspede</th>
+                    @if (request('gender_filter'))
+                        <th>Gênero</th>                        
+                    @endif
                     <th>Status</th>
+                    @if (request('committee_filter'))
+                        <th>Comitiva</th>
+                    @endif
                     <th>Diária</th>
                     <th>Entrada</th>
                     <th>Saída</th>
@@ -95,6 +119,9 @@
 
                         <td class="fw-bold">{{ $reservation->room->number }}</td>
                         <td>{{ $reservation->guest->name }}</td>
+                        @if (request('gender_filter'))
+                            <td>{{ $reservation->guest->gender->value }}</td>
+                        @endif
 
                         <td>
                             @if ($status == 'check-in pendente')
@@ -106,6 +133,9 @@
                             @endif
                         </td>
 
+                        @if (request('committee_filter'))
+                            <td>{{ $reservation->guest?->committee?->name ?? '-' }}</td>
+                        @endif
                         <td>R$ {{ number_format($reservation->daily_price, 2, ',', '.') ?? '-' }}</td>
                         <td>{{ $reservation->scheduled_check_in?->format('d/m/Y') ?? '-' }}</td>
                         <td>{{ $reservation->scheduled_check_out?->format('d/m/Y') ?? '-' }}</td>

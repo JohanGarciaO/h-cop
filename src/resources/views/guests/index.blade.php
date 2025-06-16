@@ -49,6 +49,24 @@
                 </select>
             </div>
 
+            <div class="col-auto">
+                <select name="gender_filter" id="gender_filter" class="form-select" data-selected="{{ request('gender_filter') ?? '' }}" data-placeholder="Filtre por gênero">                
+                    <option></option>
+                    @foreach (App\Enums\Gender::cases() as $case)
+                        <option value="{{$case->value}}" {{ request('gender_filter') == $case->value ? 'selected' : '' }}>{{$case->label()}}</option> 
+                    @endforeach
+                </select>
+            </div>
+
+            <div class="col-auto">
+                <select class="form-select" name="committee_filter" id="committee_filter" data-selected="{{ request('committee_filter') ?? '' }}" data-placeholder="Filtre por comitiva">
+                    <option></option>
+                    @foreach (App\Models\Committee::all() as $committee)
+                        <option value="{{$committee->id}}" {{ request('committee_filter') == $committee->id ? 'selected' : '' }}>{{$committee->name}}</option> 
+                    @endforeach
+                </select>
+            </div>
+
         </x-slot>
     </x-filters>
 
@@ -57,7 +75,11 @@
             <thead>
                 <tr>
                     <th>Nome</th>
+                    <th>Gênero</th> 
                     <th>Status</th>
+                    @if (request('committee_filter'))
+                        <th>Comitiva</th>
+                    @endif
                     <th>Documento</th>
                     <th>Telefone</th>
                     <th>Email</th>
@@ -74,6 +96,7 @@
                     <tr>
 
                         <td>{{ $guest->name }}</td>
+                        <td>{{ $guest->gender->value }}</td>
 
                         <td>
                             @if ($status == 'check-in pendente')
@@ -84,6 +107,10 @@
                                 <span class="badge bg-secondary">não hospedado</span>
                             @endif
                         </td>
+
+                        @if (request('committee_filter'))
+                            <td>{{ $guest?->committee?->name ?? '-' }}</td>
+                        @endif
 
                         <td>{{ $guest->document }}</td>
                         <td>{{ $guest->phone }}</td>
