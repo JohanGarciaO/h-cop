@@ -31,6 +31,11 @@
             </div>
 
             <div class="col-auto">
+                <input type="text" name="number_reservation_filter" class="form-control" placeholder="Número da reserva"
+                    value="{{ request('number_reservation_filter') }}">
+            </div>
+
+            <div class="col-auto">
                 <input type="text" name="number_room_filter" class="form-control" placeholder="Número do quarto"
                     value="{{ request('number_room_filter') }}">
             </div>
@@ -46,26 +51,19 @@
             </div>
             
             <div class="col-auto">
-                <select name="gender_filter" id="gender_filter" class="form-select" data-selected="{{ request('gender_filter') ?? '' }}" data-placeholder="Filtre por gênero">                
+                <select name="gender_filter" id="gender_filter" class="form-select" data-selected="{{ request('gender_filter') ?? '' }}" data-placeholder="Gênero do hóspede">                
                     <option></option>
                     @foreach (App\Enums\Gender::cases() as $case)
                         <option value="{{$case->value}}" {{ request('gender_filter') == $case->value ? 'selected' : '' }}>{{$case->label()}}</option> 
                     @endforeach
                 </select>
-            </div>
-
-            <div class="col-auto">
-                <select class="form-select" name="committee_filter" id="committee_filter" data-selected="{{ request('committee_filter') ?? '' }}" data-placeholder="Filtre por comitiva">
-                    <option></option>
-                    @foreach (App\Models\Committee::all() as $committee)
-                        <option value="{{$committee->id}}" {{ request('committee_filter') == $committee->id ? 'selected' : '' }}>{{$committee->name}}</option> 
-                    @endforeach
-                </select>
-            </div>
+            </div>            
 
         </x-slot>
 
         <x-slot name="locality_filters">
+            <x-slot name="locality_filters_title">Filtrar por origem</x-slot>
+
             <div class="col-auto">
                 <select class="form-select" name="state_filter_id" id="state_filter_id" data-selected="{{ request('state_filter_id') ?? '' }}" data-placeholder="Filtre por estado">
                     <option></option>
@@ -74,6 +72,14 @@
             <div class="col-auto">
                 <select class="form-select" name="city_filter_id" id="city_filter_id" data-selected="{{ request('city_filter_id') ?? '' }}" data-placeholder="Filtre por cidade">
                     <option></option>
+                </select>
+            </div>
+            <div class="col-auto">
+                <select class="form-select" name="committee_filter" id="committee_filter" data-selected="{{ request('committee_filter') ?? '' }}" data-placeholder="Filtre por comitiva">
+                    <option></option>
+                    @foreach (App\Models\Committee::all() as $committee)
+                        <option value="{{$committee->id}}" {{ request('committee_filter') == $committee->id ? 'selected' : '' }}>{{$committee->name}}</option> 
+                    @endforeach
                 </select>
             </div>
         </x-slot>
@@ -95,11 +101,12 @@
         <table class="table table-dark table-hover table-striped align-middle shadow-sm">
             <thead>
                 <tr>
-                    <th>Quarto</th>
+                    <th>N°</th>
                     <th>Hóspede</th>
                     @if (request('gender_filter'))
-                        <th>Gênero</th>                        
+                    <th>Gênero</th>                        
                     @endif
+                    <th>Quarto</th>
                     <th>Status</th>
                     @if (request('committee_filter'))
                         <th>Comitiva</th>
@@ -117,8 +124,9 @@
                     @php $status = $reservation->status; @endphp
                     <tr>
 
-                        <td class="fw-bold">{{ $reservation->room->number }}</td>
+                        <td class="fw-bold">#{{ $reservation->id }}</td>
                         <td>{{ $reservation->guest->name }}</td>
+                        <td>{{ $reservation->room->number }}</td>
                         @if (request('gender_filter'))
                             <td>{{ $reservation->guest->gender->value }}</td>
                         @endif

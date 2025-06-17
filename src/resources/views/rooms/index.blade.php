@@ -20,8 +20,7 @@
     @endcomponent
 
     <x-filters action="{{ route('rooms.index') }}" results_count="{{ $result_count }}" >
-        <x-slot name="filters">
-
+        <x-slot name="filters" >
             <div class="col-auto">
                 <select name="status" class="form-select">
                     <option value="">Todos</option>

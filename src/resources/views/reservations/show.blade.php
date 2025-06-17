@@ -42,7 +42,7 @@
             
             <div class="col-12 col-lg-5 p-4 bg-background shadow rounded">
                 
-                <h5 class="mb-5 fw-bold">Detalhes da Reserva</h5>
+                <h5 class="mb-5 fw-bold">Reserva N° #{{$reservation->id}}</h5>
 
                 <dl class="row">
                     <dt class="col-sm-6">Status:</dt>
@@ -100,18 +100,28 @@
                     <div class="row g-3 mt-3">
                         <div class="col-md-12">
                             <h5 for="total_display" class="form-label">Resumo da reserva:</h5>
-                            <div 
-                                class="form-control bg-light d-flex align-items-center justify-content-between"
-                                style="transition: all 0.3s ease; font-weight: 500;"
-                            >
-                                <div>
-                                    <i class="bi bi-calendar-week me-2 text-primary"></i>
-                                    <span class="{{$reservation->check_out_at ? 'text-success' : ''}}">{{$reservation->numberOfDays . ' ' . Str::plural('diária', $reservation->numberOfDays)}}</span>
-                                </div>
-                                <div>
-                                    <i class="bi bi-currency-dollar me-1 text-success"></i>
-                                    <span class="{{$reservation->check_out_at ? 'text-success' : ''}}">R$ {{number_format($reservation->totalPrice, 2, ',', '.')}}</span>
-                                </div>
+                            <div class="form-control bg-light d-flex align-items-center justify-content-between" style="transition: all 0.3s ease; font-weight: 500;">
+
+                                @if($reservation->check_out_at)
+                                    <div>
+                                        <i class="bi bi-calendar-week me-2 text-primary"></i>
+                                        <span class="text-success">{{$reservation->numberOfDays . ' ' . Str::plural('diária', $reservation->numberOfDays)}}</span>
+                                    </div>
+                                    <div>
+                                        <i class="bi bi-currency-dollar me-1 text-success"></i>
+                                        <span class="text-success">R$ {{number_format($reservation->totalPrice, 2, ',', '.')}}</span>
+                                    </div>
+                                @else
+                                    <div>
+                                        <i class="bi bi-calendar-week me-2 text-primary"></i>
+                                        <span class="">{{$reservation->numberOfDaysPrev . ' ' . Str::plural('diária', $reservation->numberOfDaysPrev)}}</span>
+                                    </div>
+                                    <div>
+                                        <i class="bi bi-currency-dollar me-1 text-success"></i>
+                                        <span class="">R$ {{number_format($reservation->totalPricePrev, 2, ',', '.')}}</span>
+                                    </div>
+                                @endif
+
                             </div>
                         </div>    
 

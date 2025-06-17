@@ -20,6 +20,7 @@
 
     <x-filters action="{{ route('guests.index') }}" results_count="{{ $result_count }}" >
         <x-slot name="filters">
+            <x-slot name="filters_title">Filtros simples</x-slot>
             <div class="col-auto">
                 <select name="status" class="form-select">
                     <option value="">Todos</option>
@@ -36,7 +37,21 @@
             <div class="col-auto">
                 <input type="text" id="cpf_filter" name="cpf_filter" class="form-control" maxlength="14" placeholder="CPF do hóspede"
                     value="{{ request('cpf_filter') }}">
+            </div>            
+
+            <div class="col-auto">
+                <select name="gender_filter" id="gender_filter" class="form-select" data-selected="{{ request('gender_filter') ?? '' }}" data-placeholder="Filtre por gênero">                
+                    <option></option>
+                    @foreach (App\Enums\Gender::cases() as $case)
+                        <option value="{{$case->value}}" {{ request('gender_filter') == $case->value ? 'selected' : '' }}>{{$case->label()}}</option> 
+                    @endforeach
+                </select>
             </div>
+
+        </x-slot>
+
+        <x-slot name="locality_filters">
+            <x-slot name="locality_filters_title">Filtrar por origem</x-slot>
 
             <div class="col-auto">
                 <select class="form-select" name="state_filter_id" id="state_filter_id" data-selected="{{ request('state_filter_id') ?? '' }}" data-placeholder="Filtre por estado">
@@ -48,16 +63,6 @@
                     <option></option>
                 </select>
             </div>
-
-            <div class="col-auto">
-                <select name="gender_filter" id="gender_filter" class="form-select" data-selected="{{ request('gender_filter') ?? '' }}" data-placeholder="Filtre por gênero">                
-                    <option></option>
-                    @foreach (App\Enums\Gender::cases() as $case)
-                        <option value="{{$case->value}}" {{ request('gender_filter') == $case->value ? 'selected' : '' }}>{{$case->label()}}</option> 
-                    @endforeach
-                </select>
-            </div>
-
             <div class="col-auto">
                 <select class="form-select" name="committee_filter" id="committee_filter" data-selected="{{ request('committee_filter') ?? '' }}" data-placeholder="Filtre por comitiva">
                     <option></option>
@@ -66,8 +71,8 @@
                     @endforeach
                 </select>
             </div>
-
         </x-slot>
+
     </x-filters>
 
     <div class="table-responsive">
