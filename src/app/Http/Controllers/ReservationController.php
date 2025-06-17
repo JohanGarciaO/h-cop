@@ -36,6 +36,11 @@ class ReservationController extends Controller
                     break;
             }
         }
+
+        if ($request->filled('number_reservation_filter')){
+            $reservations->where('id', $request->input('number_reservation_filter'));
+        }
+
         if ($request->filled('number_room_filter')){
             $reservations->whereHas('room', function ($query) use ($request) {
                 $query->where('number', $request->input('number_room_filter'));
@@ -178,6 +183,25 @@ class ReservationController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        $reservation = Reservation::find($id);
+
+        if (!$reservation) {
+            return redirect()->route('reservations.index')->with([
+                'status' => 'error',
+                'alert-type' => 'danger',
+                'message' => "Não é possível atualizar uma reserva inexistente.",
+            ]);
+        }
+
+        // No nível de operador não é mais possível editar após o check-in (falta veriricar o tipo de User)
+        if ($reservation->isCheckIn()) {
+            return redirect()->route('reservations.update', $id)->with([
+                'status' => 'error',
+                'alert-type' => 'danger',
+                'message' => "Você não pode mais alterar esta reserva.",
+            ]);
+        }
+
         $request->validate([
             'scheduled_check_in' => 'required|date',
             'scheduled_check_out' => 'required|date|after:scheduled_check_in',
@@ -202,13 +226,21 @@ class ReservationController extends Controller
             'daily_price.min' => 'O valor da diária deve ser no mínimo 1.',
         ]);
 
-        $reservation = Reservation::find($id)->update($request->only(['room_id', 'guest_id', 'daily_price', 'scheduled_check_in', 'scheduled_check_out']));
+        try {
+            $reservation->update($request->only(['room_id', 'guest_id', 'daily_price', 'scheduled_check_in', 'scheduled_check_out']));
+            return redirect()->route('reservations.update', $id)->with([
+                'status' => 'success',
+                'alert-type' => 'success',
+                'message' => "Reserva atualizada com sucesso.",
+            ]);
+        } catch (\Throwable $th) {
+            return redirect()->route('reservations.update', $id)->with([
+                'status' => 'error',
+                'alert-type' => 'danger',
+                'message' => "Ocorreu um erro ao atualizar a reserva.",
+            ]);
+        }
 
-        return redirect()->route('reservations.update', $id)->with([
-            'status' => 'success',
-            'alert-type' => 'success',
-            'message' => "Reserva atualizada com sucesso.",
-        ]);
     }
 
     /**
@@ -240,6 +272,14 @@ class ReservationController extends Controller
                 'status' => 'error',
                 'alert-type' => 'danger',
                 'message' => "Ainda não chegou o dia de seu check-in.",
+            ]);
+        }
+
+        if (Reservation::where('room_id', $reservation->room_id)->whereNull('check_out_at')->count()) {
+            return redirect()->back()->with([
+                'status' => 'error',
+                'alert-type' => 'danger',
+                'message' => "A última reserva deste quarto ainda está com o check-out pendente.",
             ]);
         }
 
@@ -317,11 +357,13 @@ class ReservationController extends Controller
             ]);
         }
 
-        if (!$reservation->receipt_path || !Storage::exists($reservation->receipt_path)) {
+        $disk = Storage::disk('local');
+
+        if (!$reservation->receipt_path || !$disk->exists($reservation->receipt_path)) {
             $path = app(ReservationReceiptService::class)->generate($reservation->id);
-            return Storage::download("{$path}", "recibo_reserva_{$reservation->id}.pdf");
+            return $disk->download("{$path}", "recibo_reserva_{$reservation->id}.pdf");
         }
 
-        return Storage::download("{$reservation->receipt_path}", "recibo_reserva_{$reservation->id}.pdf");
+        return $disk->download("{$reservation->receipt_path}", "recibo_reserva_{$reservation->id}.pdf");
     }
 }

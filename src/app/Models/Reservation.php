@@ -44,6 +44,16 @@ class Reservation extends Model
         return $this->belongsTo(Room::class);
     }
 
+    public function isCheckIn()
+    {
+        return !is_null($this->check_in_at);
+    }
+
+    public function isCheckOut()
+    {
+        return !is_null($this->check_out_at);
+    }
+
     public function isActive()
     {
         return is_null($this->check_out_at);
@@ -69,17 +79,41 @@ class Reservation extends Model
         return $query->whereNotNull('check_out_at');
     }
 
-    public function getNumberOfDaysAttribute()
+    // Diferença de dias (A prévia baseada em quanto o hóspede pagaria saindo agora)
+    public function getNumberOfDaysPrevAttribute()
     {
         // Garante que ambas as datas estejam definidas e como instâncias do Carbon
-        if (!$this->scheduled_check_in || !$this->scheduled_check_out) {
+        if (!$this->check_in_at) {
             return 1;
         }
 
-        return Carbon::parse($this->scheduled_check_in)
-                    ->diffInDays(Carbon::parse($this->scheduled_check_out)) ?: 1;
+        // Checkout agendado + tolerância (pega o horário limite do config ou usa o padrão)
+        [$hour, $minute, $second] = explode(':', Config::get('hotel.checkout_limit_time', '23:59:00'));
+        $checkIn  = Carbon::parse($this->check_in_at)->setTime($hour, $minute, $second);
+
+        return ceil($checkIn->diffInDays(now()));
+    }
+    // Preço (A prévia baseada em quanto o hóspede pagaria saindo agora)
+    public function getTotalPricePrevAttribute()
+    {
+        return $this->daily_price * $this->number_of_days_prev;
     }
 
+    // Diferença de dias (O real baseada no check-in e check-out)
+    public function getNumberOfDaysAttribute()
+    {
+        if (!$this->check_in_at || !$this->check_out_at) {
+            return 1;
+        }
+
+        // Checkout agendado + tolerância (pega o horário limite do config ou usa o padrão)
+        [$hour, $minute, $second] = explode(':', Config::get('hotel.checkout_limit_time', '23:59:00'));
+        $checkIn  = Carbon::parse($this->check_in_at)->setTime($hour, $minute, $second);
+        $checkOut = Carbon::parse($this->check_out_at);
+
+        return ceil($checkIn->diffInDays($checkOut, false));
+    }
+    // preço (O real baseada no check-in e check-out)
     public function getTotalPriceAttribute()
     {
         return $this->daily_price * $this->number_of_days;

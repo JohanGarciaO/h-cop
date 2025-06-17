@@ -17,7 +17,7 @@ class ReservationReceiptService
         }
 
         $path = "receipt/reservation_{$reservation->id}.pdf";
-        $fullPath = storage_path("app/public/{$path}");
+        $fullPath = storage_path("app/private/{$path}");
 
         $brasao = embedImageAsBase64(public_path('assets/images/brasao_brasil.jpg'));
         $html = view('pdfs.receipt', compact('reservation', 'brasao'))->render();
