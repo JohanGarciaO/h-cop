@@ -18,7 +18,7 @@ class AdminSeeder extends Seeder
             'username' => 'admin',
             'email' => 'admin@admin.com',
             'email_verified_at' => now(),
-            'password' => Hash::make('hcop*aroot')
+            'password' => Hash::make('hcop*hroot')
         ]);
     }
 }
