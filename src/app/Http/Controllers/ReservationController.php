@@ -194,8 +194,8 @@ class ReservationController extends Controller
             ]);
         }
 
-        // No nível de operador não é mais possível editar após o check-in (falta veriricar o tipo de User)
-        if ($reservation->isCheckIn()) {
+        // No nível de operador não é mais possível editar após o check-in
+        if ($reservation->isCheckIn() && auth()->user()->role->id != '1') {
             return redirect()->route('reservations.update', $id)->with([
                 'status' => 'error',
                 'alert-type' => 'danger',

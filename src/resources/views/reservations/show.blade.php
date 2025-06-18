@@ -102,23 +102,30 @@
                             <h5 for="total_display" class="form-label">Resumo da reserva:</h5>
                             <div class="form-control bg-light d-flex align-items-center justify-content-between" style="transition: all 0.3s ease; font-weight: 500;">
 
-                                @if($reservation->check_out_at)
+                                @if ($reservation->check_out_at)
                                     <div>
                                         <i class="bi bi-calendar-week me-2 text-primary"></i>
-                                        <span class="text-success">{{$reservation->numberOfDays . ' ' . Str::plural('diária', $reservation->numberOfDays)}}</span>
+                                        <span class="text-success">{{$reservation->numberOfDaysScheduled . ' ' . Str::plural('diária', $reservation->numberOfDaysScheduled) . ' ' . Str::plural('agendada', $reservation->numberOfDaysScheduled)}}</span>
                                     </div>
                                     <div>
                                         <i class="bi bi-currency-dollar me-1 text-success"></i>
-                                        <span class="text-success">R$ {{number_format($reservation->totalPrice, 2, ',', '.')}}</span>
+                                        <span class="text-success">R$ {{number_format($reservation->totalPriceScheduled, 2, ',', '.')}}</span>
                                     </div>
                                 @else
+                                    @php
+                                        if ($reservation->check_in_at){
+                                            $text = Str::plural('diária', $reservation->numberOfDays) . ' até agora';
+                                        }else{
+                                            $text = Str::plural('diária', $reservation->numberOfDays) . ' ' . Str::plural('agendada', $reservation->numberOfDaysScheduled);
+                                        }
+                                    @endphp
                                     <div>
                                         <i class="bi bi-calendar-week me-2 text-primary"></i>
-                                        <span class="">{{$reservation->numberOfDaysPrev . ' ' . Str::plural('diária', $reservation->numberOfDaysPrev)}}</span>
+                                        <span class="">{{$reservation->numberOfDays . ' ' . $text}}</span>
                                     </div>
                                     <div>
                                         <i class="bi bi-currency-dollar me-1 text-success"></i>
-                                        <span class="">R$ {{number_format($reservation->totalPricePrev, 2, ',', '.')}}</span>
+                                        <span class="">R$ {{number_format($reservation->totalPrice, 2, ',', '.')}}</span>
                                     </div>
                                 @endif
 
@@ -142,7 +149,7 @@
                                 >
                                     <div>
                                         <i class="bi bi-calendar-week me-2 text-primary"></i>
-                                        <span class="text-danger">{{($reservation->numberOfDaysLate ? $reservation->numberOfDaysLate  : "0") . ' ' . Str::plural('diária', ($reservation->numberOfDaysLate))}} a mais</span>
+                                        <span class="text-danger">{{($reservation->numberOfDaysLate) . ' ' . Str::plural('diária', ($reservation->numberOfDaysLate))}} a mais</span>
                                     </div>
                                     <div>
                                         <i class="bi bi-currency-dollar me-1 text-danger"></i>
@@ -150,6 +157,7 @@
                                     </div>
                                 </div>
                             </div>
+                            
                             <div class="col-md-12">
                                 <h5 for="total_display" class="form-label">Total:</h5>
                                 <div 
@@ -158,15 +166,16 @@
                                 >
                                     <div>
                                         <i class="bi bi-calendar-week me-2 text-primary"></i>
-                                        <span>{{$reservation->numberOfDays + $reservation->numberOfDaysLate . ' ' . Str::plural('diária', $reservation->numberOfDays + $reservation->numberOfDaysLate)}}</span>
+                                        <span>{{$reservation->numberOfDays . ' ' . Str::plural('diária', $reservation->numberOfDays)}}</span>
                                     </div>
                                     <div>
                                         <i class="bi bi-currency-dollar me-1"></i>
-                                        <span>R$ {{number_format(($reservation->totalPrice + $reservation->totalPriceLate), 2, ',', '.')}}</span>
+                                        <span>R$ {{number_format(($reservation->totalPrice), 2, ',', '.')}}</span>
                                     </div>
                                 </div>
                             </div>
                         @endif
+
                     </div>
 
                 </dl>
