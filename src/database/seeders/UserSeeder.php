@@ -36,7 +36,7 @@ class UserSeeder extends Seeder
                 'email' => 'joao.silva@exemplo.com',
             ],
             [
-                'username' => 'mariaomom',
+                'username' => 'mariamom',
                 'name' => 'Maria Oliveira Martins',
                 'document' => '1234560', // Identificação militar
                 'phone' => '(21) 99876-5432',
