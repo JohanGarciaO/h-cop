@@ -127,6 +127,7 @@ class GuestController extends Controller
 
         $address = Address::create($validatedAddress);
         $guest = $address->guests()->create($validatedGuest);
+        $reservation->created_by = auth()->id();
 
         return redirect()->route('guests.index')->with([
             'status' => 'success',
@@ -207,6 +208,7 @@ class GuestController extends Controller
 
         $guest->update($validatedGuest);
         $guest->address->update($validatedAddress);
+        $reservation->updated_by = auth()->id();
 
         return redirect()->route('guests.edit', $guest)->with([
             'status' => 'success',

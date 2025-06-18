@@ -44,6 +44,16 @@ class Guest extends Model
         return $this->hasMany(Reservation::class)->whereNull('check_out_at');
     }
 
+    public function createdBy()
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
+
+    public function updatedBy()
+    {
+        return $this->belongsTo(User::class, 'updated_by');
+    }
+
     public function scopeAvailableBetween($query, $checkIn, $checkOut, $exceptReservationId = null)
     {
         return $query->whereDoesntHave('reservations', function ($q) use ($checkIn, $checkOut, $exceptReservationId) {

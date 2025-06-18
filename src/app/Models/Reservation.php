@@ -44,6 +44,11 @@ class Reservation extends Model
         return $this->belongsTo(Room::class);
     }
 
+    public function updatedBy()
+    {
+        return $this->belongsTo(User::class, 'updated_by');
+    }
+
     public function isCheckIn()
     {
         return !is_null($this->check_in_at);

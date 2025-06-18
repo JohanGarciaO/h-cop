@@ -152,6 +152,7 @@ class ReservationController extends Controller
 
         $reservation = Reservation::create($request->all());
         $reservation = $reservation->load(['guest', 'room']);
+        $reservation->created_by = auth()->id();
 
         return redirect()->route('reservations.index')->with([
             'status' => 'success',
@@ -228,6 +229,8 @@ class ReservationController extends Controller
 
         try {
             $reservation->update($request->only(['room_id', 'guest_id', 'daily_price', 'scheduled_check_in', 'scheduled_check_out']));
+            $reservation->updated_by = auth()->id();
+
             return redirect()->route('reservations.update', $id)->with([
                 'status' => 'success',
                 'alert-type' => 'success',
@@ -285,6 +288,7 @@ class ReservationController extends Controller
 
         DB::transaction(function () use ($reservation) {
             $reservation->check_in_at = Carbon::now();
+            $reservation->check_in_by = auth()->id();
             $reservation->save();
         });
 
@@ -315,6 +319,7 @@ class ReservationController extends Controller
 
         DB::transaction(function () use ($reservation) {
             $reservation->check_out_at = Carbon::now();
+            $reservation->check_out_by = auth()->id();
             $reservation->save();
         });
 

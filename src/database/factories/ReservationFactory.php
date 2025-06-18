@@ -5,6 +5,7 @@ namespace Database\Factories;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use App\Models\Guest;
 use App\Models\Room;
+use App\Models\User;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Reservation>
@@ -21,14 +22,32 @@ class ReservationFactory extends Factory
         $scheduleCheckIn = $this->faker->dateTimeBetween('-10 days', 'now');
         $scheduleCheckOut = (clone $scheduleCheckIn)->modify('+'.rand(1,3).'days');
 
+        $checkIn = null;
+        $checkInBy = null;
+        $checkOut = null;
+        $checkOutBy = null;
+        $user = User::first()->id;
+        $createdBy = $user;
+        $updatedBy = $user;
 
-        $checkIn = (clone $scheduleCheckIn)->setTime(rand(12, 18), rand(0, 59));
         $daily = $this->faker->randomFloat(2, 100, 500);
 
-        // Decide aleatoriamente se a reserva está ativa (sem check-out) ou finalizada
-        $isActive = $this->faker->boolean(70);
+        $isCheckedIn = $this->faker->boolean(70);
 
-        $checkOut = $isActive ? null : (clone $checkIn)->modify('+'.rand(1, 5).' days');
+        if ($isCheckedIn) {
+            $checkIn = (clone $scheduleCheckIn)->setTime(rand(0, 23), rand(0, 59));
+            $checkInBy = User::inRandomOrder()->first()->id;
+            $updatedBy = $checkInBy;
+            
+            // Decide aleatoriamente se a reserva está sem check-out ou finalizada
+            $isCheckedOut = $this->faker->boolean(90);
+
+            if ($isCheckedOut) {
+                $checkOut = (clone $checkIn)->modify('+'.rand(1, 5).' days');
+                $checkOutBy = User::inRandomOrder()->first()->id;
+                $updatedBy = $checkOutBy;
+            }
+        }
 
         return [
             'guest_id' => Guest::inRandomOrder()->first()?->id ?? Guest::factory(),
@@ -37,7 +56,11 @@ class ReservationFactory extends Factory
             'scheduled_check_in' => $scheduleCheckIn,
             'scheduled_check_out' => $scheduleCheckOut,
             'check_in_at' => $checkIn,
+            'check_in_by' => $checkInBy,
             'check_out_at' => $checkOut,
+            'check_out_by' => $checkOutBy,
+            'created_by' => $createdBy,
+            'updated_by' => $updatedBy,
         ];
     }
 }
