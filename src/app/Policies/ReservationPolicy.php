@@ -38,10 +38,12 @@ class ReservationPolicy
     public function update(User $user, Reservation $reservation): bool
     {
         // Operador não pode editar reservas após o check-in
-        if ($reservation->isCheckIn() && $user->isOperator()) {
-            return false;
+        if ($reservation->isCheckIn()) {
+            return $user->isAdmin();
         }
-        return true;
+
+        // Admin e operador podem editar reservas antes do check-in
+        return $user->isAdmin() || $user->isOperator();
     }
 
     /**
@@ -49,7 +51,13 @@ class ReservationPolicy
      */
     public function delete(User $user, Reservation $reservation): bool
     {
-        return false;
+        // Operador não pode apagar reservas após o check-in
+        if ($reservation->isCheckIn()) {
+            return $user->isAdmin();
+        }
+
+        // Admin e operador podem apagar reservas antes do check-in
+        return $user->isAdmin() || $user->isOperator();
     }
 
     /**

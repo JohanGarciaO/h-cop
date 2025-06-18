@@ -140,22 +140,26 @@
                     </select>
                 </div>
 
-                <div class="col-12 mb-3">
-                    <select class="form-select" name="gender" id="gender_edit" data-selected="{{ old('gender', $guest->gender) }}" data-placeholder="Selecione o gênero" required>
-                        <option></option>
-                        @foreach (App\Enums\Gender::cases() as $case)
-                            @if ($case === $guest->gender)
-                                <option value="{{$case->value}}" selected>{{$case->label()}}</option> 
-                            @else
-                                <option value="{{$case->value}}">{{$case->label()}}</option> 
-                            @endif
-                        @endforeach
-                    </select>
-                </div>
+                @can('changeGender', $guest)
+                    <div class="col-12 mb-3">
+                        <select class="form-select" name="gender" id="gender_edit" data-selected="{{ old('gender', $guest->gender) }}" data-placeholder="Selecione o gênero" required>
+                            <option></option>
+                            @foreach (App\Enums\Gender::cases() as $case)
+                                @if ($case === $guest->gender)
+                                    <option value="{{$case->value}}" selected>{{$case->label()}}</option> 
+                                @else
+                                    <option value="{{$case->value}}">{{$case->label()}}</option> 
+                                @endif
+                            @endforeach
+                        </select>
+                    </div>
+                @endcan
 
-                <div class="col-12 mb-3">
-                    <input type="text" class="form-control" id="document" name="document" minlength="14" placeholder="Digite o CPF" value="{{ old('document', $guest->document) }}" required>
-                </div>
+                @can('changeDocument', $guest)
+                    <div class="col-12 mb-3">
+                        <input type="text" class="form-control" id="document" name="document" minlength="14" placeholder="Digite o CPF" value="{{ old('document', $guest->document) }}" required>
+                    </div>
+                @endcan
 
                 <div class="col-12 mb-3">
                     <input type="text" class="form-control" id="phone" name="phone" maxlength="15" placeholder="Digite o telefone" value="{{ old('phone', $guest->phone) }}" required>

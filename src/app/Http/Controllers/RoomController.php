@@ -67,6 +67,15 @@ class RoomController extends Controller
     
     public function store(Request $request)
     {
+        // Não permite mais que operadores criem quartos
+        if (!auth()->user()->can('create', Room::class)) {
+            return redirect()->route('rooms.index')->with([
+                'status' => 'error',
+                'alert-type' => 'danger',
+                'message' => "Você não pode criar quartos.",
+            ]);
+        }
+
         $request->validate([
             'number' => 'required|integer|min:1|unique:rooms,number',
             'capacity' => 'integer|min:1',
@@ -97,6 +106,25 @@ class RoomController extends Controller
     
     public function update(Request $request, string $id)
     {
+        $room = Room::find($id);
+
+         if (!$room) {
+            return redirect()->route('rooms.index')->with([
+                'status' => 'error',
+                'alert-type' => 'danger',
+                'message' => 'O quarto não existe.',
+            ]);
+        }
+
+        // Não permite mais que operadores editem quartos
+        if (!auth()->user()->can('update', $room)) {
+            return redirect()->route('rooms.index')->with([
+                'status' => 'error',
+                'alert-type' => 'danger',
+                'message' => "Você não pode alterar quartos.",
+            ]);
+        }
+
         $request->validate([
             'number' => [
                 'required',
@@ -117,7 +145,7 @@ class RoomController extends Controller
             'daily_price.min' => 'O valor da diária deve ser no mínimo 1.',
         ]);
 
-        Room::find($id)->update($request->only(['number', 'capacity', 'daily_price']));
+        $room->update($request->only(['number', 'capacity', 'daily_price']));
 
         return redirect()->back()->with([
             'status' => 'success',
@@ -145,6 +173,15 @@ class RoomController extends Controller
 
     public function destroy(Room $room)
     {
+        // Não permite mais que operadores deletem quartos
+        if (!auth()->user()->can('delete', $room)) {
+            return redirect()->route('rooms.index')->with([
+                'status' => 'error',
+                'alert-type' => 'danger',
+                'message' => "Você não pode apagar quartos.",
+            ]);
+        }
+
         $room->delete();
 
         return redirect()->route('rooms.index')->with([

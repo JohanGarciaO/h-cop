@@ -53,11 +53,11 @@ class User extends Authenticatable
 
     public function isAdmin(): bool
     {
-        return $this->role_id == 1;
+        return $this->role_id === 1;
     }
 
     public function isOperator(): bool
     {
-        return $this->role_id == 2;
+        return $this->role_id === 2;
     }
 }

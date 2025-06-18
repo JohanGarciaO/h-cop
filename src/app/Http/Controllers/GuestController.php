@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Enum;
+use Illuminate\Support\Arr;
+
 use App\Models\Guest;
 use App\Models\Address;
 use App\Enums\Gender;
@@ -127,7 +129,8 @@ class GuestController extends Controller
 
         $address = Address::create($validatedAddress);
         $guest = $address->guests()->create($validatedGuest);
-        $reservation->created_by = auth()->id();
+        $guest->created_by = auth()->id();
+        $guest->save();
 
         return redirect()->route('guests.index')->with([
             'status' => 'success',
@@ -160,21 +163,31 @@ class GuestController extends Controller
 
     public function update(Request $request, Guest $guest)
     {
-        $validatedGuest = $request->validate([
+        $rulesGuest = [
             'name' => 'required',
-            'document' => [
-                'required',
-                'size:14',
-                Rule::unique('guests', 'document')->ignore($guest->id),
-            ],
-            'gender' => [
-                'required',
-                new Enum(Gender::class),
-            ],
             'committee_id' => 'nullable|exists:committees,id',
             'phone' => 'required|max:15',
             'email' => 'nullable|email',
-        ],[
+        ];
+
+        $isAdmin = auth()->user()->isAdmin();
+
+        // Apenas se for Admin pode alterar o documento e o gênero
+        if ($isAdmin){
+            $rulesGuest['document'] = [
+                'required',
+                'size:14',
+                Rule::unique('guests', 'document')->ignore($guest->id),
+            ];
+
+            $rulesGuest['gender'] = [
+                'required',
+                new Enum(Gender::class),
+            ];
+        }
+
+        $validatedGuest = $request->validate($rulesGuest,
+        [
             'name.required' => 'o nome não pode estar vazio.',
             'document.required' => 'o CPF não pode estar vazio.',
             'document.size' => 'o CPF precisa ter 14 caracteres.',
@@ -206,9 +219,12 @@ class GuestController extends Controller
             'neighborhood.required' => 'O bairro não pode estar vazio.',
         ]);
 
-        $guest->update($validatedGuest);
+        // Garante que o operador nunca terá acesso ao documento e gênero para edição
+        $guest->update($isAdmin ? $validatedGuest : Arr::except($validatedGuest, ['document', 'gender']));
+
         $guest->address->update($validatedAddress);
-        $reservation->updated_by = auth()->id();
+        $guest->updated_by = auth()->id();
+        $guest->save();
 
         return redirect()->route('guests.edit', $guest)->with([
             'status' => 'success',
@@ -219,6 +235,15 @@ class GuestController extends Controller
 
     public function destroy(Guest $guest)
     {
+        // No nível de operador não é mais possível apagar hóspedes
+        if (!auth()->user()->can('delete', $guest)) {
+            return redirect()->route('guests.index')->with([
+                'status' => 'error',
+                'alert-type' => 'danger',
+                'message' => "Você não pode apagar hóspedes.",
+            ]);
+        }
+
         $name = $guest->name;
         $guest->delete();
         
