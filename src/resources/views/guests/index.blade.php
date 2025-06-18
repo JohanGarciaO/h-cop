@@ -20,6 +20,7 @@
 
     <x-filters action="{{ route('guests.index') }}" results_count="{{ $result_count }}" >
         <x-slot name="filters">
+            <x-slot name="filters_title">Filtros simples</x-slot>
             <div class="col-auto">
                 <select name="status" class="form-select">
                     <option value="">Todos</option>
@@ -36,7 +37,21 @@
             <div class="col-auto">
                 <input type="text" id="cpf_filter" name="cpf_filter" class="form-control" maxlength="14" placeholder="CPF do hóspede"
                     value="{{ request('cpf_filter') }}">
+            </div>            
+
+            <div class="col-auto">
+                <select name="gender_filter" id="gender_filter" class="form-select" data-selected="{{ request('gender_filter') ?? '' }}" data-placeholder="Filtre por gênero">                
+                    <option></option>
+                    @foreach (App\Enums\Gender::cases() as $case)
+                        <option value="{{$case->value}}" {{ request('gender_filter') == $case->value ? 'selected' : '' }}>{{$case->label()}}</option> 
+                    @endforeach
+                </select>
             </div>
+
+        </x-slot>
+
+        <x-slot name="locality_filters">
+            <x-slot name="locality_filters_title">Filtrar por origem</x-slot>
 
             <div class="col-auto">
                 <select class="form-select" name="state_filter_id" id="state_filter_id" data-selected="{{ request('state_filter_id') ?? '' }}" data-placeholder="Filtre por estado">
@@ -48,8 +63,16 @@
                     <option></option>
                 </select>
             </div>
-
+            <div class="col-auto">
+                <select class="form-select" name="committee_filter" id="committee_filter" data-selected="{{ request('committee_filter') ?? '' }}" data-placeholder="Filtre por comitiva">
+                    <option></option>
+                    @foreach (App\Models\Committee::all() as $committee)
+                        <option value="{{$committee->id}}" {{ request('committee_filter') == $committee->id ? 'selected' : '' }}>{{$committee->name}}</option> 
+                    @endforeach
+                </select>
+            </div>
         </x-slot>
+
     </x-filters>
 
     <div class="table-responsive">
@@ -57,7 +80,11 @@
             <thead>
                 <tr>
                     <th>Nome</th>
+                    <th>Gênero</th> 
                     <th>Status</th>
+                    @if (request('committee_filter'))
+                        <th>Comitiva</th>
+                    @endif
                     <th>Documento</th>
                     <th>Telefone</th>
                     <th>Email</th>
@@ -74,6 +101,7 @@
                     <tr>
 
                         <td>{{ $guest->name }}</td>
+                        <td>{{ $guest->gender->value }}</td>
 
                         <td>
                             @if ($status == 'check-in pendente')
@@ -84,6 +112,10 @@
                                 <span class="badge bg-secondary">não hospedado</span>
                             @endif
                         </td>
+
+                        @if (request('committee_filter'))
+                            <td>{{ $guest?->committee?->name ?? '-' }}</td>
+                        @endif
 
                         <td>{{ $guest->document }}</td>
                         <td>{{ $guest->phone }}</td>
@@ -106,16 +138,18 @@
                                     </svg> Editar
                                 </a>
 
-                                <button id="deleteGuestButton{{$guest->id}}" type="button" class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteGuestModal{{ $guest->id }}">
-                                    <span class="btn-content">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-trash-fill" viewBox="-2 -2 20 20">
-                                            <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5M8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5m3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0"/>
-                                        </svg>
-                                    </span>
-                                    <span class="spinner-content d-none">
-                                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                                    </span>
-                                </button>
+                                @can('delete', $guest)                                   
+                                    <button id="deleteGuestButton{{$guest->id}}" type="button" class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteGuestModal{{ $guest->id }}">
+                                        <span class="btn-content">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-trash-fill" viewBox="-2 -2 20 20">
+                                                <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5M8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5m3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0"/>
+                                            </svg>
+                                        </span>
+                                        <span class="spinner-content d-none">
+                                            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                        </span>
+                                    </button>
+                                @endcan
                             </div>
                         </td>
 

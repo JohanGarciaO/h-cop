@@ -43,7 +43,7 @@
             <div class="mb-3">
                 <button type="button" class="btn btn-outline-secondary d-flex align-items-center gap-2 toggle-group" data-target="#filters-block">
                     <i class="bi bi-unlock" id="icon-filters-block"></i>
-                    <span class="label">Filtros simples</span>
+                    <span class="label">{{ $filters_title ?? 'Filtros simples' }}</span>
                 </button>
 
                 <div class="filter-block mt-2 collapsed" id="filters-block">
@@ -59,7 +59,7 @@
             <div class="mb-3">
                 <button type="button" class="btn btn-outline-secondary d-flex align-items-center gap-2 toggle-group" data-target="#availability-filters-block">
                     <i class="bi bi-unlock" id="icon-availability-filters-block"></i>
-                    <span class="label">Filtrar por disponibilidade</span>
+                    <span class="label">{{ $availability_filters_title ?? 'Filtrar por disponibilidade' }}</span>
                 </button>
 
                 <div class="filter-block mt-2 collapsed" id="availability-filters-block">
@@ -75,7 +75,7 @@
             <div class="mb-3">
                 <button type="button" class="btn btn-outline-secondary d-flex align-items-center gap-2 toggle-group" data-target="#locality-filters-block">
                     <i class="bi bi-unlock" id="icon-locality-filters-block"></i>
-                    <span class="label">Filtrar por localidade</span>
+                    <span class="label">{{ $locality_filters_title ?? 'Filtrar por localidade' }}</span>
                 </button>
 
                 <div class="filter-block mt-2 collapsed" id="locality-filters-block">
@@ -91,7 +91,7 @@
             <div class="mb-3">
                 <button type="button" class="btn btn-outline-secondary d-flex align-items-center gap-2 toggle-group" data-target="#date-filters-block">
                     <i class="bi bi-unlock" id="icon-date-filters-block"></i>
-                    <span class="label">Filtrar por agendamento</span>
+                    <span class="label">{{ $date_filters_title ?? 'Filtrar por agendamento' }}</span>
                 </button>
 
                 <div class="filter-block mt-2 collapsed" id="date-filters-block">

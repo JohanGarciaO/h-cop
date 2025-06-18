@@ -56,7 +56,7 @@
                                             name="room_id" 
                                             aria-label="Selecione o quarto"
                                             data-placeholder="Quarto"
-                                            data-selected="{{ old('room_id', $reservation->room->id) }}"
+                                            data-selected="{{ old('room_id', $reservation->room_id) }}"
                                             disabled
                                             required
                                         >
@@ -78,7 +78,7 @@
                                             name="guest_id" 
                                             aria-label="Seldecione o hóspede"
                                             data-placeholder="Hóspede"
-                                            data-selected="{{ old('room_id', $reservation->guest->id) }}"
+                                            data-selected="{{ old('guest_id', $reservation->guest_id) }}"
                                             disabled
                                             required
                                         >

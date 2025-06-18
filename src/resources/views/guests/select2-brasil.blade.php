@@ -13,6 +13,15 @@ const city_create = $('#city_create_id')
 const state_edit = $('#state_edit_id')
 const city_edit = $('#city_edit_id')
 
+const gender = $('#gender')
+const gender_edit = $('#gender_edit')
+
+const committee = $('#committee')
+const committee_edit = $('#committee_edit')
+
+const gender_filter = $('#gender_filter')
+const committee_filter = $('#committee_filter')
+
 function normalizeText(str) {
     if (typeof(str) !== 'string') {
         return str
@@ -38,7 +47,7 @@ function loadCities(uf, selected_city, city_select) {
 
 $(document).ready(() => {
 
-    Array(state_filter, city_filter, state_edit, city_edit).forEach(element => {
+    Array(state_filter, city_filter, state_edit, city_edit, committee_edit, gender_edit, gender_filter, committee_filter).forEach(element => {
         $(element).select2({
             theme: 'bootstrap-5',
             allowClear: true,
@@ -52,7 +61,7 @@ $(document).ready(() => {
         })
     });
 
-    Array(state_create, city_create).forEach(element => {
+    Array(state_create, city_create, gender, committee).forEach(element => {
         $(element).select2({
             theme: 'bootstrap-5',
             allowClear: true,

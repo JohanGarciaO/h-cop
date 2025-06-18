@@ -13,15 +13,17 @@
                     Voltar
                 </a>
                 @if (!$reservation->check_out_at)
-                    <button id="btn_submit_form" class="btn btn-outline-core" data-bs-toggle="modal" data-bs-target="#editReservationModal">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 18 18">
-                            <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
-                            <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
-                        </svg>
-                        Editar                       
-                    </button>
-                    <!-- Modal de Edição da Reserva -->
-                    @include('partials.modals.reservations.edit', ['reservation' => $reservation])
+                    @can('update', $reservation)
+                        <button id="btn_submit_form" class="btn btn-outline-core" data-bs-toggle="modal" data-bs-target="#editReservationModal">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 18 18">
+                                <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+                                <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
+                            </svg>
+                            Editar                       
+                        </button>
+                        <!-- Modal de Edição da Reserva -->
+                        @include('partials.modals.reservations.edit', ['reservation' => $reservation])
+                    @endcan
                 @else
                     <button id="btn_download" class="btn btn-outline-core" data-url="{{ route('reservations.receipt.download', $reservation->id) }}">
                         <span class="btn-content">
@@ -42,7 +44,7 @@
             
             <div class="col-12 col-lg-5 p-4 bg-background shadow rounded">
                 
-                <h5 class="mb-5 fw-bold">Detalhes da Reserva</h5>
+                <h5 class="mb-5 fw-bold">Reserva N° #{{$reservation->id}}</h5>
 
                 <dl class="row">
                     <dt class="col-sm-6">Status:</dt>
@@ -62,6 +64,9 @@
                     <dt class="col-sm-6">Hóspede:</dt>
                     <dd class="col-sm-6">{{ $reservation->guest->name }}</dd>
 
+                    <dt class="col-sm-6">Gênero:</dt>
+                    <dd class="col-sm-6">{{ $reservation->guest->gender->label() }}</dd>
+
                     @if ($reservation->guest->email)
                         <dt class="col-sm-6">E-mail:</dt>
                         <dd class="col-sm-6">{{ $reservation->guest->email }}</dd>
@@ -70,6 +75,10 @@
                     <dt class="col-sm-6">Telefone:</dt>
                     <dd class="col-sm-6">{{ $reservation->guest->phone }}</dd>
 
+                    @if ($reservation->guest?->committee)
+                        <dt class="col-sm-6">Comitiva:</dt>
+                        <dd class="col-sm-6">{{ $reservation->guest->committee->name ?? '-' }}</dd>
+                    @endif
 
                     <dt class="col-sm-6">Valor da Diária:</dt>
                     <dd class="col-sm-6">R$ {{ number_format($reservation->daily_price, 2, ',', '.') }}</dd>
@@ -93,18 +102,35 @@
                     <div class="row g-3 mt-3">
                         <div class="col-md-12">
                             <h5 for="total_display" class="form-label">Resumo da reserva:</h5>
-                            <div 
-                                class="form-control bg-light d-flex align-items-center justify-content-between"
-                                style="transition: all 0.3s ease; font-weight: 500;"
-                            >
-                                <div>
-                                    <i class="bi bi-calendar-week me-2 text-primary"></i>
-                                    <span class="{{$reservation->check_out_at ? 'text-success' : ''}}">{{$reservation->numberOfDays . ' ' . Str::plural('diária', $reservation->numberOfDays)}}</span>
-                                </div>
-                                <div>
-                                    <i class="bi bi-currency-dollar me-1 text-success"></i>
-                                    <span class="{{$reservation->check_out_at ? 'text-success' : ''}}">R$ {{number_format($reservation->totalPrice, 2, ',', '.')}}</span>
-                                </div>
+                            <div class="form-control bg-light d-flex align-items-center justify-content-between" style="transition: all 0.3s ease; font-weight: 500;">
+
+                                @if ($reservation->check_out_at)
+                                    <div>
+                                        <i class="bi bi-calendar-week me-2 text-primary"></i>
+                                        <span class="text-success">{{$reservation->numberOfDaysScheduled . ' ' . Str::plural('diária', $reservation->numberOfDaysScheduled) . ' ' . Str::plural('agendada', $reservation->numberOfDaysScheduled)}}</span>
+                                    </div>
+                                    <div>
+                                        <i class="bi bi-currency-dollar me-1 text-success"></i>
+                                        <span class="text-success">R$ {{number_format($reservation->totalPriceScheduled, 2, ',', '.')}}</span>
+                                    </div>
+                                @else
+                                    @php
+                                        if ($reservation->check_in_at){
+                                            $text = Str::plural('diária', $reservation->numberOfDays) . ' até agora';
+                                        }else{
+                                            $text = Str::plural('diária', $reservation->numberOfDays) . ' ' . Str::plural('agendada', $reservation->numberOfDaysScheduled);
+                                        }
+                                    @endphp
+                                    <div>
+                                        <i class="bi bi-calendar-week me-2 text-primary"></i>
+                                        <span class="">{{$reservation->numberOfDays . ' ' . $text}}</span>
+                                    </div>
+                                    <div>
+                                        <i class="bi bi-currency-dollar me-1 text-success"></i>
+                                        <span class="">R$ {{number_format($reservation->totalPrice, 2, ',', '.')}}</span>
+                                    </div>
+                                @endif
+
                             </div>
                         </div>    
 
@@ -125,7 +151,7 @@
                                 >
                                     <div>
                                         <i class="bi bi-calendar-week me-2 text-primary"></i>
-                                        <span class="text-danger">{{($reservation->numberOfDaysLate ? $reservation->numberOfDaysLate  : "0") . ' ' . Str::plural('diária', ($reservation->numberOfDaysLate))}} a mais</span>
+                                        <span class="text-danger">{{($reservation->numberOfDaysLate) . ' ' . Str::plural('diária', ($reservation->numberOfDaysLate))}} a mais</span>
                                     </div>
                                     <div>
                                         <i class="bi bi-currency-dollar me-1 text-danger"></i>
@@ -133,6 +159,7 @@
                                     </div>
                                 </div>
                             </div>
+                            
                             <div class="col-md-12">
                                 <h5 for="total_display" class="form-label">Total:</h5>
                                 <div 
@@ -141,15 +168,16 @@
                                 >
                                     <div>
                                         <i class="bi bi-calendar-week me-2 text-primary"></i>
-                                        <span>{{$reservation->numberOfDays + $reservation->numberOfDaysLate . ' ' . Str::plural('diária', $reservation->numberOfDays + $reservation->numberOfDaysLate)}}</span>
+                                        <span>{{$reservation->numberOfDays . ' ' . Str::plural('diária', $reservation->numberOfDays)}}</span>
                                     </div>
                                     <div>
                                         <i class="bi bi-currency-dollar me-1"></i>
-                                        <span>R$ {{number_format(($reservation->totalPrice + $reservation->totalPriceLate), 2, ',', '.')}}</span>
+                                        <span>R$ {{number_format(($reservation->totalPrice), 2, ',', '.')}}</span>
                                     </div>
                                 </div>
                             </div>
                         @endif
+
                     </div>
 
                 </dl>

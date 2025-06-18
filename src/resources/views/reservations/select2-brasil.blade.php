@@ -10,6 +10,9 @@ const city_filter = $('#city_filter_id')
 const state_edit = $('#state_edit_id')
 const city_edit = $('#city_edit_id')
 
+const gender_filter = $('#gender_filter')
+const committee_filter = $('#committee_filter')
+
 function normalizeText(str) {
     if (typeof(str) !== 'string') {
         return str
@@ -35,7 +38,7 @@ function loadCities(uf, selected_city, city_select) {
 
 $(document).ready(() => {
 
-    Array(state_filter, city_filter, state_edit, city_edit).forEach(element => {
+    Array(state_filter, city_filter, state_edit, city_edit, gender_filter, committee_filter).forEach(element => {
         $(element).select2({
             theme: 'bootstrap-5',
             allowClear: true,
