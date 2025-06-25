@@ -21,6 +21,7 @@ class DatabaseSeeder extends Seeder
             CommitteeSeeder::class,
             GuestSeeder::class,
             ReservationSeeder::class,
+            HousekeepersSeeder::class,
         ]);
     }
 }

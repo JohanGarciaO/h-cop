@@ -11,7 +11,9 @@ use Illuminate\Support\Facades\Storage;
 use App\Models\Reservation;
 use App\Models\Guest;
 use App\Models\Room;
+use App\Models\Cleaning;
 use App\Services\ReservationReceiptService;
+use App\Enums\RoomCleaningStatus;
 
 class ReservationController extends Controller
 {
@@ -345,6 +347,14 @@ class ReservationController extends Controller
                 'message' => 'Erro ao gerar o recibo. Verifique os logs.',
             ]);
         }
+
+        Cleaning::create([
+            'room_id' => $reservation->room_id,
+            'reservation_id' => $reservation->id,
+            'housekeeper_id' => null,
+            'status' => RoomCleaningStatus::IN_PREPARATION->name,
+            'updated_by' => auth()->id(),
+        ]);
 
         return redirect()->route('reservations.show', $reservation->id)->with([
             'status' => 'success',
