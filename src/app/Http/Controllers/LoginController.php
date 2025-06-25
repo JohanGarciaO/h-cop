@@ -36,7 +36,7 @@ class LoginController extends Controller
                 'status' => 'error',
                 'alert-type' => 'danger',
                 'message' => 'Usuário ou senha inválido.'
-            ]);
+            ])->withInput();
         }
     }
 

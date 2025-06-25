@@ -16,7 +16,7 @@
 
                 <div class="mb-3">
                     <label for="login" class="form-label">E-mail ou usuário</label>
-                    <input type="text" class="form-control" id="login" name="login" placeholder="Digite seu e-mail ou usuário" required>
+                    <input type="text" class="form-control" id="login" name="login" value="{{old('login')}}" placeholder="Digite seu e-mail ou usuário" required>
                 </div>
 
                 <div class="mb-3">
