@@ -24,9 +24,31 @@
                     </button>
                 </li>
 
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ route('auth.logout') }}">Sair</a>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle d-flex align-items-center gap-2" href="#" role="button" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-person-circle"></i>
+                        <span>Olá, {{ auth()->user()->first_name}}</span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end dropdown-dark" aria-labelledby="userDropdown">
+                        <li>
+                            <a class="dropdown-item text-light" href="{{ route('auth.form.update-password') }}">
+                                <i class="bi bi-key"></i> Alterar senha
+                            </a>
+                        </li>
+
+                        <li><hr class="dropdown-divider bg-secondary"></li>
+
+                        <li>
+                            <a class="dropdown-item text-danger" href="{{ route('auth.logout') }}">
+                                <i class="bi bi-box-arrow-right"></i> Sair
+                            </a>
+                        </li>
+                    </ul>
                 </li>
+
+                {{-- <li class="nav-item">
+                    <a class="nav-link" href="{{ route('auth.logout') }}">Sair</a>
+                </li> --}}
 
             </ul>
         </div>

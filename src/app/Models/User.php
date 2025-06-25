@@ -76,4 +76,10 @@ class User extends Authenticatable
     {
         return $this->role_id === 2;
     }
+
+    public function getFirstNameAttribute(): string
+    {   
+        $first = trim(strtok($this->name, ' '));
+        return ucfirst(strtolower($first));
+    }
 }
