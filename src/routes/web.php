@@ -17,10 +17,14 @@ Route::middleware(['guest'])->group(function () {
     Route::post('/auth', [LoginController::class, 'auth'])->name('auth.auth');
 });
 
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth','force-password'])->group(function () {
 
     // Autenticação
     Route::get('/logout', [LoginController::class, 'logout'])->name('auth.logout');
+
+    // Password redefined
+    Route::view('/login/password-update', 'login.update-password')->name('auth.form.update-password');
+    Route::post('/login/password-update', [LoginController::class, 'updatePassword'])->name('auth.update.password');
 
     // Home
     Route::view('/', 'home.index')->name('home.index');
