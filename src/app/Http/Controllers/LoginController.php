@@ -58,6 +58,15 @@ class LoginController extends Controller
             'password.min' => 'A senha deve ter no mínimo 8 caracteres.',
         ]);
 
+        if ($request->password === config('auth.default_password'))
+        {
+            return redirect()->route('auth.form.update-password')->with([
+                'status' => 'error',
+                'alert-type' => 'danger',
+                'message' => 'Você não pode usar a senha padrão!',
+            ]);
+        }
+
         $user = auth()->user();
         $user->password = Hash::make($request->password);
         $user->save();
