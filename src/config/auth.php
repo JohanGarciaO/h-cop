@@ -18,6 +18,8 @@ return [
         'passwords' => env('AUTH_PASSWORD_BROKER', 'users'),
     ],
 
+    'default_password' => env('DEFAULT_PASSWORD', 'hcop*123'),
+
     /*
     |--------------------------------------------------------------------------
     | Authentication Guards

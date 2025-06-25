@@ -7,8 +7,10 @@ use App\Http\Controllers\GuestController;
 use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\PdfController;
 use App\Http\Controllers\CommitteesController;
+use App\Http\Controllers\UserController;
 use App\Models\State;
 use App\Models\City;
+use App\Models\User;
 
 Route::middleware(['guest'])->group(function () {
     Route::view('/login', 'login.form')->name('login');
@@ -37,4 +39,10 @@ Route::middleware(['auth'])->group(function () {
 
     // Committees
     Route::resource('committees', CommitteesController::class);
+
+    // Users
+    Route::middleware(['can:viewAny,App\Models\User'])->group(function () {
+        Route::resource('users', UserController::class);
+        Route::patch('users/reset/{id}', [UserController::class, 'reset'])->name('users.reset');
+    });
 });

@@ -6,6 +6,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use App\Models\Role;
 
 class User extends Authenticatable
 {
@@ -18,9 +19,12 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
+        'role_id',
+        'username',
         'name',
+        'document',
+        'phone',
         'email',
-        'password',
     ];
 
     /**
@@ -49,6 +53,18 @@ class User extends Authenticatable
     public function role()
     {
         return $this->belongsTo(Role::class);
+    }
+
+    public function getRoleLabelAttribute()
+    {
+        $roleName = $this->role?->name;
+
+        $predefinedNames = [
+            'ADMIN' => 'administrador',
+            'OPERATOR' => 'operador',
+        ];
+
+        return $predefinedNames[$roleName] ?? $roleName;
     }
 
     public function isAdmin(): bool
