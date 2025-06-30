@@ -54,4 +54,14 @@ class Room extends Model
         });
     }
 
+    public function cleanings()
+    {
+        return $this->hasMany(Cleaning::class);
+    }
+
+    public function lastCleaning()
+    {
+        $cleanings = $this->relationLoaded('cleanings') ? $this->cleanings : $this->cleanings();
+        return $this->cleanings()->orderByDesc('created_at')->first();
+    }
 }
