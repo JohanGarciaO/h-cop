@@ -16,7 +16,16 @@ enum RoomCleaningStatus
         return match ($this) {
             SELF::READY => 'pronto para uso',
             SELF::IN_PREPARATION => 'em preparo',
-            SELF::NEEDS_MAINTENANCE => 'em manutenção',
+            SELF::NEEDS_MAINTENANCE => 'precisa de manutenção',
+        };
+    }
+
+    public function color(): string
+    {
+        return match ($this) {
+            SELF::READY => 'success',
+            SELF::IN_PREPARATION => 'warning',
+            SELF::NEEDS_MAINTENANCE => 'danger',
         };
     }
 

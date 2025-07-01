@@ -28,13 +28,12 @@
     @endcomponent
 
     <div class="container my-5">
-        <div class="row justify-content-md-start gap-2">
+        <div class="row justify-content-md-start gap-5">
             
-            <div class="col-12 col-lg-3 p-4 bg-background shadow rounded">
+            <div class="col-12 p-4 bg-background shadow rounded d-md-flex">
                 
-                <h5 class="mb-5 fw-bold">Detalhes do Quarto</h5>
-
                 <dl class="row">
+                    <h5 class="mb-5 fw-bold">Detalhes do Quarto</h5>
                     <dt class="col-sm-6">Número:</dt>
                     <dd class="col-sm-6">{{ $room->number }}</dd>
 
@@ -63,7 +62,7 @@
 
             </div>
 
-            <div class="col-12 col-lg-8 justify-content-start align-items-center">
+            <div class="col-12 col-lg-12 justify-content-start align-items-center">
             @if ($room->reservations->count())               
                 {{-- <img src="{{asset('assets/images/edit.webp')}}" alt="Ilustração de edição" class="img-fluid" style="max-height: 800px;"> --}}
                 <h5 class="mb-5 fw-bold">Histórico de Reservas</h5>

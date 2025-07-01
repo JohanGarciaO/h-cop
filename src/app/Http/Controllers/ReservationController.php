@@ -291,7 +291,15 @@ class ReservationController extends Controller
             ]);
         }
 
-        if (Reservation::where('room_id', $reservation->room_id)->whereNull('check_out_at')->count()) {
+        if ($reservation->scheduled_check_in->isBefore(now()->startOfDay())){
+            return redirect()->back()->with([
+                'status' => 'error',
+                'alert-type' => 'danger',
+                'message' => "Já passou o dia de seu check-in.",
+            ]);
+        }
+
+        if (Reservation::where('room_id', $reservation->room_id)->where('id', '!=', $reservation->id)->whereNull('check_out_at')->count()) {
             return redirect()->back()->with([
                 'status' => 'error',
                 'alert-type' => 'danger',
@@ -351,8 +359,6 @@ class ReservationController extends Controller
         Cleaning::create([
             'room_id' => $reservation->room_id,
             'reservation_id' => $reservation->id,
-            'housekeeper_id' => null,
-            'status' => RoomCleaningStatus::IN_PREPARATION->name,
             'updated_by' => auth()->id(),
         ]);
 

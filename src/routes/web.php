@@ -8,6 +8,7 @@ use App\Http\Controllers\ReservationController;
 use App\Http\Controllers\PdfController;
 use App\Http\Controllers\CommitteesController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\CleaningController;
 use App\Models\State;
 use App\Models\City;
 use App\Models\User;
@@ -49,4 +50,7 @@ Route::middleware(['auth','force-password'])->group(function () {
         Route::resource('users', UserController::class);
         Route::patch('users/reset/{id}', [UserController::class, 'reset'])->name('users.reset');
     });
+
+    // Cleanings
+    Route::resource('cleanings', CleaningController::class);
 });

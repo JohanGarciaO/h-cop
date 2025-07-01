@@ -51,4 +51,19 @@ class Cleaning extends Model
     {
         return $this->belongsTo(User::class, 'updated_by');
     }
+
+    public function isReady(): bool
+    {
+        return $this->status === RoomCleaningStatus::READY;
+    }
+
+    public function isPreparation(): bool
+    {
+        return $this->status === RoomCleaningStatus::IN_PREPARATION;
+    }
+
+    public function isMaintenance(): bool
+    {
+        return $this->status === RoomCleaningStatus::NEEDS_MAINTENANCE;
+    }
 }

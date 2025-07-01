@@ -42,3 +42,10 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 # Define diretório de trabalho
 WORKDIR /var/www
+
+# Copia o conteúdo do projeto para dentro do container
+COPY . .
+
+# Ajusta permissões das pastas usadas pelo Laravel
+RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache && \
+    chmod -R 775 /var/www/storage /var/www/bootstrap/cache

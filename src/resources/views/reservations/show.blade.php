@@ -143,6 +143,15 @@
                             </div>
                         @endif
 
+                        @if ($reservation->scheduled_check_in->isBefore(now()->startOfDay()))
+                            <div class="col-md-12 mt-3">
+                                <div class="alert alert-danger d-flex align-items-center gap-2" role="alert">
+                                    <i class="bi bi-exclamation-triangle-fill gap-2"></i>
+                                    <div>Já passou a data agendada para o Check-in</div>
+                                </div>
+                            </div>
+                        @endif
+
                         @if($reservation->check_out_at)
                             <div class="col-md-12">
                                 <div 
@@ -183,7 +192,7 @@
                 </dl>
 
                 <div class="d-flex gap-2">
-                    @if (!$reservation->scheduled_check_in->isFuture())
+                    @if (!$reservation->scheduled_check_in->isFuture() && !$reservation->scheduled_check_in->isBefore(now()->startOfDay()))
                         @if (!$reservation->check_in_at)
                             <button id="checkInButton" type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#checkInModal">
                                 <span class="btn-content">

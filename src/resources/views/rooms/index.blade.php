@@ -76,10 +76,13 @@
             @endphp
             
             <div class="col-md-3 mb-4">
-                <div class="card shadow-sm h-100">
+                <div class="card shadow-sm h-100 bg-background text-white">
                     <div class="card-body">
 
-                        <h5 class="card-title"><span class="badge bg-background"> Quarto {{ $room->number }}</span></h5>
+                        <h5 class="card-title d-flex justify-content-between">
+                            <span class="fw-bold"> Quarto {{ $room->number }}</span>
+                            <span class="badge bg-{{$room->lastCleaning()?->status->color() ?? 'success'}}">{{ $room->lastCleaning()?->status->label() ?? App\Enums\RoomCleaningStatus::READY->label() }}</span>
+                        </h5>
 
                         <p class="card-text mb-1">
                             <span class="fw-bold">Diária:</span>
@@ -88,9 +91,9 @@
                             </h5>
                         </p>
 
-                        <div class="progress" style="height: 18px;">
+                        <div class="progress bg-dark" style="height: 18px;">
                             <div 
-                                class="progress-bar percent-label bg-background fw-bold" 
+                                class="progress-bar percent-label fw-bold" 
                                 role="progressbar" 
                                 style="width: 0%" 
                                 data-target="{{ $percent }}"
@@ -121,18 +124,35 @@
                                     </button>
                                 @endcan
                             </div>
-                            @can('delete', $room)
-                                <button id="deleteRoomButton{{$room->id}}" type="submit" class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteRoomModal{{ $room->id }}">
-                                    <span class="btn-content">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-trash-fill" viewBox="-2 0 20 20">
-                                            <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5M8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5m3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0"/>
-                                        </svg>
-                                    </span>
-                                    <span class="spinner-content d-none">
-                                        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                                    </span>
-                                </button>
-                            @endcan
+
+                            <div>
+                                @can('clear', $room)
+                                    <button id="clearRoomButton{{$room->lastCleaning()->id}}" type="submit" class="btn btn-outline-warning btn-sm" data-bs-toggle="modal" data-bs-target="#clearRoomModal{{ $room->lastCleaning()->id }}">
+                                        <span class="btn-content">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-hammer" viewBox="0 0 20 20">
+                                                <path d="M9.972 2.508a.5.5 0 0 0-.16-.556l-.178-.129a5 5 0 0 0-2.076-.783C6.215.862 4.504 1.229 2.84 3.133H1.786a.5.5 0 0 0-.354.147L.146 4.567a.5.5 0 0 0 0 .706l2.571 2.579a.5.5 0 0 0 .708 0l1.286-1.29a.5.5 0 0 0 .146-.353V5.57l8.387 8.873A.5.5 0 0 0 14 14.5l1.5-1.5a.5.5 0 0 0 .017-.689l-9.129-8.63c.747-.456 1.772-.839 3.112-.839a.5.5 0 0 0 .472-.334"/>
+                                            </svg>
+                                        </span>
+                                        <span class="spinner-content d-none">
+                                            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                        </span>
+                                    </button>
+                                    <!-- Modal de Limpeza de Quarto -->
+                                    @include('partials.modals.rooms.clear', ['clean' => $room->lastCleaning()])
+                                @endcan
+                                @can('delete', $room)
+                                    <button id="deleteRoomButton{{$room->id}}" type="submit" class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteRoomModal{{ $room->id }}">
+                                        <span class="btn-content">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-trash-fill" viewBox="-2 0 20 20">
+                                                <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5M8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5m3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0"/>
+                                            </svg>
+                                        </span>
+                                        <span class="spinner-content d-none">
+                                            <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                                        </span>
+                                    </button>
+                                @endcan
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -141,7 +161,7 @@
             <!-- Modal de Edição de Quarto -->
             @include('partials.modals.rooms.edit', ['room' => $room])
             <!-- Modal de Remoção de Quarto -->
-            @include('partials.modals.rooms.delete', ['room' => $room])
+            @include('partials.modals.rooms.delete', ['room' => $room])            
         @endforeach
     </div>
 
@@ -238,4 +258,5 @@
 
     });
 </script>
+@include('rooms.select2')
 @endpush

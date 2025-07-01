@@ -17,6 +17,7 @@ return [
     'logo' => env('APP_LOGO', 'logo'),
     'logo_navbar' => env('APP_LOGO_NAVBAR', 'logo'),
     'logo_navbar_title' => strtoupper(env('APP_LOGO_NAVBAR_TITLE', env('APP_NAME', 'H-Cop'))),    
+    'hotel_name' => env('HOTEL_NAME', 'H-Cop'),
 
     /*
     |--------------------------------------------------------------------------

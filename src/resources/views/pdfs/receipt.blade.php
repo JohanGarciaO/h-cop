@@ -55,7 +55,7 @@
     </table>
     
     <div style="text-align: center; margin: 10px 0;">
-        <strong>Recibo de Hospedagem - {{env('HOTEL_NAME')}}</strong><br>
+        <strong>Recibo de Hospedagem - {{config('app.hotel_name')}}</strong><br>
     </div>
     
     <div style="text-align: center; margin: 20px 0;">
@@ -120,7 +120,7 @@
         </div>
         <div>
             ___________________________________________<br>
-            {{env('HOTEL_NAME')}}<br>
+            {{config('app.hotel_name')}}<br>
             Hotelaria
         </div>
     </div>
