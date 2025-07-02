@@ -66,7 +66,7 @@ class RoomPolicy
 
     public function clear(User $user, Room $room): bool
     {
-        $lastCleaning = $room->lastCleaning();
+        $lastCleaning = $room->lastCleaning;
         if (!$lastCleaning) return false;
         return ($user->isAdmin() || $user->isOperator()) && !$lastCleaning->isReady();
     }

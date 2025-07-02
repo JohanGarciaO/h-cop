@@ -63,6 +63,15 @@
                 Ao dia:
                 <input type="date" id="scheduled_check_out" name="check_out" class="form-control" value="{{ request('check_out') }}" min="{{ $today->addDays(1)->format('Y-m-d') }}">
             </div>
+            <div class="col-auto">
+                Condições do quarto:
+                <select class="form-select" name="situation" id="situationFilter" data-selected="{{ request('situation') }}" data-placeholder="Estado atual">
+                    <option></option>
+                    @foreach (App\Enums\RoomCleaningStatus::cases() as $case)
+                        <option value="{{$case->name}}" {{ request('situation') === $case->name ? 'selected' : '' }}>{{Str::of($case->label())->apa()}}</option> 
+                    @endforeach
+                </select>
+            </div>
         </x-slot>
     </x-filters>
 
@@ -81,7 +90,7 @@
 
                         <h5 class="card-title d-flex justify-content-between">
                             <span class="fw-bold"> Quarto {{ $room->number }}</span>
-                            <span class="badge bg-{{$room->lastCleaning()?->status->color() ?? 'success'}}">{{ $room->lastCleaning()?->status->label() ?? App\Enums\RoomCleaningStatus::READY->label() }}</span>
+                            <span class="badge bg-{{$room->lastCleaning?->status->color() ?? 'success'}}">{{ $room->lastCleaning?->status->label() ?? App\Enums\RoomCleaningStatus::READY->label() }}</span>
                         </h5>
 
                         <p class="card-text mb-1">
@@ -127,7 +136,7 @@
 
                             <div>
                                 @can('clear', $room)
-                                    <button id="clearRoomButton{{$room->lastCleaning()->id}}" type="submit" class="btn btn-outline-warning btn-sm" data-bs-toggle="modal" data-bs-target="#clearRoomModal{{ $room->lastCleaning()->id }}">
+                                    <button id="clearRoomButton{{$room->lastCleaning->id}}" type="submit" class="btn btn-outline-warning btn-sm" data-bs-toggle="modal" data-bs-target="#clearRoomModal{{ $room->lastCleaning->id }}">
                                         <span class="btn-content">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-hammer" viewBox="0 0 20 20">
                                                 <path d="M9.972 2.508a.5.5 0 0 0-.16-.556l-.178-.129a5 5 0 0 0-2.076-.783C6.215.862 4.504 1.229 2.84 3.133H1.786a.5.5 0 0 0-.354.147L.146 4.567a.5.5 0 0 0 0 .706l2.571 2.579a.5.5 0 0 0 .708 0l1.286-1.29a.5.5 0 0 0 .146-.353V5.57l8.387 8.873A.5.5 0 0 0 14 14.5l1.5-1.5a.5.5 0 0 0 .017-.689l-9.129-8.63c.747-.456 1.772-.839 3.112-.839a.5.5 0 0 0 .472-.334"/>
@@ -138,7 +147,7 @@
                                         </span>
                                     </button>
                                     <!-- Modal de Limpeza de Quarto -->
-                                    @include('partials.modals.rooms.clear', ['clean' => $room->lastCleaning()])
+                                    @include('partials.modals.rooms.clear', ['clean' => $room->lastCleaning])
                                 @endcan
                                 @can('delete', $room)
                                     <button id="deleteRoomButton{{$room->id}}" type="submit" class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteRoomModal{{ $room->id }}">

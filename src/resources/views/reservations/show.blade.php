@@ -104,7 +104,28 @@
                             <h5 for="total_display" class="form-label">Resumo da reserva:</h5>
                             <div class="form-control bg-light d-flex align-items-center justify-content-between" style="transition: all 0.3s ease; font-weight: 500;">
 
-                                @if ($reservation->check_out_at)
+                                @if (!$reservation->check_in_at)
+                                {{-- Se não tiver sido feito o check-in retorna a diferença de dias do agendado --}}
+                                    <div>
+                                        <i class="bi bi-calendar-week me-2 text-primary"></i>
+                                        <span class="">{{$reservation->numberOfDays . ' ' . Str::plural('diária', $reservation->numberOfDays) . ' ' . Str::plural('agendada', $reservation->numberOfDays)}}</span>
+                                    </div>
+                                    <div>
+                                        <i class="bi bi-currency-dollar me-1 text-success"></i>
+                                        <span class="">R$ {{number_format($reservation->totalPrice, 2, ',', '.')}}</span>
+                                    </div>
+                                @elseif($reservation->check_in_at && !$reservation->check_out_at)
+                                {{-- Se tiver sido feito o Check-in mas não o Check-out retorna a diferença de dias do check-in até o momento atual --}}
+                                    <div>
+                                        <i class="bi bi-calendar-week me-2 text-primary"></i>
+                                        <span class="">{{$reservation->numberOfDays . ' ' . Str::plural('diária', $reservation->numberOfDays) . ' até agora'}}</span>
+                                    </div>
+                                    <div>
+                                        <i class="bi bi-currency-dollar me-1 text-success"></i>
+                                        <span class="">R$ {{number_format($reservation->totalPrice, 2, ',', '.')}}</span>
+                                    </div>
+                                @elseif ($reservation->check_in_at && $reservation->check_out_at)
+                                {{-- Mas se tiver sido feito tanto o check-in quanto o check-out, retorna a diferença de dias do checkIn até o checkOut --}}
                                     <div>
                                         <i class="bi bi-calendar-week me-2 text-primary"></i>
                                         <span class="text-success">{{$reservation->numberOfDaysScheduled . ' ' . Str::plural('diária', $reservation->numberOfDaysScheduled) . ' ' . Str::plural('agendada', $reservation->numberOfDaysScheduled)}}</span>
@@ -113,43 +134,29 @@
                                         <i class="bi bi-currency-dollar me-1 text-success"></i>
                                         <span class="text-success">R$ {{number_format($reservation->totalPriceScheduled, 2, ',', '.')}}</span>
                                     </div>
-                                @else
-                                    @php
-                                        if ($reservation->check_in_at){
-                                            $text = Str::plural('diária', $reservation->numberOfDays) . ' até agora';
-                                        }else{
-                                            $text = Str::plural('diária', $reservation->numberOfDays) . ' ' . Str::plural('agendada', $reservation->numberOfDaysScheduled);
-                                        }
-                                    @endphp
-                                    <div>
-                                        <i class="bi bi-calendar-week me-2 text-primary"></i>
-                                        <span class="">{{$reservation->numberOfDays . ' ' . $text}}</span>
-                                    </div>
-                                    <div>
-                                        <i class="bi bi-currency-dollar me-1 text-success"></i>
-                                        <span class="">R$ {{number_format($reservation->totalPrice, 2, ',', '.')}}</span>
-                                    </div>
                                 @endif
 
                             </div>
                         </div>    
 
-                        @if ($reservation->scheduled_check_in->isFuture())
-                            <div class="col-md-12 mt-3">
-                                <div class="alert alert-danger d-flex align-items-center gap-2" role="alert">
-                                    <i class="bi bi-exclamation-triangle-fill gap-2"></i>
-                                    <div>Ainda não chegou a data agendada para o Check-in</div>
+                        @if(!$reservation->check_in_at)
+                            @if ($reservation->scheduled_check_in->isFuture())
+                                <div class="col-md-12 mt-3">
+                                    <div class="alert alert-danger d-flex align-items-center gap-2" role="alert">
+                                        <i class="bi bi-exclamation-triangle-fill gap-2"></i>
+                                        <div>Ainda não chegou a data agendada para o Check-in</div>
+                                    </div>
                                 </div>
-                            </div>
-                        @endif
+                            @endif
 
-                        @if ($reservation->scheduled_check_in->isBefore(now()->startOfDay()))
-                            <div class="col-md-12 mt-3">
-                                <div class="alert alert-danger d-flex align-items-center gap-2" role="alert">
-                                    <i class="bi bi-exclamation-triangle-fill gap-2"></i>
-                                    <div>Já passou a data agendada para o Check-in</div>
+                            @if ($reservation->scheduled_check_in->isBefore(now()->startOfDay()))
+                                <div class="col-md-12 mt-3">
+                                    <div class="alert alert-danger d-flex align-items-center gap-2" role="alert">
+                                        <i class="bi bi-exclamation-triangle-fill gap-2"></i>
+                                        <div>Já passou a data agendada para o Check-in</div>
+                                    </div>
                                 </div>
-                            </div>
+                            @endif
                         @endif
 
                         @if($reservation->check_out_at)

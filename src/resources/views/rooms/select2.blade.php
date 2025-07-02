@@ -4,7 +4,7 @@
 
 <script>
 
-// const housekeeper = $('#housekeeper')
+const situationFilter = $('#situationFilter')
 
 function normalizeText(str) {
     if (typeof(str) !== 'string') {
@@ -19,19 +19,19 @@ function normalizeText(str) {
 
 $(document).ready(() => {
 
-    // Array(state_filter, city_filter, state_edit, city_edit, committee_edit, gender_edit, gender_filter, committee_filter).forEach(element => {
-    //     $(element).select2({
-    //         theme: 'bootstrap-5',
-    //         allowClear: true,
-    //         width:'100%',            
-    //         placeholder: $(this).data('placeholder'),
-    //         language: {
-    //             noResults: function () {
-    //                 return "Nenhum resultado encontrado"
-    //             },
-    //         },
-    //     })
-    // });
+    Array(situationFilter).forEach(element => {
+        $(element).select2({
+            theme: 'bootstrap-5',
+            allowClear: true,
+            width:'100%',            
+            placeholder: $(this).data('placeholder'),
+            language: {
+                noResults: function () {
+                    return "Nenhum resultado encontrado"
+                },
+            },
+        })
+    });
 
     // Array(housekeeper).forEach(element => {
     //     $(element).select2({

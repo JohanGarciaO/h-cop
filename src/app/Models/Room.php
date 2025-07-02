@@ -61,7 +61,8 @@ class Room extends Model
 
     public function lastCleaning()
     {
-        $cleanings = $this->relationLoaded('cleanings') ? $this->cleanings : $this->cleanings();
-        return $this->cleanings()->orderByDesc('created_at')->first();
+        // $cleanings = $this->relationLoaded('cleanings') ? $this->cleanings : $this->cleanings();
+        // return $this->cleanings()->orderByDesc('created_at')->first();
+        return $this->hasOne(Cleaning::class)->latestOfMany();
     }
 }
