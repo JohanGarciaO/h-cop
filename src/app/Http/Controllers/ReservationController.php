@@ -344,17 +344,17 @@ class ReservationController extends Controller
             $reservation->save();
         });
 
-        try {
-            $receipt = app(ReservationReceiptService::class);
-            $path = $receipt->generate($reservation->id);
-        } catch (\Throwable $th) {
-            \Log::error('Erro ao gerar recibo: ' . $th->getMessage());
-            return redirect()->back()->with([
-                'status' => 'error',
-                'alert-type' => 'danger',
-                'message' => 'Erro ao gerar o recibo. Verifique os logs.',
-            ]);
-        }
+        // try {
+        //     $receipt = app(ReservationReceiptService::class);
+        //     $path = $receipt->generate($reservation->id);
+        // } catch (\Throwable $th) {
+        //     \Log::error('Erro ao gerar recibo: ' . $th->getMessage());
+        //     return redirect()->back()->with([
+        //         'status' => 'error',
+        //         'alert-type' => 'danger',
+        //         'message' => 'Erro ao gerar o recibo. Verifique os logs.',
+        //     ]);
+        // }
 
         Cleaning::create([
             'room_id' => $reservation->room_id,
@@ -392,8 +392,17 @@ class ReservationController extends Controller
         $disk = Storage::disk('local');
 
         if (!$reservation->receipt_path || !$disk->exists($reservation->receipt_path)) {
-            $path = app(ReservationReceiptService::class)->generate($reservation->id);
-            return $disk->download("{$path}", "recibo_reserva_{$reservation->id}.pdf");
+            try {
+                $path = app(ReservationReceiptService::class)->generate($reservation->id);
+                return $disk->download("{$path}", "recibo_reserva_{$reservation->id}.pdf");
+            } catch (\Throwable $th) {
+                \Log::error('Erro ao gerar recibo: ' . $th->getMessage());
+                return redirect()->back()->with([
+                    'status' => 'error',
+                    'alert-type' => 'danger',
+                    'message' => 'Erro ao gerar o recibo. Verifique os logs.',
+                ]);
+            }
         }
 
         return $disk->download("{$reservation->receipt_path}", "recibo_reserva_{$reservation->id}.pdf");
