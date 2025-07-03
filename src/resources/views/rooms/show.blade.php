@@ -212,7 +212,7 @@
                                         </td>
                                     </tr>
 
-                                    {{-- @include('partials.modals.rooms.view-notes', ['clean' => $clean]) --}}
+                                    @include('partials.modals.rooms.view-notes', ['clean' => $clean])
                                 @endforeach
                             </tbody>
                         </table>
