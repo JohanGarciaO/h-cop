@@ -1,39 +1,54 @@
-<div class="modal fade" id="clearRoomModal{{ $clean->id }}" tabindex="-1" aria-labelledby="clearRoomModalLabel{{ $clean->id }}" aria-hidden="true">
+<div class="modal fade" id="createClearRoomModal{{ $clean->id }}" tabindex="-1" aria-labelledby="createClearRoomModalLabel{{ $clean->id }}" aria-hidden="true">
     <div class="modal-dialog">
-        <form action="{{ route('cleanings.update', $clean) }}" method="POST">
-        @method('PUT')
+        <form action="{{ route('cleanings.store', $clean) }}" method="POST">
+        @method('POST')
         @csrf
 
             <div class="modal-content">
 
                 <div class="modal-header">
-                    <h5 class="modal-title" id="clearRoomModalLabel{{ $clean->id }}">Alterar estado</h5>
+                    <h5 class="modal-title" id="createClearRoomModalLabel{{ $clean->id }}">Atualizar situação do quarto</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
 
                 <div class="modal-body d-flex flex-column">
 
+                    {{-- Último relato --}}
+                    <div>
+                        <small class="text-muted d-block">Última atualização: {{ $clean->updated_at_formated }}</small>
+                        <p class="mb-0">
+                            <span class="fw-bold text-muted">Por: </span>{{ $clean->housekeeper?->name ?? 'Não informado' }}<br>
+                            <span class="fw-bold text-muted">Relato: </span>{{ $clean->notes ?: 'Nenhum' }}
+                        </p>
+                    </div>               
+
+                    <hr class="my-4">
+
+                    {{-- Nova atualização --}}
+                    <h6 class="text-secondary fw-bold mb-3">Nova situação do quarto</h6>
+
+                    <input type="hidden" name="room_id" value="{{$clean->room->id}}">
                     <div class="col-12 mb-3">
-                        <select class="form-select" name="housekeeper_id" id="housekeeper{{$clean->id}}" data-selected="{{$clean->housekeeper?->id}}" data-placeholder="Quem reportou a situação?">
+                        <select class="form-select" name="housekeeper_id" id="housekeeper{{$clean->id}}CreateClear" data-placeholder="Quem reportou a situação?">
                             <option></option>
                             @foreach (App\Models\Housekeeper::all() as $housekeeper)
-                                <option value="{{$housekeeper->id}}" {{ $clean->housekeeper?->id === $housekeeper->id ? 'selected' : '' }}>{{$housekeeper->name}}</option> 
+                                <option value="{{$housekeeper->id}}">{{$housekeeper->name}}</option> 
                             @endforeach
                         </select>
                     </div>
 
                     <div class="col-auto mb-3">
-                        <select class="form-select" name="status" id="status{{$clean->id}}" data-selected="{{$clean->status->name}}" data-placeholder="Estado atual do quarto" required>
+                        <select class="form-select" name="status" id="status{{$clean->id}}CreateClear" data-placeholder="Estado atual do quarto" required>
                             <option></option>
                             @foreach (App\Enums\RoomCleaningStatus::cases() as $case)
-                                <option value="{{$case->name}}" {{ $clean->status->name === $case->name ? 'selected' : '' }}>{{Str::of($case->label())->apa()}}</option> 
+                                <option value="{{$case->name}}">{{Str::of($case->label())->apa()}}</option> 
                             @endforeach
                         </select>
                     </div>
 
-                    <div class="col-12 mb-3 d-none" id="js-notes-area-{{$clean->id}}">
+                    <div class="col-12 mb-3 d-none" id="js-notes-area-{{$clean->id}}CreateClear">
                         <div class="form-floating">
-                            <textarea class="form-control" placeholder="Alterações (opcional)" id="notes" name="notes" style="height: 100px">{{$clean->notes}}</textarea>
+                            <textarea class="form-control" placeholder="Alterações (opcional)" id="notes" name="notes" style="height: 100px"></textarea>
                             <label for="notes">Alterações</label>
                         </div>
                     </div>
@@ -61,11 +76,11 @@
 <script>
 
     $(document).ready(() => {
-        $('#housekeeper{{$clean->id}}').select2({
+        $('#housekeeper{{$clean->id}}CreateClear').select2({
             theme: 'bootstrap-5',
             allowClear: true,
             width: '100%',
-            dropdownParent: $('#clearRoomModal{{$clean->id}}'),
+            dropdownParent: $('#createClearRoomModal{{$clean->id}}'),
             placeholder: $(this).data('placeholder'),
             language: {
                 noResults: function () {
@@ -73,11 +88,11 @@
                 },
             },
         })
-        $('#status{{$clean->id}}').select2({
+        $('#status{{$clean->id}}CreateClear').select2({
             theme: 'bootstrap-5',
             allowClear: true,
             width: '100%',
-            dropdownParent: $('#clearRoomModal{{$clean->id}}'),
+            dropdownParent: $('#createClearRoomModal{{$clean->id}}'),
             placeholder: $(this).data('placeholder'),
             language: {
                 noResults: function () {
@@ -86,13 +101,13 @@
             },
         })
 
-        const statusSelect = $('#status{{$clean->id}}')
-        const notesArea = $("#js-notes-area-{{$clean->id}}")
+        const statusSelect = $('#status{{$clean->id}}CreateClear')
+        const notesArea = $("#js-notes-area-{{$clean->id}}CreateClear")
         
         // Define a função para verificar o valor e exibir/esconder
         function toggleNotesArea() {
             const selectedValue = statusSelect.val();
-            if (selectedValue === 'NEEDS_MAINTENANCE') {
+            if (selectedValue === 'NEEDS_MAINTENANCE' || selectedValue === 'READY') {
                 notesArea.removeClass('d-none')
             } else {
                 notesArea.addClass('d-none')
@@ -105,8 +120,8 @@
     })
 
     // Loading button
-    $("#clearRoomModal{{$clean->id}}").on('submit', function () {
-        const btn = $("#clearRoomButton{{$clean->id}}");
+    $("#createClearRoomModal{{$clean->id}}").on('submit', function () {
+        const btn = $("#createClearRoomButton{{$clean->id}}");
         
         // Desativa botão
         btn.prop('disabled', true);

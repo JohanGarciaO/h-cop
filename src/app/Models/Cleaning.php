@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use App\Enums\RoomCleaningStatus;
+use Carbon\Carbon;
 
 class Cleaning extends Model
 {
@@ -65,5 +66,10 @@ class Cleaning extends Model
     public function isMaintenance(): bool
     {
         return $this->status === RoomCleaningStatus::NEEDS_MAINTENANCE;
+    }
+
+    public function getUpdatedAtFormatedAttribute(): string
+    {
+        return Carbon::parse($this->updated_at)->format('d/m/Y à\s H:i:s');
     }
 }

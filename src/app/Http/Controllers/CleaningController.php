@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Cleaning;
 use Illuminate\Http\Request;
+use App\Models\Cleaning;
 use App\Enums\RoomCleaningStatus;
+use App\Models\Room;
 
 class CleaningController extends Controller
 {
@@ -29,7 +30,45 @@ class CleaningController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'housekeeper_id' => 'required|exists:housekeepers,id',
+            'room_id' => 'required|exists:rooms,id',
+            'status' => ['required', 'in:' . implode(',', RoomCleaningStatus::getNames())],
+            'notes' => 'nullable|string|max:1000',
+        ],[
+            'housekeeper_id.required' => 'É obrigatório dizer quem passou as alterações.',
+            'housekeeper_id.exists' => 'Este camareiro(a) não existe.',
+            'room_id.required' => 'O quarto é obrigatório.',
+            'room_id.exists' => 'Este quarto não existe.',
+            'status.required' => 'O estado do quarto é obrigatório.',
+            'status.in' => 'Este estado de quarto é inválido.',
+            'notes.string' => 'As notas de alterações devem ter um formato textual.',
+        ]);
+
+        $lastCleaning = Room::find($request->room_id)->lastCleaning;
+
+        if (!auth()->user()->can('create', $lastCleaning)) {
+            return redirect()->back()->with([
+                'status' => 'error',
+                'alert-type' => 'danger',
+                'message' => "Você não pode adicionar um novo estado a quarto.",
+            ]);
+        }
+
+        // Cria o novo estado do quarto
+        $cleaning = Cleaning::create([
+            'room_id' => $validated['room_id'],
+            'housekeeper_id' => $validated['housekeeper_id'] ?? null,
+            'status' => $validated['status'],
+            'notes' => $validated['notes'] ?? null,
+            'updated_by' => auth()->id(),
+        ]);
+
+        return redirect()->back()->with([
+            'status' => 'success',
+            'alert-type' => 'success',
+            'message' => "O estado do quarto foi alterado com sucesso.",
+        ]); 
     }
 
     /**
@@ -53,7 +92,7 @@ class CleaningController extends Controller
      */
     public function update(Request $request, Cleaning $cleaning)
     {
-        if (!auth()->user()->can('clear', $cleaning->room)) {
+        if (!auth()->user()->can('update', $cleaning)) {
             return redirect()->route('rooms.index')->with([
                 'status' => 'error',
                 'alert-type' => 'danger',
