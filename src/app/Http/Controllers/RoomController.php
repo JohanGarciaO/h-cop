@@ -184,7 +184,7 @@ class RoomController extends Controller
             ]);
         }
 
-        $room->load('reservations.guest')->loadCount('activeReservations');
+        $room->load(['reservations.guest', 'cleanings'])->loadCount('activeReservations');
 
         return view('rooms.show', compact('room'));
     }
