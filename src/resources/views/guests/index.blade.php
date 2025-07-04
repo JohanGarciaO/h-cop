@@ -33,11 +33,11 @@
             <div class="col-auto">
                 <input type="text" name="name_filter" class="form-control" placeholder="Nome do hóspede"
                     value="{{ request('name_filter') }}">
-            </div>
+            </div>        
+
             <div class="col-auto">
-                <input type="text" id="cpf_filter" name="cpf_filter" class="form-control" maxlength="14" placeholder="CPF do hóspede"
-                    value="{{ request('cpf_filter') }}">
-            </div>            
+                <input type="text" id="document_filter" name="document_filter" class="form-control" maxlength="14" placeholder="Documento do hóspede" value="{{ request('document_filter') }}">
+            </div>  
 
             <div class="col-auto">
                 <select name="gender_filter" id="gender_filter" class="form-select" data-selected="{{ request('gender_filter') ?? '' }}" data-placeholder="Filtre por gênero">                
@@ -172,11 +172,30 @@
 <script>
 
     $(document).ready(function () {
-        $('#cpf_filter').mask('000.000.000-00')
-        $('#cpf').mask('000.000.000-00')
-        $('#document').mask('000.000.000-00')
-        $('#postal_code').mask('00000-000')
+        $('#document_filter').on('input', function () {
+            let val = $(this).val().replace(/\D/g, '')
 
+            if (val.length < 8) {             
+                // Máscara para o SARAM   
+                $(this).mask('#0-0', {reverse: true});                
+            }else {
+                // Máscara do CPF: 000.000.000-00
+                $(this).mask('000.000.000-00')
+            }
+        })
+        $('#document').on('input', function () {
+            let val = $(this).val().replace(/\D/g, '')
+
+            if (val.length < 8) {             
+                // Máscara para o SARAM   
+                $(this).mask('#0-0', {reverse: true});                
+            }else {
+                // Máscara do CPF: 000.000.000-00
+                $(this).mask('000.000.000-00')
+            }
+        })
+
+        $('#postal_code').mask('00000-000')
         $('#phone').on('input', function () {
             let value = this.value.replace(/\D/g,'')            
             value = value.replace(/(\d{2})(\d)/,"($1) $2")

@@ -18,7 +18,7 @@
 
                     <div class="row mb-3">
                         <div class="col-6">
-                            <input type="text" class="form-control" id="document" name="document" minlength="14" placeholder="Digite o CPF" required>
+                            <input type="text" class="form-control" id="document" name="document" minlength="14" placeholder="Digite o documento" required>
                         </div>
                         <div class="col-6">
                             <input type="text" class="form-control" id="phone" name="phone" maxlength="15" placeholder="Digite o telefone" required>

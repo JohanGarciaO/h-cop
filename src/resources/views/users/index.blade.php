@@ -30,6 +30,10 @@
                 <input type="text" name="name_filter" class="form-control" placeholder="Nome da pessoa" value="{{ request('name_filter') }}">
             </div>
 
+            <div class="col-auto">
+                <input type="text" id="document_filter" name="document_filter" class="form-control" maxlength="14" placeholder="Documento do usuário" value="{{ request('document_filter') }}">
+            </div>   
+
         </x-slot>
 
     </x-filters>
@@ -129,7 +133,17 @@
 <script>
 
     $(document).ready(function () {
-        //
+        $('#document_filter').on('input', function () {
+            let val = $(this).val().replace(/\D/g, '')
+
+            if (val.length < 8) {             
+                // Máscara para o SARAM   
+                $(this).mask('#0-0', {reverse: true});                
+            }else {
+                // Máscara do CPF: 000.000.000-00
+                $(this).mask('000.000.000-00')
+            }
+        })
     })
 
 </script>

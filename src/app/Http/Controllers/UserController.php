@@ -17,7 +17,7 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
-        $this->authorize('viewAny', User::class);
+        $this->authorize('viewAny', auth()->user());
 
         $users = User::with('role');
 
@@ -29,6 +29,11 @@ class UserController extends Controller
         // Filtro por nome
         if ($request->filled('name_filter')) {
             $users->where('name', 'like', '%' . $request->name_filter . '%');
+        }
+
+        // Filtro por documento
+        if ($request->filled('document_filter')) {
+            $users->where('document', $request->document_filter);
         }
 
         $users = $users->orderBy('role_id')->orderBy('name')->paginate(12)->appends($request->query());

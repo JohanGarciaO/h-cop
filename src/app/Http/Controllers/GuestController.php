@@ -29,8 +29,8 @@ class GuestController extends Controller
         }
 
         // Filtro por documento
-        if ($request->filled('cpf_filter')) {
-            $guests->where('document', $request->cpf_filter);
+        if ($request->filled('document_filter')) {
+            $guests->where('document', $request->document_filter);
         }        
 
         // Filtro por estado
@@ -87,7 +87,7 @@ class GuestController extends Controller
     {
         $validatedGuest = $request->validate([
             'name' => 'required',
-            'document' => 'required|size:14|unique:guests,document',
+            'document' => 'required|max:14|unique:guests,document',
             'phone' => 'required|max:15',
             'email' => 'nullable|email',
             'gender' => [
@@ -98,7 +98,7 @@ class GuestController extends Controller
         ],[
             'name.required' => 'o nome não pode estar vazio.',
             'document.required' => 'o CPF não pode estar vazio.',
-            'document.size' => 'o CPF precisa ter 14 caracteres.',
+            'document.max' => 'O tamanho máximo do documento é 11 dígitos numéricos.',
             'document.unique' => 'Este documento já está vinculado a outro hóspede.',
             'phone.required' => 'o telefone não pode estar vazio.',
             'phone.max' => 'o telefone deve ter no máximo 15 caracteres.',
@@ -107,6 +107,8 @@ class GuestController extends Controller
             'gender.enum' => 'O gênero deve ser "Masculino" ou "Feminino".',
             'committee_id.exists' => 'Deve ser passada uma comitiva válida.',
         ]);
+
+        $validated['document'] = Str::padLeft($validated['document'], 9, '0');
 
         $validatedAddress = $request->validate([
             'postal_code' => 'required|max:9',
@@ -176,7 +178,7 @@ class GuestController extends Controller
         if ($isAdmin){
             $rulesGuest['document'] = [
                 'required',
-                'size:14',
+                'max:14',
                 Rule::unique('guests', 'document')->ignore($guest->id),
             ];
 
@@ -190,7 +192,7 @@ class GuestController extends Controller
         [
             'name.required' => 'o nome não pode estar vazio.',
             'document.required' => 'o CPF não pode estar vazio.',
-            'document.size' => 'o CPF precisa ter 14 caracteres.',
+            'document.max' => 'O tamanho máximo do documento é 11 dígitos numéricos.',
             'document.unique' => 'Este documento já está vinculado a outro hóspede.',
             'phone.required' => 'o telefone não pode estar vazio.',
             'phone.max' => 'o telefone deve ter no máximo 15 caracteres.',
@@ -199,6 +201,8 @@ class GuestController extends Controller
             'gender.enum' => 'O gênero deve ser "Masculino" ou "Feminino".',
             'committee_id.exists' => 'Deve ser passada uma comitiva válida.',
         ]);
+
+        $validated['document'] = Str::padLeft($validated['document'], 9, '0');
 
         $validatedAddress = $request->validate([
             'postal_code' => 'required|max:9',
