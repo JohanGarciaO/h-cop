@@ -55,55 +55,28 @@
     </table>
     
     <div style="text-align: center; margin: 10px 0;">
-        <strong>Recibo de Hospedagem - {{env('HOTEL_NAME')}}</strong><br>
+        <strong>Recibo de Hospedagem - {{config('app.hotel_name')}}</strong><br>
     </div>
     
     <div style="text-align: center; margin: 20px 0;">
         <img src="{{ $brasao }}" width="80" alt="Brasão do Brasil"><br>
         <strong>MINISTÉRIO DA DEFESA</strong><br>
         COMANDO DA AERONÁUTICA<br>
-        {{-- <u>GRUPAMENTO DE APOIO DE BELÉM</u> --}}
     </div>
     
     
     <div class="details">
-        {{-- <table>
-            <tr>
-                <th>Hóspede</th>
-                <td>{{ $reservation->guest->name }}</td>
-            </tr>
-            <tr>
-                <th>Quarto</th>
-                <td>{{ $reservation->room->number }} - Capacidade: {{ $reservation->room->capacity }}</td>
-            </tr>
-            <tr>
-                <th>Check-in</th>
-                <td>{{ $reservation->check_in_at->format('d/m/Y H:i') }}</td>
-            </tr>
-            <tr>
-                <th>Check-out</th>
-                <td>{{ $reservation->check_out_at?->format('d/m/Y H:i') ?? '—' }}</td>
-            </tr>
-            <tr>
-                <th>Valor da diária</th>
-                <td>R$ {{ number_format($reservation->daily_price, 2, ',', '.') }}</td>
-            </tr>
-            <tr>
-                <th>Status</th>
-                <td>{{ ucfirst($reservation->getStatus()) }}</td>
-            </tr>
-        </table> --}}
 
         <p>
             O hóspede <strong>{{ $reservation->guest->name }}</strong>, portador do e-mail <strong>{{ $reservation->guest->email }}</strong> e telefone <strong>{{ $reservation->guest->phone }}</strong>, foi acomodado no quarto de número <strong>{{ $reservation->room->number }}</strong> com diária no valor de <strong>R$ {{ number_format($reservation->daily_price, 2, ',', '.') }}</strong>.
         </p>
 
         <p>
-            A entrada agendada ocorreu em <strong>{{ $reservation->scheduled_check_in->format('d/m/Y') }}</strong> e a saída estava prevista para <strong>{{ $reservation->scheduled_check_out->format('d/m/Y') }}</strong>. O check-in foi realizado em <strong>{{ $reservation->check_in_at->format('d/m/Y \à\s H:i') }}</strong> e o check-out em <strong>{{ $reservation->check_out_at->format('d/m/Y \à\s H:i') }}</strong>.
+            A entrada agendada foi para <strong>{{ $reservation->scheduled_check_in->format('d/m/Y') }}</strong> e a saída estava prevista para <strong>{{ $reservation->scheduled_check_out->format('d/m/Y') }}</strong>. O check-in foi realizado em <strong>{{ $reservation->check_in_at->format('d/m/Y \à\s H:i') }}</strong> e o check-out em <strong>{{ $reservation->check_out_at->format('d/m/Y \à\s H:i') }}</strong>.
         </p>
 
         <p>
-            O total de diárias utilizadas foi de <strong>{{ $reservation->numberOfDays ?? '0' }}</strong>, com <strong>{{ $reservation->numberOfDaysLate ? $reservation->numberOfDaysLate : '0' }}</strong> diária(s) a mais do que o agendado. O valor total da hospedagem foi de <strong>R$ {{ number_format($reservation->total_price + $reservation->total_price_late, 2, ',', '.') }}</strong>.
+            O total de diárias utilizadas foi de <strong>{{ $reservation->numberOfDays ?? '0' }}</strong>, com <strong>{{ $reservation->numberOfDaysLate ? $reservation->numberOfDaysLate : '0' }}</strong> diária(s) a mais do que o agendado. O valor total da hospedagem foi de <strong>R$ {{ number_format($reservation->total_price, 2, ',', '.') }}</strong>.
         </p>
 
         <p>
@@ -120,7 +93,7 @@
         </div>
         <div>
             ___________________________________________<br>
-            {{env('HOTEL_NAME')}}<br>
+            {{config('app.hotel_name')}}<br>
             Hotelaria
         </div>
     </div>

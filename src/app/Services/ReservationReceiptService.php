@@ -24,7 +24,10 @@ class ReservationReceiptService
 
         try {
             Browsershot::html($html)
-                ->setChromePath('/usr/bin/google-chrome')
+                // ->setChromePath('/usr/bin/google-chrome')
+                // ->setChromePath('/var/www/.cache/puppeteer/chrome/linux-138.0.7204.49/chrome-linux64/chrome')
+                ->setChromePath('/var/www/.cache/puppeteer/chrome-headless-shell/linux-138.0.7204.49/chrome-headless-shell-linux64/chrome-headless-shell')
+                ->noSandbox()
                 ->format('A4')
                 ->savePdf($fullPath);
 

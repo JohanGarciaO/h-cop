@@ -44,45 +44,46 @@ cd h-cop
 cp .env.example .env
 ```
 
-### 4. Subir os containers
+### 4. Subir os containers e entrar no container da aplicação
 
 ```bash
-docker-compose up -d --build
+docker compose up -d --build
+docker compose exec -it hotelaria_app bash
 ```
 
-### 5. Instalar as dependências
+### 5. Instalar as dependências dentro do container
 
 ```bash
-docker-compose exec app composer install
-docker-compose exec app npm install
+composer install
+npm install
 ```
 
 ### 6. Gerar a chave da aplicação
 
 ```bash
-docker-compose exec app php artisan key:generate
+docker compose exec hotelaria_app php artisan key:generate
 ```
 
 ### 7. Rodar as migrations
 
 ```bash
-docker-compose exec app php artisan migrate
+docker compose exec hotelaria_app php artisan migrate
 ```
 
 ### 8. Popular banco com dados fictícios (opcional)
 
 ```bash
-docker-compose exec app php artisan db:seed
+docker compose exec hotelaria_app php artisan db:seed
 ```
 
 ### 9. Acessar o sistema
 
-Abra no navegador: [http://localhost:8080](http://localhost:8080)
+Abra no navegador: [http://localhost](http://localhost)
 
 ## 👤 Acesso Padrão
 
-- **Usuário:** admin@admin.com
-- **Senha:** hcop\*aroot *(ou defina conforme seu seeder)*
+- **Usuário:** admin
+- **Senha:** hcop\*hroot *(ou defina conforme seu seeder)*
 
 ## 📂 Organização do Projeto
 

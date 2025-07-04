@@ -56,6 +56,24 @@ class RoomController extends Controller
             $rooms->availableBetween($request->input('check_in'), $request->input('check_out'));
         }
 
+        // Filtro por estado do quarto
+        if ($request->filled('situation')) {
+            $status = $request->input('situation');
+
+            if ($status === 'READY') {
+                $rooms->where(function ($query) {
+                    $query->whereHas('lastCleaning', fn ($q) =>
+                        $q->where('status', 'READY')
+                    )
+                    ->orDoesntHave('lastCleaning');
+                });
+            } else {
+                $rooms->whereHas('lastCleaning', fn ($q) =>
+                    $q->where('status', $status)
+                );
+            }
+        }
+
         // Ordena pelo número e pagina com 12 por página
         $rooms = $rooms->orderBy('number')->paginate(12)->appends(request()->query());
 
@@ -166,7 +184,7 @@ class RoomController extends Controller
             ]);
         }
 
-        $room->load('reservations.guest')->loadCount('activeReservations');
+        $room->load(['reservations.guest', 'cleanings'])->loadCount('activeReservations');
 
         return view('rooms.show', compact('room'));
     }

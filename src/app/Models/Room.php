@@ -54,4 +54,13 @@ class Room extends Model
         });
     }
 
+    public function cleanings()
+    {
+        return $this->hasMany(Cleaning::class)->orderBy('created_at','desc');
+    }
+
+    public function lastCleaning()
+    {
+        return $this->hasOne(Cleaning::class)->latestOfMany();
+    }
 }

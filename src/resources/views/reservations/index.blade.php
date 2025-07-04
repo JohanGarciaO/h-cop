@@ -46,8 +46,8 @@
             </div>
 
             <div class="col-auto">
-                <input type="text" id="cpf_guest_filter" name="cpf_guest_filter" class="form-control" maxlength="14" placeholder="CPF do hóspede"
-                    value="{{ request('cpf_guest_filter') }}">
+                <input type="text" id="document_guest_filter" name="document_guest_filter" class="form-control" maxlength="14" placeholder="Documento do hóspede"
+                    value="{{ request('document_guest_filter') }}">
             </div>
             
             <div class="col-auto">
@@ -197,7 +197,17 @@
 <script>
 
     $(document).ready(function () {
-        $('#cpf_filter').mask('000.000.000-00')
+        $('#document_guest_filter').on('input', function () {
+            let val = $(this).val().replace(/\D/g, '')
+
+            if (val.length < 8) {             
+                // Máscara para o SARAM   
+                $(this).mask('#0-0', {reverse: true});                
+            }else {
+                // Máscara do CPF: 000.000.000-00
+                $(this).mask('000.000.000-00')
+            }
+        })
     })
 
 </script>

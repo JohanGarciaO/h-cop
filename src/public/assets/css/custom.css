@@ -115,7 +115,7 @@ body {
     transition: 0.3s;
 }
 
-.sidebar .nav-link svg {
+.sidebar .nav-link .side-icon {
     transition: 0.3s;
 }
 
@@ -133,7 +133,7 @@ body {
     font-size: 1.2rem;
 }
 
-.sidebar.collapsed svg {
+.sidebar.collapsed .side-icon {
     width: 40px;
     height: 40px;
 }

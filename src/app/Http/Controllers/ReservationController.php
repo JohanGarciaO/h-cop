@@ -11,7 +11,9 @@ use Illuminate\Support\Facades\Storage;
 use App\Models\Reservation;
 use App\Models\Guest;
 use App\Models\Room;
+use App\Models\Cleaning;
 use App\Services\ReservationReceiptService;
+use App\Enums\RoomCleaningStatus;
 
 class ReservationController extends Controller
 {
@@ -289,7 +291,15 @@ class ReservationController extends Controller
             ]);
         }
 
-        if (Reservation::where('room_id', $reservation->room_id)->whereNull('check_out_at')->count()) {
+        if ($reservation->scheduled_check_in->isBefore(now()->startOfDay())){
+            return redirect()->back()->with([
+                'status' => 'error',
+                'alert-type' => 'danger',
+                'message' => "Já passou o dia de seu check-in.",
+            ]);
+        }
+
+        if (Reservation::where('room_id', $reservation->room_id)->where('id', '!=', $reservation->id)->whereNull('check_out_at')->count()) {
             return redirect()->back()->with([
                 'status' => 'error',
                 'alert-type' => 'danger',
@@ -334,17 +344,23 @@ class ReservationController extends Controller
             $reservation->save();
         });
 
-        try {
-            $receipt = app(ReservationReceiptService::class);
-            $path = $receipt->generate($reservation->id);
-        } catch (\Throwable $th) {
-            \Log::error('Erro ao gerar recibo: ' . $th->getMessage());
-            return redirect()->back()->with([
-                'status' => 'error',
-                'alert-type' => 'danger',
-                'message' => 'Erro ao gerar o recibo. Verifique os logs.',
-            ]);
-        }
+        // try {
+        //     $receipt = app(ReservationReceiptService::class);
+        //     $path = $receipt->generate($reservation->id);
+        // } catch (\Throwable $th) {
+        //     \Log::error('Erro ao gerar recibo: ' . $th->getMessage());
+        //     return redirect()->back()->with([
+        //         'status' => 'error',
+        //         'alert-type' => 'danger',
+        //         'message' => 'Erro ao gerar o recibo. Verifique os logs.',
+        //     ]);
+        // }
+
+        Cleaning::create([
+            'room_id' => $reservation->room_id,
+            'reservation_id' => $reservation->id,
+            'updated_by' => auth()->id(),
+        ]);
 
         return redirect()->route('reservations.show', $reservation->id)->with([
             'status' => 'success',
@@ -376,8 +392,17 @@ class ReservationController extends Controller
         $disk = Storage::disk('local');
 
         if (!$reservation->receipt_path || !$disk->exists($reservation->receipt_path)) {
-            $path = app(ReservationReceiptService::class)->generate($reservation->id);
-            return $disk->download("{$path}", "recibo_reserva_{$reservation->id}.pdf");
+            try {
+                $path = app(ReservationReceiptService::class)->generate($reservation->id);
+                return $disk->download("{$path}", "recibo_reserva_{$reservation->id}.pdf");
+            } catch (\Throwable $th) {
+                \Log::error('Erro ao gerar recibo: ' . $th->getMessage());
+                return redirect()->back()->with([
+                    'status' => 'error',
+                    'alert-type' => 'danger',
+                    'message' => 'Erro ao gerar o recibo. Verifique os logs.',
+                ]);
+            }
         }
 
         return $disk->download("{$reservation->receipt_path}", "recibo_reserva_{$reservation->id}.pdf");

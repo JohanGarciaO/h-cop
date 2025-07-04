@@ -214,16 +214,26 @@
 <script>
 
     $(document).ready(function () {
-        $('#document').mask('000.000.000-00')
-        $('#postal_code').mask('00000-000')
+        $('#document').on('input', function () {
+            let val = $(this).val().replace(/\D/g, '')
 
+            if (val.length < 8) {             
+                // Máscara para o SARAM   
+                $(this).mask('#0-0', {reverse: true});                
+            }else {
+                // Máscara do CPF: 000.000.000-00
+                $(this).mask('000.000.000-00')
+            }
+        })
+
+        $('#postal_code').mask('00000-000')
         $('#phone').on('input', function () {
             let value = this.value.replace(/\D/g,'')            
             value = value.replace(/(\d{2})(\d)/,"($1) $2")
             value = value.replace(/(\d)(\d{4})$/,"$1-$2")            
             this.value = value
         })
-
+        
         $('#btn_submit_form').click((e) => {
             e.preventDefault()
             $('#hidden_submit').click()
