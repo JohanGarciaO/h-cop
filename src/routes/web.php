@@ -10,6 +10,7 @@ use App\Http\Controllers\CommitteesController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CleaningController;
 use App\Http\Controllers\HousekeepersController;
+use App\Http\Controllers\DashboardController;
 use App\Models\State;
 use App\Models\City;
 use App\Models\User;
@@ -29,7 +30,7 @@ Route::middleware(['auth','force-password'])->group(function () {
     Route::post('/login/password-update', [LoginController::class, 'updatePassword'])->name('auth.update.password');
 
     // Home
-    Route::view('/', 'home.index')->name('home.index');
+    Route::get('/', [DashboardController::class, 'index'])->name('home.index');
     
     // Rooms
     Route::resource('rooms', RoomController::class);
