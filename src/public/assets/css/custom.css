@@ -10,6 +10,9 @@
   --color-primary-faded: #167448; /* Laranja Esmaecido (efeito) */
 }
 
+* {
+    font-family: Roboto, sans-serif;
+}
 
 body {
     background-color: var(--background-primary);
