@@ -1,7 +1,8 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use App\Enums\RoomCleaningStatus;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 
 class DashboardController extends Controller
@@ -16,12 +17,27 @@ class DashboardController extends Controller
         $diasDaSemana = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'];
         $reservasPorDia = [3, 5, 2, 6, 7, 1, 4];
 
-        $quartosPorStatus = ['Vazio' => 4, 'Ocupado' => 8];
-        $quartosPorEstado = ['Pronto' => 6, 'Em Preparo' => 3, 'Manutenção' => 3];
-        $reservasPorStatus = ['Check-in pendente' => 2, 'Check-out pendente' => 5];
-        $generoHospedes = ['Masculino' => 12, 'Feminino' => 9, 'Outro' => 3];
-        $localidadesHospedes = ['SP' => 10, 'RJ' => 5, 'MG' => 6, 'BA' => 2];
-        $comitivasHospedes = ['Marinha' => 12, 'Exército' => 6, 'Aeronáutica' => 4];
+        $quartosStatusLabels = ['Ocupados', 'Vazios'];
+        $quartosStatusValues = [4, 8];
+
+        $roomStateLabels = [
+            Str::of(RoomCleaningStatus::READY->label())->apa(),
+            Str::of(RoomCleaningStatus::IN_PREPARATION->label())->apa(),
+            Str::of(RoomCleaningStatus::NEEDS_MAINTENANCE->label())->apa()
+        ];
+        $roomStateValues = [6,3,1];
+
+        $reservationStatusLabels = ['Check-in Pendente', 'Check-out Pendente'];
+        $reservationStatusValues = [15, 8];
+
+        $genderLabels = ['Masculino', 'Feminino'];
+        $genderValues = [18, 12];
+
+        $locationLabels = ['São Paulo', 'Rio de Janeiro', 'Bahia', 'Paraná', 'Outros'];
+        $locationValues = [10, 8, 6, 4, 3];
+
+        $committeeLabels = ['Exército', 'Marinha', 'Aeronáutica', 'Civil'];
+        $committeeValues = [12, 5, 4, 9];
 
         return view('home.index', compact(
             'totalRooms',
@@ -30,12 +46,18 @@ class DashboardController extends Controller
             'totalOperators',
             'diasDaSemana',
             'reservasPorDia',
-            'quartosPorStatus',
-            'quartosPorEstado',
-            'reservasPorStatus',
-            'generoHospedes',
-            'localidadesHospedes',
-            'comitivasHospedes',
+            'quartosStatusLabels',
+            'quartosStatusValues',
+            'roomStateLabels',
+            'roomStateValues',
+            'reservationStatusLabels',
+            'reservationStatusValues',
+            'genderLabels',
+            'genderValues',
+            'locationLabels',
+            'locationValues',
+            'committeeLabels',
+            'committeeValues',
         ));
     }
 }

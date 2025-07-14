@@ -9,6 +9,26 @@
         margin: 35px auto;
     }
 
+    /* Estiliza o menu de exportação do ApexCharts */
+    .apexcharts-menu {
+        background: rgba(0, 0, 0, .4) !important;
+        border: 1px solid #444 !important;
+        border-radius: 6px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.5);
+    }
+
+    .apexcharts-menu-item {
+        color: #eee !important;
+        padding: 8px 12px;
+        transition: background 0.2s ease;
+    }
+
+    .apexcharts-menu-item:hover {
+        background-color: #3a3a3a !important;
+        color: #fff !important;
+        cursor: pointer;
+    }
+
     .dash-icon {
         width: 45px;
         height: 45px;
@@ -49,25 +69,71 @@
             </x-dashboard-card>
         </div>
 
-        <div class="col-md-4 col-xl-4">
-            <div id="chart-reservas" class="w-100"></div>
-        </div>
     </div>
+
+    <div class="row g-5 mb-4">
+
+        {{-- Gráfico de Status dos Quartos --}}
+        <div class="col-md-4 col-xl-4">
+            @include('partials.charts.chart-rooms-status', [
+                'quartosStatusLabels' => $quartosStatusLabels,
+                'quartosStatusValues' => $quartosStatusValues
+            ])
+        </div>
+
+        {{-- Gráfico de Quantidade de Reservas dos últimos 30 dias --}}
+        <div class="col-md-4 col-xl-4">
+            @include('partials.charts.chart-reservations', [
+                'reservasPorDia' => $reservasPorDia,
+                'diasDaSemana' => $diasDaSemana
+            ])
+        </div>
+
+        {{-- Gráfico de Estado de Limpeza/Alterações dos Quartos --}}
+        <div class="col-md-4 col-xl-4">
+            @include('partials.charts.chart-rooms-cleaning', [
+                'roomStateLabels' => $roomStateLabels,
+                'roomStateValues' => $roomStateValues
+            ])
+        </div>
+
+        {{-- Gráfico do status das Reservas --}}
+        <div class="col-md-4 col-xl-4">
+            @include('partials.charts.chart-reservations-status', [
+                'reservationStatusLabels' => $reservationStatusLabels,
+                'reservationStatusValues' => $reservationStatusValues
+            ])
+        </div>
+
+        {{-- Gráfico do Gênero dos Hóspedes --}}
+        <div class="col-md-4 col-xl-4">
+            @include('partials.charts.chart-guests-gender', [
+                'genderLabels' => $genderLabels,
+                'genderValues' => $genderValues
+            ])
+        </div>
+
+        {{-- Gráfico de Comitivas dos Hóspedes --}}
+        <div class="col-md-4 col-xl-4">
+            @include('partials.charts.chart-guests-committee', [
+                'committeeLabels' => $committeeLabels,
+                'committeeValues' => $committeeValues
+            ])
+        </div>
+
+        {{-- Gráfico de Localização dos hóspedes --}}
+        <div class="col-md-4 col-xl-4">
+            @include('partials.charts.chart-guests-location', [
+                'locationLabels' => $locationLabels,
+                'locationValues' => $locationValues
+            ])
+        </div>        
+
+    </div>
+
 
 @endsection
 
 @push('scripts')
 <script src="{{asset('assets/libs/apexcharts/apexcharts.js')}}"></script>
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        var options = {
-            chart: { type: 'bar', height: 350 },
-            series: [{ name: 'Reservas', data: @json($reservasPorDia) }],
-            xaxis: { categories: @json($diasDaSemana) }
-        };
-
-        var chart = new ApexCharts(document.querySelector("#grafico-reservas-dia"), options);
-        chart.render();
-    });
-</script>
 @endpush
