@@ -3,14 +3,20 @@ services:
     container_name: hotelaria_app
     restart: always
     build:
-      context: ./php
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: php/Dockerfile
       args:
         HTTP_PROXY: ${HTTP_PROXY}
         HTTPS_PROXY: ${HTTPS_PROXY}
-        NO_PROXY: ${NO_PROXY}        
+        NO_PROXY: ${NO_PROXY}
     volumes:
       - ./src:/var/www
+    command: >
+      sh -c "
+        chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache &&
+        chmod -R 775 /var/www/storage /var/www/bootstrap/cache &&
+        php-fpm
+      "
     depends_on:
       - db
 
@@ -40,16 +46,16 @@ services:
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
     volumes:
       - dbdata:/var/lib/mysql
-      
+
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
     container_name: hotelaria_phpmyadmin
     restart: always
     ports:
-      - "8081:80"
+      - "${PMA_PORT:-8081}:80"
     environment:
       PMA_HOST: db
-      PMA_PORT: ${PMA_PORT}
+      PMA_PORT: 3306
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
     depends_on:
       - db

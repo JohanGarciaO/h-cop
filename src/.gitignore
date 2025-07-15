@@ -21,6 +21,7 @@ yarn-error.log
 /.nova
 /.vscode
 /.zed
+/.bash_history
 # Evitar lixo gerado por Puppeteer/Chrome
 /.cache/
 /.config/
