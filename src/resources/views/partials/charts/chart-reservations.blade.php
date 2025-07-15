@@ -1,4 +1,4 @@
-<div class="fw-bold my-3 text-center">Quantitativo de hospedagem dos últimos 30 dias</div>
+<div class="fw-bold my-3 text-center">Entrada de hóspedes dos últimos 7 dias</div>
 <div id="chart-reservations" class="w-100"></div>
 
 @push('scripts')
@@ -25,7 +25,7 @@
                 data: @json($reservasPorDia) 
             }],
             xaxis: { 
-                categories: @json($diasDaSemana),
+                categories: ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'],
                 labels: {
                     style: {
                         colors: '#ffffff'
