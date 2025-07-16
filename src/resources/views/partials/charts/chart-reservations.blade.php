@@ -25,7 +25,7 @@
                 data: @json($reservasPorDia) 
             }],
             xaxis: { 
-                categories: ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'],
+                categories: @json($diasDaSemana),
                 labels: {
                     style: {
                         colors: '#ffffff'
