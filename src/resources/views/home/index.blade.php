@@ -106,28 +106,34 @@
         </div>
 
         {{-- Gráfico do Gênero dos Hóspedes --}}
-        <div class="col-md-4 col-xl-4">
-            @include('partials.charts.chart-guests-gender', [
-                'genderLabels' => $genderLabels,
-                'genderValues' => $genderValues
-            ])
-        </div>
+        @can('has-active-reservations')
+            <div class="col-md-4 col-xl-4">
+                @include('partials.charts.chart-guests-gender', [
+                    'genderLabels' => $genderLabels,
+                    'genderValues' => $genderValues
+                ])
+            </div>
+        @endcan
 
         {{-- Gráfico de Comitivas dos Hóspedes --}}
-        <div class="col-md-4 col-xl-4">
-            @include('partials.charts.chart-guests-committee', [
-                'committeeLabels' => $committeeLabels,
-                'committeeValues' => $committeeValues
-            ])
-        </div>
+        @can('has-active-reservations')
+            <div class="col-md-4 col-xl-4">
+                @include('partials.charts.chart-guests-committee', [
+                    'committeeLabels' => $committeeLabels,
+                    'committeeValues' => $committeeValues
+                ])
+            </div>
+        @endcan
 
         {{-- Gráfico de Localização dos hóspedes --}}
-        <div class="col-md-4 col-xl-4">
-            @include('partials.charts.chart-guests-location', [
-                'locationLabels' => $locationLabels,
-                'locationValues' => $locationValues
-            ])
-        </div>        
+        @can('has-active-reservations')
+            <div class="col-md-4 col-xl-4">
+                @include('partials.charts.chart-guests-location', [
+                    'locationLabels' => $locationLabels,
+                    'locationValues' => $locationValues
+                ])
+            </div>      
+        @endcan
 
     </div>
 
