@@ -6,6 +6,7 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 use App\Models\Reservation;
+use App\Models\Room;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -25,5 +26,7 @@ class AppServiceProvider extends ServiceProvider
         DB::statement("SET time_zone = '".env('APP_TIMEZONE', 'America/Sao_Paulo')."'");
 
         Gate::define('has-active-reservations', fn () => Reservation::active()->exists());
+
+        Gate::define('has-rooms', fn() => Room::exists());
     }
 }

@@ -74,12 +74,14 @@
     <div class="row g-5 mb-4">
 
         {{-- Gráfico de Status dos Quartos --}}
-        <div class="col-md-4 col-xl-4">
-            @include('partials.charts.chart-rooms-status', [
-                'quartosStatusLabels' => $quartosStatusLabels,
-                'quartosStatusValues' => $quartosStatusValues
-            ])
-        </div>
+        @can('has-rooms')
+            <div class="col-md-4 col-xl-4">
+                @include('partials.charts.chart-rooms-status', [
+                    'quartosStatusLabels' => $quartosStatusLabels,
+                    'quartosStatusValues' => $quartosStatusValues
+                ])
+            </div>
+        @endcan
 
         {{-- Gráfico de Quantidade de Reservas dos últimos 30 dias --}}
         <div class="col-md-4 col-xl-4">
@@ -90,12 +92,14 @@
         </div>
 
         {{-- Gráfico de Estado de Limpeza/Alterações dos Quartos --}}
-        <div class="col-md-4 col-xl-4">
-            @include('partials.charts.chart-rooms-cleaning', [
-                'roomStateLabels' => $roomStateLabels,
-                'roomStateValues' => $roomStateValues
-            ])
-        </div>
+        @can('has-rooms')
+            <div class="col-md-4 col-xl-4">
+                @include('partials.charts.chart-rooms-cleaning', [
+                    'roomStateLabels' => $roomStateLabels,
+                    'roomStateValues' => $roomStateValues
+                ])
+            </div>
+        @endcan
 
         {{-- Gráfico do status das Reservas --}}
         <div class="col-md-4 col-xl-4">
