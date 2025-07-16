@@ -80,22 +80,31 @@ class StatisticsService
 
     public function getRoomStateDistribution(): array
     {
-        $counts = RoomCleaningStatus::cases();
-        $values = [];
+        $statuses = RoomCleaningStatus::getNames(); // ['READY', 'IN_PREPARATION', 'NEEDS_MAINTENANCE']
 
-        foreach ($counts as $status) {
-            $values[] = Room::whereHas('lastCleaning', fn($q) =>
-                $q->where('status', $status->name)
-            )->count();
-        }
+        // Contar os quartos sem nenhuma limpeza registrada
+        $withoutCleaningCount = Room::doesntHave('lastCleaning')->count();
+
+        // Contar os quartos por status da última limpeza
+        $statusCounts = Room::whereHas('lastCleaning')
+            ->get()
+            ->map(fn($room) => $room->lastCleaning->status->name)
+            ->countBy();
+
+        // Somar com os sem limpeza
+        $values = [
+            'READY' => ($statusCounts['READY'] ?? 0) + $withoutCleaningCount,
+            'IN_PREPARATION' => $statusCounts['IN_PREPARATION'] ?? 0,
+            'NEEDS_MAINTENANCE' => $statusCounts['NEEDS_MAINTENANCE'] ?? 0,
+        ];
 
         return [
-            'labels' => [
-                Str::of(RoomCleaningStatus::READY->label())->apa(),
-                Str::of(RoomCleaningStatus::IN_PREPARATION->label())->apa(),
-                Str::of(RoomCleaningStatus::NEEDS_MAINTENANCE->label())->apa()
-            ],
-            'values' => $values,
+            'labels' => collect(RoomCleaningStatus::cases())
+                ->map(fn($case) => Str::of($case->label())->apa())
+                ->toArray(),
+            'values' => collect($statuses)
+                ->map(fn($status) => $values[$status] ?? 0)
+                ->toArray(),
         ];
     }
 
