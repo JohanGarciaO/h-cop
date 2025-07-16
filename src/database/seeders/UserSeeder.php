@@ -27,36 +27,36 @@ class UserSeeder extends Seeder
         ]);
 
         // Create Operators
-        $operators = [
-            [
-                'username' => 'silvajsj',
-                'name' => 'João da Silva Junior',
-                'document' => '4570416', 
-                'phone' => '(11) 91234-5678',
-                'email' => 'joao.silva@exemplo.com',
-            ],
-            [
-                'username' => 'mariamom',
-                'name' => 'Maria Oliveira Martins',
-                'document' => '1234560', // Identificação militar
-                'phone' => '(21) 99876-5432',
-                'email' => 'mariamom@fab.mil.br',
-            ],
-            [
-                'username' => 'carloscosta',
-                'name' => 'Carlos Costa de Oliveira',
-                'document' => '987.654.321-00', // CPF
-                'phone' => '(31) 98765-4321',
-                'email' => 'carlos.costa@exemplo.com',
-            ],
-        ];
+        // $operators = [
+        //     [
+        //         'username' => 'silvajsj',
+        //         'name' => 'João da Silva Junior',
+        //         'document' => '4570416', 
+        //         'phone' => '(11) 91234-5678',
+        //         'email' => 'joao.silva@exemplo.com',
+        //     ],
+        //     [
+        //         'username' => 'mariamom',
+        //         'name' => 'Maria Oliveira Martins',
+        //         'document' => '1234560', // Identificação militar
+        //         'phone' => '(21) 99876-5432',
+        //         'email' => 'mariamom@fab.mil.br',
+        //     ],
+        //     [
+        //         'username' => 'carloscosta',
+        //         'name' => 'Carlos Costa de Oliveira',
+        //         'document' => '987.654.321-00', // CPF
+        //         'phone' => '(31) 98765-4321',
+        //         'email' => 'carlos.costa@exemplo.com',
+        //     ],
+        // ];
 
-        foreach ($operators as $operator) {
-            User::create(array_merge($operator, [
-                'role_id' => 2,
-                'email_verified_at' => now(),
-                'password' => Hash::make('senha*padrao'),
-            ]));
-        }
+        // foreach ($operators as $operator) {
+        //     User::create(array_merge($operator, [
+        //         'role_id' => 2,
+        //         'email_verified_at' => now(),
+        //         'password' => Hash::make('senha*padrao'),
+        //     ]));
+        // }
     }
 }

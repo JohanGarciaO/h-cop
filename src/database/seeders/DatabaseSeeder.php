@@ -14,14 +14,14 @@ class DatabaseSeeder extends Seeder
         $this->call([
             RoleSeeder::class,
             UserSeeder::class,
-            RoomSeeder::class,
+            // RoomSeeder::class,
             StateSeeder::class,
             CitySeeder::class,
-            AddressSeeder::class,
-            CommitteeSeeder::class,
-            GuestSeeder::class,
-            ReservationSeeder::class,
-            HousekeepersSeeder::class,
+            // AddressSeeder::class,
+            // CommitteeSeeder::class,
+            // GuestSeeder::class,
+            // ReservationSeeder::class,
+            // HousekeepersSeeder::class,
         ]);
     }
 }
