@@ -36,7 +36,7 @@ class Guest extends Model
 
     public function reservations()
     {
-        return $this->hasMany(Reservation::class);
+        return $this->hasMany(Reservation::class)->orderBy('created_at','desc');
     }
 
     public function activeReservations()
