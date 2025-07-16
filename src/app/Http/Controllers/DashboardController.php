@@ -4,40 +4,30 @@ namespace App\Http\Controllers;
 use App\Enums\RoomCleaningStatus;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use App\Services\StatisticsService;
 
 class DashboardController extends Controller
 {
-    public function index()
+    public function index(StatisticsService $statistics)
     {
-        $totalRooms = 12;
-        $totalGuests = 35;
-        $totalHousekeepers = 3;
-        $totalOperators = 4;
+        $totalRooms = $statistics->getTotalRooms();
+        $totalGuests = $statistics->getTotalGuests();
+        $totalHousekeepers = $statistics->getTotalHousekeepers();
+        $totalOperators = $statistics->getTotalOperators();
 
-        $diasDaSemana = ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'];
-        $reservasPorDia = [3, 5, 2, 6, 7, 1, 4];
+        ['labels' => $diasDaSemana, 'values' => $reservasPorDia] = $statistics->getReservationsLast7Days();
+        
+        ['labels' => $quartosStatusLabels, 'values' => $quartosStatusValues] = $statistics->getRoomOccupancy();
 
-        $quartosStatusLabels = ['Ocupados', 'Vazios'];
-        $quartosStatusValues = [4, 8];
-
-        $roomStateLabels = [
-            Str::of(RoomCleaningStatus::READY->label())->apa(),
-            Str::of(RoomCleaningStatus::IN_PREPARATION->label())->apa(),
-            Str::of(RoomCleaningStatus::NEEDS_MAINTENANCE->label())->apa()
-        ];
-        $roomStateValues = [6,3,1];
-
-        $reservationStatusLabels = ['Check-in Pendente', 'Check-out Pendente'];
-        $reservationStatusValues = [15, 8];
-
-        $genderLabels = ['Masculino', 'Feminino'];
-        $genderValues = [18, 12];
-
-        $locationLabels = ['São Paulo', 'Rio de Janeiro', 'Bahia', 'Paraná', 'Outros'];
-        $locationValues = [10, 8, 6, 4, 3];
-
-        $committeeLabels = ['Exército', 'Marinha', 'Aeronáutica', 'Civil'];
-        $committeeValues = [12, 5, 4, 9];
+        ['labels' => $roomStateLabels, 'values' => $roomStateValues] = $statistics->getRoomStateDistribution();
+        
+        ['labels' => $reservationStatusLabels, 'values' => $reservationStatusValues] = $statistics->getReservationStatusCounts();
+        
+        ['labels' => $genderLabels, 'values' => $genderValues] = $statistics->getGenderDistribution();
+        
+        ['labels' => $locationLabels, 'values' => $locationValues] = $statistics->getTopLocations();
+        
+        ['labels' => $committeeLabels, 'values' => $committeeValues] = $statistics->getCommittees();
 
         return view('home.index', compact(
             'totalRooms',

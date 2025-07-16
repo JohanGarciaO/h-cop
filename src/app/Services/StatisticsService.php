@@ -72,7 +72,10 @@ class StatisticsService
         $total = Room::count();
         $vacant = $total - $occupied;
 
-        return [$occupied, $vacant];
+        return [
+            'labels' => ['Ocupados', 'Vazios'],
+            'values' => [$occupied, $vacant]
+        ];
     }
 
     public function getRoomStateDistribution(): array
@@ -86,7 +89,14 @@ class StatisticsService
             )->count();
         }
 
-        return $values;
+        return [
+            'labels' => [
+                Str::of(RoomCleaningStatus::READY->label())->apa(),
+                Str::of(RoomCleaningStatus::IN_PREPARATION->label())->apa(),
+                Str::of(RoomCleaningStatus::NEEDS_MAINTENANCE->label())->apa()
+            ],
+            'values' => $values,
+        ];
     }
 
     public function getReservationStatusCounts(): array
@@ -99,7 +109,10 @@ class StatisticsService
             ->whereNull('check_out_at')
             ->count();
 
-        return [$checkinPending, $checkoutPending];
+        return [
+            'labels' => ['Check-in Pendente', 'Check-out Pendente'],
+            'values' => [$checkinPending, $checkoutPending]
+        ];
     }
 
     public function getGenderDistribution(): array
