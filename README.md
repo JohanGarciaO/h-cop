@@ -38,17 +38,18 @@ git clone https://github.com/JohanGarciaO/h-cop.git
 cd h-cop
 ```
 
-### 3. Copiar o arquivo de ambiente
+### 3. Copiar os arquivos de variáveis de ambiente e ajustá-los conforme necessário
 
 ```bash
 cp .env.example .env
+cp src/.env.example src/.env
 ```
 
 ### 4. Subir os containers e entrar no container da aplicação
 
 ```bash
 docker compose up -d --build
-docker compose exec -it hotelaria_app bash
+docker exec -it hotelaria_app bash
 ```
 
 ### 5. Instalar as dependências dentro do container
@@ -61,38 +62,33 @@ npm install
 ### 6. Gerar a chave da aplicação
 
 ```bash
-docker compose exec hotelaria_app php artisan key:generate
+php artisan key:generate
 ```
 
-### 7. Rodar as migrations
+### 7. Rodar as migrations e popular o banco com os dados mínimos
 
 ```bash
-docker compose exec hotelaria_app php artisan migrate
+php artisan migrate --seed
 ```
 
-### 8. Popular banco com dados fictícios (opcional)
-
-```bash
-docker compose exec hotelaria_app php artisan db:seed
-```
-
-### 9. Acessar o sistema
+### 8. Acessar o sistema
 
 Abra no navegador: [http://localhost](http://localhost)
 
 ## 👤 Acesso Padrão
 
 - **Usuário:** admin
-- **Senha:** hcop\*hroot *(ou defina conforme seu seeder)*
+- **Senha:** hcop\*hroot _(ou defina conforme seu seeder)_
 
 ## 📂 Organização do Projeto
 
-As tarefas estão descritas por milestones nas issues do repositório
+As tarefas estão descritas por milestones nas issues do repositório.
 Outros modelos de visualização (como Kanban board) podem ser encontrados no [Project board](https://github.com/JohanGarciaO/h-cop/projects).
 
 ## 📊 Diagramas
 
 ### Diagrama de Casos de Uso
+
 ![Use Case Diagram](docs/UC-Hotelaria.png)
 
 ## 📝 Licença
