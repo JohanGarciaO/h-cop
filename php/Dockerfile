@@ -23,12 +23,6 @@ RUN apt-get update && apt-get install -y \
     fonts-freefont-ttf fonts-liberation \
     && docker-php-ext-install pdo_mysql mbstring gd
     
-# Instala o google chrome
-# RUN curl -fsSL https://dl.google.com/linux/linux_signing_key.pub | gpg --dearmor -o /etc/apt/trusted.gpg.d/google.gpg \
-#     && echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" > /etc/apt/sources.list.d/google-chrome.list \
-#     && apt-get update && apt-get install -y google-chrome-stable \
-#     && apt-get clean && rm -rf /var/lib/apt/lists/*
-    
 # Limpa cache dos pacotes
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
@@ -42,10 +36,3 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 # Define diretório de trabalho
 WORKDIR /var/www
-
-# Copia o conteúdo do projeto para dentro do container
-COPY . .
-
-# Ajusta permissões das pastas usadas pelo Laravel
-RUN chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache && \
-    chmod -R 775 /var/www/storage /var/www/bootstrap/cache

@@ -2,57 +2,138 @@
 
 @section('title', 'Início')
 
+@push('styles')
+<style>
+    #chart {
+        max-width: 650px;
+        margin: 35px auto;
+    }
+
+    /* Estiliza o menu de exportação do ApexCharts */
+    .apexcharts-menu {
+        background: rgba(0, 0, 0, .4) !important;
+        border: 1px solid #444 !important;
+        border-radius: 6px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.5);
+    }
+
+    .apexcharts-menu-item {
+        color: #eee !important;
+        padding: 8px 12px;
+        transition: background 0.2s ease;
+    }
+
+    .apexcharts-menu-item:hover {
+        background-color: #3a3a3a !important;
+        color: #fff !important;
+        cursor: pointer;
+    }
+
+    .dash-icon {
+        width: 45px;
+        height: 45px;
+    }
+</style>
+@endpush
+
 @section('content')
 
     @component('partials.components.body-header', ['title' => 'Dashboard'])
     @endcomponent
 
-    <div class="row">
-        @php
-            $company_stats['percent_change'] = 2;
-            $company_stats['total_current'] = 33;
-            $company_stats['clients_card_message'] = '2 clientes novos';
-        @endphp
-
-        <div class="col-md-4 col-xl-4">
-            <div class="card mb-0">
-                <div class="card-body">
-                    <div class="widget-first">
-                        <div class="d-flex align-items-center justify-content-between">
-
-                            <div class="d-flex align-items-center">
-                                <div class="p-2 border border-{{ $company_stats['percent_change']>=0 ? 'primary' : 'danger' }} border-opacity-10 bg-{{ $company_stats['percent_change']>=0 ? 'primary' : 'danger' }}-subtle rounded-pill me-2">
-                                    <div class="bg-{{ $company_stats['percent_change']>=0 ? 'primary' : 'danger' }} rounded-circle widget-size text-center">
-
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="#fff" viewBox="-6 -5 30 30" stroke="white" stroke-width="1">
-                                            <path d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6m-5.784 6A2.24 2.24 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.3 6.3 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1zM4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5"/>
-                                        </svg>
-
-                                    </div>
-                                </div>
-                                <p class="mb-0 text-dark fs-15">Clientes gerenciados</p>
-                            </div>
-
-                            <div class="d-flex flex-column">
-                                <div class="d-flex align-items-center">
-                                    <h3 class="mb-0 fs-22 text-black me-3">{{$company_stats['total_current']}}</h3>
-                                    <h5 class="mb-0 fs-14 fw-bold text-{{ $company_stats['percent_change']>=0 ? 'primary' : 'danger' }}">
-                                        @if ($company_stats['percent_change']>=0)
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trending-up"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>
-                                        @else
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trending-down"><polyline points="23 18 13.5 8.5 8.5 13.5 1 6"></polyline><polyline points="17 18 23 18 23 12"></polyline></svg>
-                                        @endif
-                                        {{ number_format($company_stats['percent_change'], 2, ',', '.') }}%
-                                    </h5>
-                                </div>
-                                <small>{{$company_stats['clients_card_message']}}</small>
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
-            </div>
+    {{-- Cards de Contadores --}}
+    <div class="row g-5 mb-4">
+        <div class="col-md-6 col-xl-3">
+            <x-dashboard-card title="Quartos" :value="$totalRooms">
+                <svg class="dash-icon" xmlns="http://www.w3.org/2000/svg" width="21" height="21" fill="currentColor" viewBox="1 3 21 21"><path d="M8 5C7.5 5 7 5.21 6.61 5.6S6 6.45 6 7V10C5.47 10 5 10.19 4.59 10.59S4 11.47 4 12V17H5.34L6 19H7L7.69 17H16.36L17 19H18L18.66 17H20V12C20 11.47 19.81 11 19.41 10.59S18.53 10 18 10V7C18 6.45 17.8 6 17.39 5.6S16.5 5 16 5M8 7H11V10H8M13 7H16V10H13M6 12H18V15H6Z" /></svg>
+            </x-dashboard-card>
         </div>
+        <div class="col-md-6 col-xl-3">
+            <x-dashboard-card title="Hóspedes" :value="$totalGuests">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="dash-icon" viewBox="-2 0 20 20">
+                    <path d="M9.5 1.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0M6.44 3.752A.75.75 0 0 1 7 3.5h1.445c.742 0 1.32.643 1.243 1.38l-.43 4.083a1.8 1.8 0 0 1-.088.395l-.318.906.213.242a.8.8 0 0 1 .114.175l2 4.25a.75.75 0 1 1-1.357.638l-1.956-4.154-1.68-1.921A.75.75 0 0 1 6 8.96l.138-2.613-.435.489-.464 2.786a.75.75 0 1 1-1.48-.246l.5-3a.75.75 0 0 1 .18-.375l2-2.25Z"/>
+                    <path d="M6.25 11.745v-1.418l1.204 1.375.261.524a.8.8 0 0 1-.12.231l-2.5 3.25a.75.75 0 1 1-1.19-.914zm4.22-4.215-.494-.494.205-1.843.006-.067 1.124 1.124h1.44a.75.75 0 0 1 0 1.5H11a.75.75 0 0 1-.531-.22Z"/>
+                </svg>
+            </x-dashboard-card>
+        </div>
+        <div class="col-md-6 col-xl-3">
+            <x-dashboard-card title="Camareiros" :value="$totalHousekeepers">
+                <img class="dash-icon" src="{{asset('assets/images/icons/housekeeper.png')}}" style="filter: brightness(0) invert(1)" width="20" height="20" alt="Camareiros">
+            </x-dashboard-card>
+        </div>
+        <div class="col-md-6 col-xl-3">
+            <x-dashboard-card title="Operadores" :value="$totalOperators">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="dash-icon" viewBox="-2 0 20 20">
+                    <path d="M7 14s-1 0-1-1 1-4 5-4 5 3 5 4-1 1-1 1zm4-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6m-5.784 6A2.24 2.24 0 0 1 5 13c0-1.355.68-2.75 1.936-3.72A6.3 6.3 0 0 0 5 9c-4 0-5 3-5 4s1 1 1 1zM4.5 8a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5"/>
+                </svg>
+            </x-dashboard-card>
+        </div>
+
     </div>
 
+    <div class="row g-5 mb-4">
+
+        {{-- Gráfico de Status dos Quartos --}}
+        <div class="col-md-4 col-xl-4">
+            @include('partials.charts.chart-rooms-status', [
+                'quartosStatusLabels' => $quartosStatusLabels,
+                'quartosStatusValues' => $quartosStatusValues
+            ])
+        </div>
+
+        {{-- Gráfico de Quantidade de Reservas dos últimos 30 dias --}}
+        <div class="col-md-4 col-xl-4">
+            @include('partials.charts.chart-reservations', [
+                'reservasPorDia' => $reservasPorDia,
+                'diasDaSemana' => $diasDaSemana
+            ])
+        </div>
+
+        {{-- Gráfico de Estado de Limpeza/Alterações dos Quartos --}}
+        <div class="col-md-4 col-xl-4">
+            @include('partials.charts.chart-rooms-cleaning', [
+                'roomStateLabels' => $roomStateLabels,
+                'roomStateValues' => $roomStateValues
+            ])
+        </div>
+
+        {{-- Gráfico do status das Reservas --}}
+        <div class="col-md-4 col-xl-4">
+            @include('partials.charts.chart-reservations-status', [
+                'reservationStatusLabels' => $reservationStatusLabels,
+                'reservationStatusValues' => $reservationStatusValues
+            ])
+        </div>
+
+        {{-- Gráfico do Gênero dos Hóspedes --}}
+        <div class="col-md-4 col-xl-4">
+            @include('partials.charts.chart-guests-gender', [
+                'genderLabels' => $genderLabels,
+                'genderValues' => $genderValues
+            ])
+        </div>
+
+        {{-- Gráfico de Comitivas dos Hóspedes --}}
+        <div class="col-md-4 col-xl-4">
+            @include('partials.charts.chart-guests-committee', [
+                'committeeLabels' => $committeeLabels,
+                'committeeValues' => $committeeValues
+            ])
+        </div>
+
+        {{-- Gráfico de Localização dos hóspedes --}}
+        <div class="col-md-4 col-xl-4">
+            @include('partials.charts.chart-guests-location', [
+                'locationLabels' => $locationLabels,
+                'locationValues' => $locationValues
+            ])
+        </div>        
+
+    </div>
+
+
 @endsection
+
+@push('scripts')
+<script src="{{asset('assets/libs/apexcharts/apexcharts.js')}}"></script>
+@endpush

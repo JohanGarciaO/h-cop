@@ -61,7 +61,7 @@ class Reservation extends Model
 
     public function isActive()
     {
-        return is_null($this->check_out_at);
+        return !is_null($this->check_in_at) && is_null($this->check_out_at);
     }
 
     public function adjustCheckinTime(): Carbon
@@ -87,7 +87,7 @@ class Reservation extends Model
 
     public function scopeActive($query)
     {
-        return $query->whereNull('check_out_at');
+        return $query->whereNotNull('check_in_at')->whereNull('check_out_at');
     }
 
     public function scopeInactive($query)
