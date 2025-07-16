@@ -74,7 +74,7 @@ function fetchAvailableRooms() {
                     );
                 });
 
-                // Aplica valor predefinido, se houver                
+                // Aplica valor predefinido, se houver
                 if (roomId) {
                     room_create.val(roomId).trigger('change');
                 }
@@ -135,7 +135,7 @@ function fetchAvailableGuests() {
                 guest_create.prop('disabled', true);
             }
 
-            // Aplica valor predefinido, se houver                
+            // Aplica valor predefinido, se houver
             if (guestId) {
                 guest_create.val(guestId).trigger('change');
             }
@@ -180,11 +180,11 @@ function updateSelect2Placeholder($element, newPlaceholder) {
 
 
 $(document).ready(() => {
-    let loadPriceCount = 0;
+    let isLoaded = false;
 
     initializeSelect2(room_create);
     initializeSelect2(guest_create);
-    
+
     const selected_room_create = room_create.data('selected')
     const selected_guest_create = guest_create.data('selected')
 
@@ -194,6 +194,9 @@ $(document).ready(() => {
     if (scheduled_check_in && scheduled_check_out && scheduled_check_in < scheduled_check_out) {
         fetchAvailableRooms();
         fetchAvailableGuests();
+        isLoaded = true;
+    }else {
+        isLoaded = false;
     }
 
     $('#scheduled_check_in, #scheduled_check_out').on('change', function () {
@@ -203,11 +206,15 @@ $(document).ready(() => {
         if (checkIn && checkOut && checkIn < checkOut) {
             fetchAvailableRooms();
             fetchAvailableGuests();
+            isLoaded = true;
         } else {
             room_create.prop('disabled', true);
             guest_create.prop('disabled', true);
             updateSelect2Placeholder(room_create, 'Quarto');
             updateSelect2Placeholder(guest_create, 'Hóspede');
+            $('#daily_price').val('')
+            $('#daily_price').trigger('change')
+            isLoaded = false;
         }
     });
 
@@ -215,14 +222,10 @@ $(document).ready(() => {
         const selectedOption = $(this).find(':selected')
         let dailyPrice = selectedOption.data('daily-price')
 
-        if (loadPriceCount < 2){
-            loadPriceCount++
-            return
-        }
+        if (!isLoaded && dailyPrice) return
 
         $('#daily_price').val(dailyPrice || '')
         $('#daily_price').trigger('change')
-        loadPriceCount++
     })
 
 })
