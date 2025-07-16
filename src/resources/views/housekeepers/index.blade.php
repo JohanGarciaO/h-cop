@@ -2,14 +2,14 @@
 @section('title', 'Camareiros')
 
 @section('content')
-    
+
     @component('partials.components.body-header', ['title' => 'Gerenciamento de Camareiros'])
         @slot('buttons')
             <div>
                 <button class="btn btn-core" data-bs-toggle="modal" data-bs-target="#createHousekeeperModal">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-plus-circle-fill" viewBox="0 0 20 20">
                         <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3z"/>
-                    </svg> 
+                    </svg>
                     Novo camareiro
                 </button>
             </div>
@@ -28,12 +28,13 @@
 
             <div class="col-auto">
                 <input type="text" id="document_filter" name="document_filter" class="form-control" maxlength="14" placeholder="Documento do camareiro" value="{{ request('document_filter') }}">
-            </div>   
+            </div>
 
         </x-slot>
 
     </x-filters>
 
+    @if (!$housekeepers->isEmpty())
     <div class="table-responsive">
         <table class="table table-dark table-hover table-striped align-middle shadow-sm">
             <thead>
@@ -69,7 +70,7 @@
                                         <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
                                     </svg> Editar
                                 </button>
-                                  
+
                                 <button id="deleteHousekeeperButton{{$housekeeper->id}}" type="button" class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteHousekeeperModal{{ $housekeeper->id }}">
                                     <span class="btn-content">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-trash-fill" viewBox="-2 -2 20 20">
@@ -94,6 +95,7 @@
             </tbody>
         </table>
     </div>
+    @endif
 
     <!-- Paginação -->
     <div class="d-flex justify-content-center mt-4">
@@ -105,13 +107,13 @@
 @push('scripts')
 <script>
 
-    $(document).ready(function () {        
+    $(document).ready(function () {
         $('#document_filter').on('input', function () {
             let val = $(this).val().replace(/\D/g, '')
 
-            if (val.length < 8) {             
-                // Máscara para o SARAM   
-                $(this).mask('#0-0', {reverse: true});                
+            if (val.length < 8) {
+                // Máscara para o SARAM
+                $(this).mask('#0-0', {reverse: true});
             }else {
                 // Máscara do CPF: 000.000.000-00
                 $(this).mask('000.000.000-00')

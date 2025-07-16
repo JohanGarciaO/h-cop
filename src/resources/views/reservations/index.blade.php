@@ -2,14 +2,14 @@
 @section('title', 'Reservas')
 
 @section('content')
-    
+
     @component('partials.components.body-header', ['title' => 'Gerenciamento de Reservas'])
         @slot('buttons')
             <div>
                 <button class="btn btn-core" data-bs-toggle="modal" data-bs-target="#createReservationModal">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-plus-circle-fill" viewBox="0 0 20 20">
                         <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3z"/>
-                    </svg> 
+                    </svg>
                     Nova Reserva
                 </button>
             </div>
@@ -39,7 +39,7 @@
                 <input type="text" name="number_room_filter" class="form-control" placeholder="Número do quarto"
                     value="{{ request('number_room_filter') }}">
             </div>
-            
+
             <div class="col-auto">
                 <input type="text" name="name_guest_filter" class="form-control" placeholder="Nome do hóspede"
                     value="{{ request('name_guest_filter') }}">
@@ -49,15 +49,15 @@
                 <input type="text" id="document_guest_filter" name="document_guest_filter" class="form-control" maxlength="14" placeholder="Documento do hóspede"
                     value="{{ request('document_guest_filter') }}">
             </div>
-            
+
             <div class="col-auto">
-                <select name="gender_filter" id="gender_filter" class="form-select" data-selected="{{ request('gender_filter') ?? '' }}" data-placeholder="Gênero do hóspede">                
+                <select name="gender_filter" id="gender_filter" class="form-select" data-selected="{{ request('gender_filter') ?? '' }}" data-placeholder="Gênero do hóspede">
                     <option></option>
                     @foreach (App\Enums\Gender::cases() as $case)
-                        <option value="{{$case->value}}" {{ request('gender_filter') == $case->value ? 'selected' : '' }}>{{$case->label()}}</option> 
+                        <option value="{{$case->value}}" {{ request('gender_filter') == $case->value ? 'selected' : '' }}>{{$case->label()}}</option>
                     @endforeach
                 </select>
-            </div>            
+            </div>
 
         </x-slot>
 
@@ -78,7 +78,7 @@
                 <select class="form-select" name="committee_filter" id="committee_filter" data-selected="{{ request('committee_filter') ?? '' }}" data-placeholder="Filtre por comitiva">
                     <option></option>
                     @foreach (App\Models\Committee::all() as $committee)
-                        <option value="{{$committee->id}}" {{ request('committee_filter') == $committee->id ? 'selected' : '' }}>{{$committee->name}}</option> 
+                        <option value="{{$committee->id}}" {{ request('committee_filter') == $committee->id ? 'selected' : '' }}>{{$committee->name}}</option>
                     @endforeach
                 </select>
             </div>
@@ -97,6 +97,7 @@
 
     </x-filters>
 
+    @if (!$reservations->isEmpty())
     <div class="table-responsive">
         <table class="table table-dark table-hover table-striped align-middle shadow-sm">
             <thead>
@@ -104,7 +105,7 @@
                     <th>N°</th>
                     <th>Hóspede</th>
                     @if (request('gender_filter'))
-                    <th>Gênero</th>                        
+                    <th>Gênero</th>
                     @endif
                     <th>Quarto</th>
                     <th>Status</th>
@@ -185,6 +186,7 @@
             </tbody>
         </table>
     </div>
+    @endif
 
     <!-- Paginação -->
     <div class="d-flex justify-content-center mt-4">
@@ -200,9 +202,9 @@
         $('#document_guest_filter').on('input', function () {
             let val = $(this).val().replace(/\D/g, '')
 
-            if (val.length < 8) {             
-                // Máscara para o SARAM   
-                $(this).mask('#0-0', {reverse: true});                
+            if (val.length < 8) {
+                // Máscara para o SARAM
+                $(this).mask('#0-0', {reverse: true});
             }else {
                 // Máscara do CPF: 000.000.000-00
                 $(this).mask('000.000.000-00')

@@ -2,14 +2,14 @@
 @section('title', 'Comitivas')
 
 @section('content')
-    
+
     @component('partials.components.body-header', ['title' => 'Gerenciamento de Comitivas'])
         @slot('buttons')
             <div>
                 <button class="btn btn-core" data-bs-toggle="modal" data-bs-target="#createCommitteeModal">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-plus-circle-fill" viewBox="0 0 20 20">
                         <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3z"/>
-                    </svg> 
+                    </svg>
                     Nova comitiva
                 </button>
             </div>
@@ -21,7 +21,7 @@
     <x-filters action="{{ route('committees.index') }}" results_count="{{ $result_count }}" >
         <x-slot name="filters">
             <x-slot name="filters_title">Filtros simples</x-slot>
-            
+
             <div class="col-auto">
                 <input type="text" name="name_filter" class="form-control" placeholder="Nome da comissão" value="{{ request('name_filter') }}">
             </div>
@@ -30,12 +30,13 @@
 
     </x-filters>
 
+    @if (!$committees->isEmpty())
     <div class="table-responsive">
         <table class="table table-dark table-hover table-striped align-middle shadow-sm">
             <thead>
                 <tr>
                     <th>Nome</th>
-                    <th>Descrição</th> 
+                    <th>Descrição</th>
                     <th>Criação</th>
                     <th>Ultima atualização</th>
                     <th>Ações</th>
@@ -62,7 +63,7 @@
                                     </button>
                                 @endcan
 
-                                @can('delete', $committee)                                   
+                                @can('delete', $committee)
                                     <button id="deleteCommitteeButton{{$committee->id}}" type="button" class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteCommitteeModal{{ $committee->id }}">
                                         <span class="btn-content">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-trash-fill" viewBox="-2 -2 20 20">
@@ -87,6 +88,7 @@
             </tbody>
         </table>
     </div>
+    @endif
 
     <!-- Paginação -->
     <div class="d-flex justify-content-center mt-4">

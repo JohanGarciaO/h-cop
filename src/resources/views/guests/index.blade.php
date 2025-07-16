@@ -2,14 +2,14 @@
 @section('title', 'Hóspedes')
 
 @section('content')
-    
+
     @component('partials.components.body-header', ['title' => 'Gerenciamento de Hóspedes'])
         @slot('buttons')
             <div>
                 <button class="btn btn-core" data-bs-toggle="modal" data-bs-target="#createGuestModal">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-plus-circle-fill" viewBox="0 0 20 20">
                         <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3z"/>
-                    </svg> 
+                    </svg>
                     Novo Hóspede
                 </button>
             </div>
@@ -29,21 +29,21 @@
                     <option value="check-out-pending" {{ request('status') == 'check-out-pending' ? 'selected' : '' }}>Check-out pendente</option>
                 </select>
             </div>
-            
+
             <div class="col-auto">
                 <input type="text" name="name_filter" class="form-control" placeholder="Nome do hóspede"
                     value="{{ request('name_filter') }}">
-            </div>        
+            </div>
 
             <div class="col-auto">
                 <input type="text" id="document_filter" name="document_filter" class="form-control" maxlength="14" placeholder="Documento do hóspede" value="{{ request('document_filter') }}">
-            </div>  
+            </div>
 
             <div class="col-auto">
-                <select name="gender_filter" id="gender_filter" class="form-select" data-selected="{{ request('gender_filter') ?? '' }}" data-placeholder="Filtre por gênero">                
+                <select name="gender_filter" id="gender_filter" class="form-select" data-selected="{{ request('gender_filter') ?? '' }}" data-placeholder="Filtre por gênero">
                     <option></option>
                     @foreach (App\Enums\Gender::cases() as $case)
-                        <option value="{{$case->value}}" {{ request('gender_filter') == $case->value ? 'selected' : '' }}>{{$case->label()}}</option> 
+                        <option value="{{$case->value}}" {{ request('gender_filter') == $case->value ? 'selected' : '' }}>{{$case->label()}}</option>
                     @endforeach
                 </select>
             </div>
@@ -67,7 +67,7 @@
                 <select class="form-select" name="committee_filter" id="committee_filter" data-selected="{{ request('committee_filter') ?? '' }}" data-placeholder="Filtre por comitiva">
                     <option></option>
                     @foreach (App\Models\Committee::all() as $committee)
-                        <option value="{{$committee->id}}" {{ request('committee_filter') == $committee->id ? 'selected' : '' }}>{{$committee->name}}</option> 
+                        <option value="{{$committee->id}}" {{ request('committee_filter') == $committee->id ? 'selected' : '' }}>{{$committee->name}}</option>
                     @endforeach
                 </select>
             </div>
@@ -75,12 +75,13 @@
 
     </x-filters>
 
+    @if (!$guests->isEmpty())
     <div class="table-responsive">
         <table class="table table-dark table-hover table-striped align-middle shadow-sm">
             <thead>
                 <tr>
                     <th>Nome</th>
-                    <th>Gênero</th> 
+                    <th>Gênero</th>
                     <th>Status</th>
                     @if (request('committee_filter'))
                         <th>Comitiva</th>
@@ -95,7 +96,7 @@
             </thead>
             <tbody>
                 @foreach ($guests as $guest)
-                    @php 
+                    @php
                     $status = $guest->reservations()->whereNull('check_out_at')?->first()?->status;
                     @endphp
                     <tr>
@@ -138,7 +139,7 @@
                                     </svg> Editar
                                 </a>
 
-                                @can('delete', $guest)                                   
+                                @can('delete', $guest)
                                     <button id="deleteGuestButton{{$guest->id}}" type="button" class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteGuestModal{{ $guest->id }}">
                                         <span class="btn-content">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-trash-fill" viewBox="-2 -2 20 20">
@@ -160,6 +161,7 @@
             </tbody>
         </table>
     </div>
+    @endif
 
     <!-- Paginação -->
     <div class="d-flex justify-content-center mt-4">
@@ -175,9 +177,9 @@
         $('#document_filter').on('input', function () {
             let val = $(this).val().replace(/\D/g, '')
 
-            if (val.length < 8) {             
-                // Máscara para o SARAM   
-                $(this).mask('#0-0', {reverse: true});                
+            if (val.length < 8) {
+                // Máscara para o SARAM
+                $(this).mask('#0-0', {reverse: true});
             }else {
                 // Máscara do CPF: 000.000.000-00
                 $(this).mask('000.000.000-00')
@@ -186,9 +188,9 @@
         $('#document').on('input', function () {
             let val = $(this).val().replace(/\D/g, '')
 
-            if (val.length < 8) {             
-                // Máscara para o SARAM   
-                $(this).mask('#0-0', {reverse: true});                
+            if (val.length < 8) {
+                // Máscara para o SARAM
+                $(this).mask('#0-0', {reverse: true});
             }else {
                 // Máscara do CPF: 000.000.000-00
                 $(this).mask('000.000.000-00')
@@ -197,9 +199,9 @@
 
         $('#postal_code').mask('00000-000')
         $('#phone').on('input', function () {
-            let value = this.value.replace(/\D/g,'')            
+            let value = this.value.replace(/\D/g,'')
             value = value.replace(/(\d{2})(\d)/,"($1) $2")
-            value = value.replace(/(\d)(\d{4})$/,"$1-$2")            
+            value = value.replace(/(\d)(\d{4})$/,"$1-$2")
             this.value = value
         })
     })
