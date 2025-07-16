@@ -52,10 +52,10 @@ services:
     container_name: hotelaria_phpmyadmin
     restart: always
     ports:
-      - "${PMA_PORT:-8081}:80"
+      - "8081:80"
     environment:
       PMA_HOST: db
-      PMA_PORT: 3306
+      PMA_PORT: ${PMA_PORT}
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
     depends_on:
       - db
