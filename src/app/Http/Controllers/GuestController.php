@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Enum;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 
 use App\Models\Guest;
 use App\Models\Address;
@@ -31,7 +32,7 @@ class GuestController extends Controller
         // Filtro por documento
         if ($request->filled('document_filter')) {
             $guests->where('document', $request->document_filter);
-        }        
+        }
 
         // Filtro por estado
         if ($request->filled('state_filter_id')) {
@@ -108,7 +109,7 @@ class GuestController extends Controller
             'committee_id.exists' => 'Deve ser passada uma comitiva válida.',
         ]);
 
-        $validated['document'] = Str::padLeft($validated['document'], 9, '0');
+        $validatedGuest['document'] = Str::padLeft($validatedGuest['document'], 9, '0');
 
         $validatedAddress = $request->validate([
             'postal_code' => 'required|max:9',
@@ -202,7 +203,7 @@ class GuestController extends Controller
             'committee_id.exists' => 'Deve ser passada uma comitiva válida.',
         ]);
 
-        $validated['document'] = Str::padLeft($validated['document'], 9, '0');
+        $validatedGuest['document'] = Str::padLeft($validatedGuest['document'], 9, '0');
 
         $validatedAddress = $request->validate([
             'postal_code' => 'required|max:9',
@@ -232,7 +233,7 @@ class GuestController extends Controller
 
         return redirect()->route('guests.edit', $guest)->with([
             'status' => 'success',
-            'alert-type' => 'success', 
+            'alert-type' => 'success',
             'message' => 'Hóspede atualizado com sucesso.',
         ]);
     }
@@ -250,7 +251,7 @@ class GuestController extends Controller
 
         $name = $guest->name;
         $guest->delete();
-        
+
         return redirect()->route('guests.index')->with([
             'status' => 'success',
             'alert-type' => 'success',
