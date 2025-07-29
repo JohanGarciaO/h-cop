@@ -53,14 +53,38 @@
 
 @push('scripts')
 <script>
-    document.getElementById('fullscreen-toggle').addEventListener('click', () => {
-        if (!document.fullscreenElement) {
-            document.documentElement.requestFullscreen().catch(err => {
-                console.error(`Erro ao ativar fullscreen: ${err.message}`);
+    document.addEventListener('DOMContentLoaded', () => {
+        const btn = document.getElementById('fullscreen-toggle');
+
+        if (localStorage.getItem('fullscreen') === 'true') {
+            // Aguarda qualquer clique válido do usuário
+            document.body.addEventListener('click', function tryFullscreen() {
+                if (!document.fullscreenElement) {
+                    document.documentElement.requestFullscreen().catch(err => {
+                            console.warn('Não foi possível restaurar fullscreen:', err.message);
+                            localStorage.setItem('fullscreen', 'false');
+                        });
+                }
+                document.body.removeEventListener('click', tryFullscreen);
             });
-        } else {
-            document.exitFullscreen();
         }
+
+        btn.addEventListener('click', () => {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen()
+                    .then(() => {
+                        localStorage.setItem('fullscreen', 'true');
+                    })
+                    .catch(err => {
+                        console.error('Erro ao entrar em fullscreen:', err.message);
+                    });
+            } else {
+                document.exitFullscreen()
+                    .then(() => {
+                        localStorage.setItem('fullscreen', 'false');
+                    });
+            }
+        });
     });
 </script>
 @endpush
