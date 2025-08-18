@@ -54,7 +54,8 @@
 @push('scripts')
 <script>
     document.addEventListener('DOMContentLoaded', () => {
-        const btn = document.getElementById('fullscreen-toggle');
+        // Full Screen Button
+        const btnFullScreen = document.getElementById('fullscreen-toggle');
 
         if (localStorage.getItem('fullscreen') === 'true') {
             // Aguarda qualquer clique válido do usuário
@@ -69,7 +70,7 @@
             });
         }
 
-        btn.addEventListener('click', () => {
+        btnFullScreen.addEventListener('click', () => {
             if (!document.fullscreenElement) {
                 document.documentElement.requestFullscreen()
                     .then(() => {
@@ -85,6 +86,25 @@
                     });
             }
         });
+
+        // Side Bar Button
+        const btnSideBar = document.getElementById('toggleSidebarBtn');
+        const sideBar = document.getElementById('sidebar');
+
+        if (localStorage.getItem('sidebar') === 'false') {
+            sideBar.classList.add('collapsed');
+        }else {
+            localStorage.setItem('sidebar', 'true');
+        }
+
+        btnSideBar.addEventListener('click', () => {
+            if (localStorage.getItem('sidebar') === 'true') {
+                localStorage.setItem('sidebar', 'false');
+            }else {
+                localStorage.setItem('sidebar', 'true');
+            }
+        })
+
     });
 </script>
 @endpush
