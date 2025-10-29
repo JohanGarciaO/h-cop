@@ -49,13 +49,7 @@
                 <dl class="row">
                     <dt class="col-sm-6">Status:</dt>
                     <dd class="col-sm-6">
-                        @if ($reservation->check_out_at)
-                            Finalizada
-                        @elseif ($reservation->check_in_at)
-                            Check-in realizado
-                        @else
-                            Aguardando check-in
-                        @endif
+                        {{$reservation->status}}
                     </dd>
 
                     <dt class="col-sm-6">Quarto:</dt>
