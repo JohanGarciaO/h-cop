@@ -35,7 +35,7 @@
                 <span class="hide">Reservas</span>
             </a>
         </li>
-        @can('viewAny', \App\Models\housekeeper::class)            
+        @can('viewAny', \App\Models\Housekeeper::class)            
         <li class="nav-item">
             <a class="nav-link text-white" href="{{ route('housekeepers.index') }}">
                 <img class="side-icon" src="{{asset('assets/images/icons/housekeeper.png')}}" style="filter: brightness(0) invert(1)" width="20" height="20" alt="Camareiros">
