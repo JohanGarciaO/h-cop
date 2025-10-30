@@ -20,8 +20,12 @@
                                         type="date" 
                                         class="form-control" 
                                         id="scheduled_check_in" 
-                                        name="scheduled_check_in" 
-                                        value="{{$reservation->scheduled_check_in->format('Y-m-d')}}"
+                                        name="scheduled_check_in"
+                                        @if($reservation->check_in_at)
+                                            min="{{ $reservation->scheduled_check_in->format('Y-m-d') }}"
+                                            max="{{ $reservation->scheduled_check_in->format('Y-m-d') }}"
+                                        @endif
+                                        value="{{ $reservation->scheduled_check_in->format('Y-m-d') }}"
                                         required
                                     >
                                     <label for="scheduled_check_in">Do dia</label>

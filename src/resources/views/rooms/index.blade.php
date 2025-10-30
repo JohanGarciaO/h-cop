@@ -112,7 +112,7 @@
                             >0%</div>
                         </div>
                         <small class="card-text mb-3">
-                            <span class="fw-bold">Ocupação:</span>
+                            <span class="fw-bold">Ocupação atual:</span>
                             <span class="occupancy-ratio" data-current="{{ $occupied }}" data-capacity="{{ $capacity }}">0/0</span>
                         </small>
 

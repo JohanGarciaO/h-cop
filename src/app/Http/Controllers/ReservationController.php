@@ -299,13 +299,13 @@ class ReservationController extends Controller
             ]);
         }
 
-        if (Reservation::where('room_id', $reservation->room_id)->where('id', '!=', $reservation->id)->whereNull('check_out_at')->count()) {
-            return redirect()->back()->with([
-                'status' => 'error',
-                'alert-type' => 'danger',
-                'message' => "A última reserva deste quarto ainda está com o check-out pendente.",
-            ]);
-        }
+        // if (Reservation::where('room_id', $reservation->room_id)->where('id', '!=', $reservation->id)->whereNull('check_out_at')->count()) {
+        //     return redirect()->back()->with([
+        //         'status' => 'error',
+        //         'alert-type' => 'danger',
+        //         'message' => "A última reserva deste quarto ainda está com o check-out pendente.",
+        //     ]);
+        // }
 
         DB::transaction(function () use ($reservation) {
             $reservation->check_in_at = Carbon::now();

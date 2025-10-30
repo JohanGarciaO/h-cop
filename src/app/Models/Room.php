@@ -31,26 +31,44 @@ class Room extends Model
         return $this->capacity > $this->activeReservations()->count();
     }
 
-    public function isAvailableBetween($checkIn, $checkOut)
+    public function isAvailableBetween($checkIn, $checkOut, $exceptReservationId = null)
     {
-        return !$this->activeReservations()
-            ->where(function ($query) use ($checkIn, $checkOut) {
-                $query->where('scheduled_check_in', '<', $checkOut)
-                    ->where('scheduled_check_out', '>', $checkIn);
-            })
-            ->exists();
+        $activeReservationsCount = $this->reservations()
+            ->whereNull('check_out_at')
+            ->where('scheduled_check_in', '<', $checkOut)
+            ->where('scheduled_check_out', '>', $checkIn)
+            ->when($exceptReservationId, fn($q) => $q->where('id', '!=', $exceptReservationId))
+            ->count();
+
+        return $activeReservationsCount < $this->capacity;
     }
 
     public function scopeAvailableBetween($query, $checkIn, $checkOut, $exceptReservationId = null)
     {
-        return $query->whereDoesntHave('reservations', function ($q) use ($checkIn, $checkOut, $exceptReservationId) {
-            $q->whereNull('check_out_at')
-            ->where('scheduled_check_in', '<', $checkOut)
-            ->where('scheduled_check_out', '>', $checkIn);
+        return $query->where(function ($q) use ($checkIn, $checkOut, $exceptReservationId) {
 
-            if ($exceptReservationId) {
-                $q->where('id', '!=', $exceptReservationId);
-            }
+            // Caso não tenha nenhuma reserva no período estará livre
+            $q->whereDoesntHave('reservations', function ($r) use ($checkIn, $checkOut) {
+                $r->whereNull('check_out_at')
+                ->where('scheduled_check_in', '<', $checkOut)
+                ->where('scheduled_check_out', '>', $checkIn);
+            })
+            // Caso tenha reservas mas ainda não extrapolou a capacidade máxima
+            ->orWhereIn('id', function ($sub) use ($checkIn, $checkOut, $exceptReservationId) {
+                $sub->select('room_id')
+                    ->from('reservations')
+                    ->whereNull('check_out_at')
+                    ->where('scheduled_check_in', '<', $checkOut)
+                    ->where('scheduled_check_out', '>', $checkIn)
+                    ->when($exceptReservationId, fn($s) => $s->where('id', '!=', $exceptReservationId))
+                    ->groupBy('room_id')
+                    ->havingRaw('COUNT(*) < (SELECT capacity FROM rooms WHERE rooms.id = reservations.room_id)');
+            })
+            // Garante que só aceitará reservas se o quarto estiver "pronto para uso"
+            ->whereHas('lastCleaning', function($q) {
+                $q->where('status', 'READY');
+            });
+
         });
     }
 
