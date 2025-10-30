@@ -68,16 +68,16 @@
                 <dl class="row">
                     <h5 class="mb-5 fw-bold">Detalhes do Endereço</h5>
                     <dt class="col-sm-5">CEP:</dt>
-                    <dd class="col-sm-7">{{ $guest->address->postal_code }}</dd>
+                    <dd class="col-sm-7">{{ $guest->address->postal_code ?? '-'}}</dd>
 
                     <dt class="col-sm-5">Estado:</dt>
-                    <dd class="col-sm-7">{{ $guest->address->state->name }}</dd>
+                    <dd class="col-sm-7">{{ $guest->address->state?->name ?? '-'}}</dd>
 
                     <dt class="col-sm-5">Cidade:</dt>
-                    <dd class="col-sm-7">{{ $guest->address->city->name }}</dd>
+                    <dd class="col-sm-7">{{ $guest->address->city?->name ?? '-'}}</dd>
 
                     <dt class="col-sm-5">Rua:</dt>
-                    <dd class="col-sm-7">{{ $guest->address->street }}</dd>
+                    <dd class="col-sm-7">{{ $guest->address->street ?? '-'}}</dd>
 
                     <dt class="col-sm-5">Número:</dt>
                     <dd class="col-sm-7">{{ $guest->address->number ?? 's/n' }}</dd>

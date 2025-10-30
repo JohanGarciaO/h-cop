@@ -48,18 +48,18 @@
                             </select>
                         </div>
                         <div class="col-6">
-                            <input type="text" class="form-control" id="postal_code" name="postal_code" maxlength="9" placeholder="Digite o CEP" required>
+                            <input type="text" class="form-control" id="postal_code" name="postal_code" maxlength="9" placeholder="Digite o CEP">
                         </div>
                     </div>
 
                     <div class="row mb-3">
                         <div class="col-6">
-                            <select class="form-select" id="state_create_id" name="state_id" data-selected="" data-placeholder="Digite o estado" required>
+                            <select class="form-select" id="state_create_id" name="state_id" data-selected="" data-placeholder="Digite o estado">
                                 <option></option>
                             </select>
                         </div>
                         <div class="col-6">
-                            <select class="form-select" id="city_create_id" name="city_id" data-selected="" data-placeholder="Digite a cidade" required>
+                            <select class="form-select" id="city_create_id" name="city_id" data-selected="" data-placeholder="Digite a cidade">
                                 <option></option>
                             </select>
                         </div>
@@ -67,7 +67,7 @@
 
                     <div class="row mb-3">
                         <div class="col-9">
-                            <input type="text" class="form-control" id="street" name="street" placeholder="Digite o nome da rua" required>
+                            <input type="text" class="form-control" id="street" name="street" placeholder="Digite o nome da rua">
                         </div>
                         <div class="col-3">
                             <input type="text" class="form-control" id="number" name="number" placeholder="Número">
@@ -76,7 +76,7 @@
 
                     <div class="row mb-3">
                         <div class="col-6">
-                            <input type="text" class="form-control" id="neighborhood" name="neighborhood" placeholder="Digite o bairro" required>
+                            <input type="text" class="form-control" id="neighborhood" name="neighborhood" placeholder="Digite o bairro">
                         </div>
                         <div class="col-6">
                             <input type="text" class="form-control" id="complement" name="complement" placeholder="Complemento">

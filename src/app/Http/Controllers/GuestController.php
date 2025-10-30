@@ -86,6 +86,10 @@ class GuestController extends Controller
 
     public function store(Request $request)
     {
+        $request->merge([
+            'document' => Str::padLeft($request->input('document'), 9, '0'),
+        ]);
+
         $validatedGuest = $request->validate([
             'name' => 'required',
             'document' => 'required|max:14|unique:guests,document',
@@ -109,25 +113,20 @@ class GuestController extends Controller
             'committee_id.exists' => 'Deve ser passada uma comitiva válida.',
         ]);
 
-        $validatedGuest['document'] = Str::padLeft($validatedGuest['document'], 9, '0');
+        // $validatedGuest['document'] = Str::padLeft($validatedGuest['document'], 9, '0');
 
         $validatedAddress = $request->validate([
-            'postal_code' => 'required|max:9',
-            'state_id' => 'required|exists:states,id',
-            'city_id' => 'required|exists:cities,id',
-            'street' => 'required',
+            'postal_code' => 'nullable|max:9',
+            'state_id' => 'nullable|exists:states,id',
+            'city_id' => 'nullable|exists:cities,id',
+            'street' => 'nullable',
             'number' => 'nullable',
-            'neighborhood' => 'required',
+            'neighborhood' => 'nullable',
             'complement' => 'nullable',
         ],[
-            'postal_code.required' => 'O CEP não pode estar vazio.',
             'postal_code.max' => 'O CEP deve ter no máximo 9 caracteres.',
-            'state_id.required' => 'O estado não pode estar vazio.',
             'state_id.exists' => 'O estado selecionado é inválido.',
-            'city_id.required' => 'A cidade não pode estar vazia.',
             'city_id.exists' => 'A cidade selecionada é inválida.',
-            'street.required' => 'A rua não pode estar vazia.',
-            'neighborhood.required' => 'O bairro não pode estar vazio.',
         ]);
 
         $address = Address::create($validatedAddress);
@@ -206,22 +205,17 @@ class GuestController extends Controller
         $validatedGuest['document'] = Str::padLeft($validatedGuest['document'], 9, '0');
 
         $validatedAddress = $request->validate([
-            'postal_code' => 'required|max:9',
-            'state_id' => 'required|exists:states,id',
-            'city_id' => 'required|exists:cities,id',
-            'street' => 'required',
+            'postal_code' => 'nullable|max:9',
+            'state_id' => 'nullable|exists:states,id',
+            'city_id' => 'nullable|exists:cities,id',
+            'street' => 'nullable',
             'number' => 'nullable',
-            'neighborhood' => 'required',
+            'neighborhood' => 'nullable',
             'complement' => 'nullable',
         ],[
-            'postal_code.required' => 'O CEP não pode estar vazio.',
             'postal_code.max' => 'O CEP deve ter no máximo 9 caracteres.',
-            'state_id.required' => 'O estado não pode estar vazio.',
             'state_id.exists' => 'O estado selecionado é inválido.',
-            'city_id.required' => 'A cidade não pode estar vazia.',
             'city_id.exists' => 'A cidade selecionada é inválida.',
-            'street.required' => 'A rua não pode estar vazia.',
-            'neighborhood.required' => 'O bairro não pode estar vazio.',
         ]);
 
         // Garante que o operador nunca terá acesso ao documento e gênero para edição

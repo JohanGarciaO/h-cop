@@ -31,7 +31,7 @@ class Guest extends Model
 
     public function address()
     {
-        return $this->belongsTo(Address::class);
+        return $this->belongsTo(Address::class)->withDefault();
     }
 
     public function reservations()

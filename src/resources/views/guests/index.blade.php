@@ -121,8 +121,8 @@
                         <td>{{ $guest->document }}</td>
                         <td>{{ $guest->phone }}</td>
                         <td>{{ $guest->email }}</td>
-                        <td>{{ $guest->address->state->acronym }}</td>
-                        <td>{{ $guest->address->city->name }}</td>
+                        <td>{{ $guest->address->state?->acronym ?? '-'}}</td>
+                        <td>{{ $guest->address->city?->name ?? '-'}}</td>
 
                         <td>
                             <div class="btn-group" role="group">
