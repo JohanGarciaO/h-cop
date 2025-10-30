@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Builder;
+use carbon\Carbon;
 
 class Room extends Model
 {
@@ -24,6 +25,17 @@ class Room extends Model
     public function activeReservations()
     {
         return $this->hasMany(Reservation::class)->whereNull('check_out_at');
+    }
+
+    public function occupation()
+    {
+        $today = carbon::now()->format('Y-m-d');
+
+        return $this->reservations()
+            ->whereNull('check_out_at')
+            ->where('scheduled_check_in', '<=', $today)
+            ->where('scheduled_check_out', '>=', $today)
+            ->count();
     }
 
     public function isAvailable()
