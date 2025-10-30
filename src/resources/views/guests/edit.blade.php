@@ -166,28 +166,28 @@
                 </div>
                    
                 <div class="col-12 mb-3">
-                    <select class="form-select" id="state_edit_id" name="state_id" data-selected="{{ old('state_id', $guest->address->state_id) }}" data-placeholder="Digite o estado" required>
+                    <select class="form-select" id="state_edit_id" name="state_id" data-selected="{{ old('state_id', $guest->address->state_id) }}" data-placeholder="Digite o estado">
                         <option></option>
                     </select>
                 </div>            
                 <div class="col-12 mb-3">
-                    <select class="form-select" id="city_edit_id" name="city_id" data-selected="{{ old('city_id', $guest->address->city_id) }}" data-placeholder="Digite a cidade" required>
+                    <select class="form-select" id="city_edit_id" name="city_id" data-selected="{{ old('city_id', $guest->address->city_id) }}" data-placeholder="Digite a cidade">
                         <option></option>
                     </select>
                 </div>     
                 
                 <div class="row mb-3">
                     <div class="col-6">
-                        <input type="text" class="form-control" id="postal_code" name="postal_code" maxlength="9" placeholder="Digite o CEP" value="{{ old('postal_code', $guest->address->postal_code) }}"  required>
+                        <input type="text" class="form-control" id="postal_code" name="postal_code" maxlength="9" placeholder="Digite o CEP" value="{{ old('postal_code', $guest->address->postal_code) }}">
                     </div>
                     <div class="col-6">
-                        <input type="text" class="form-control" id="neighborhood" name="neighborhood" placeholder="Digite o bairro" value="{{ old('neighborhood', $guest->address->neighborhood) }}" required>
+                        <input type="text" class="form-control" id="neighborhood" name="neighborhood" placeholder="Digite o bairro" value="{{ old('neighborhood', $guest->address->neighborhood) }}">
                     </div>
                 </div>
 
                 <div class="row mb-3">
                     <div class="col-9">
-                        <input type="text" class="form-control" id="street" name="street" placeholder="Digite o nome da rua" value="{{ old('street', $guest->address->street) }}"  required>
+                        <input type="text" class="form-control" id="street" name="street" placeholder="Digite o nome da rua" value="{{ old('street', $guest->address->street) }}">
                     </div>
                     <div class="col-3">
                         <input type="text" class="form-control" id="number" name="number" placeholder="Número" value="{{ old('number', $guest->address->number) }}">
