@@ -85,12 +85,12 @@
 
                     <dt class="col-sm-6">Check-in:</dt>
                     <dd class="col-sm-6">
-                        {{ $reservation->check_in_at ? \Carbon\Carbon::parse($reservation->check_in_at)->format('d/m/Y à\s H:i') : 'Não realizado' }}
+                        {!! $reservation->check_in_at ? \Carbon\Carbon::parse($reservation->check_in_at)->format('d/m/Y à\s H:i') . ' por <b>' . $reservation->checkedInBy->username . '</b>': 'Não realizado' !!}
                     </dd>
 
                     <dt class="col-sm-6">Check-out:</dt>
                     <dd class="col-sm-6">
-                        {{ $reservation->check_out_at ? \Carbon\Carbon::parse($reservation->check_out_at)->format('d/m/Y à\s H:i') : 'Não realizado' }}
+                        {!! $reservation->check_out_at ? \Carbon\Carbon::parse($reservation->check_out_at)->format('d/m/Y à\s H:i') . ' por <b>' . $reservation->checkedInBy->username . '</b>' : 'Não realizado' !!}
                     </dd>
 
                     <div class="row g-3 mt-3">
