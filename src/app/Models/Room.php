@@ -76,8 +76,9 @@ class Room extends Model
                     ->groupBy('room_id')
                     ->havingRaw('COUNT(*) < (SELECT capacity FROM rooms WHERE rooms.id = reservations.room_id)');
             })
-            // Garante que só aceitará reservas se o quarto estiver "pronto para uso"
-            ->whereHas('lastCleaning', function($q) {
+            // Garante que só aceitará reservas se o quarto estiver "pronto para uso" ou não tiver histórico de limpeza
+            ->whereDoesntHave('lastCleaning')           
+	    ->orWhereHas('lastCleaning', function($q) {
                 $q->where('status', 'READY');
             });
 
