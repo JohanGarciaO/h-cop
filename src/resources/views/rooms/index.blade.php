@@ -79,7 +79,7 @@
         @foreach ($rooms as $room)
             @php
                 $capacity = $room->capacity;
-                $occupied = $room->occupation();
+                $occupied = $room->active_reservations_count;
                 $percent = $capacity > 0 ? ($occupied / $capacity) * 100 : 0;
                 $percentFormatted = number_format($percent, 0);
             @endphp
