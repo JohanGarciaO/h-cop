@@ -174,20 +174,6 @@ class GuestController extends Controller
 
         $isAdmin = auth()->user()->isAdmin();
 
-        // Apenas se for Admin pode alterar o documento e o gênero
-        if ($isAdmin){
-            $rulesGuest['document'] = [
-                'required',
-                'max:14',
-                Rule::unique('guests', 'document')->ignore($guest->id),
-            ];
-
-            $rulesGuest['gender'] = [
-                'required',
-                new Enum(Gender::class),
-            ];
-        }
-
         $validatedGuest = $request->validate($rulesGuest,
         [
             'name.required' => 'o nome não pode estar vazio.',
@@ -202,7 +188,21 @@ class GuestController extends Controller
             'committee_id.exists' => 'Deve ser passada uma comitiva válida.',
         ]);
 
-        $validatedGuest['document'] = Str::padLeft($validatedGuest['document'], 9, '0');
+        // Apenas se for Admin pode alterar o documento e o gênero
+        if ($isAdmin){
+            $rulesGuest['document'] = [
+                'required',
+                'max:14',
+                Rule::unique('guests', 'document')->ignore($guest->id),
+            ];
+
+            $rulesGuest['gender'] = [
+                'required',
+                new Enum(Gender::class),
+            ];
+
+            $validatedGuest['document'] = Str::padLeft($validatedGuest['document'], 9, '0');
+        }
 
         $validatedAddress = $request->validate([
             'postal_code' => 'nullable|max:9',
